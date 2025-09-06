@@ -69,4 +69,10 @@ export class AuthController {
   ) {
     return this.authService.appleLogin(appleIdentity);
   }
+
+  @Delete('/withdraw')
+  @UseGuards(AuthGuard())
+  withdrawUser(@GetUser() user: User) {
+    return this.authService.withdrawUser(user);
+  }
 }

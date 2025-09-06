@@ -62,7 +62,10 @@ export class Post extends BaseEntity {
   @DeleteDateColumn()
   deletedAt: Date | null;
 
-  @ManyToOne(() => User, (user) => user.post, { eager: false })
+  @ManyToOne(() => User, (user) => user.post, {
+    eager: false,
+    onDelete: 'CASCADE',
+  })
   user: User;
 
   @OneToMany(() => Image, (image) => image.post)

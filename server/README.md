@@ -145,6 +145,22 @@ type ResponseProfile = Profile;
 
 #### POST /auth/logout
 
+#### DELETE /auth/withdraw
+
+- header
+
+```js
+Authorization: `Bearer ${accessToken}`;
+```
+
+- responseBody
+
+```js
+{
+  message: string;
+}
+```
+
 #### POST /auth/oauth/kakao
 
 - requestBody

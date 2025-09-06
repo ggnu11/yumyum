@@ -11,6 +11,7 @@ import {
   postLogin,
   postSignup,
   ResponseToken,
+  withdrawUser,
 } from '@/api/auth';
 import queryClient from '@/api/queryClient';
 import {queryKeys, storageKeys} from '@/constants/keys';
@@ -120,6 +121,18 @@ function useUpdateProfile(mutationOptions?: UseMutationCustomOptions) {
   });
 }
 
+function useWithdrawUser(mutationOptions?: UseMutationCustomOptions) {
+  return useMutation({
+    mutationFn: withdrawUser,
+    onSuccess: async () => {
+      removeHeader('Authorization');
+      await removeEncryptStorage(storageKeys.REFRESH_TOKEN);
+      queryClient.resetQueries({queryKey: [queryKeys.AUTH]});
+    },
+    ...mutationOptions,
+  });
+}
+
 function useAuth() {
   const signupMutation = useSignup();
   const loginMutation = useEmailLogin();
@@ -131,6 +144,7 @@ function useAuth() {
   });
   const logoutMutation = useLogout();
   const profileMutation = useUpdateProfile();
+  const withdrawMutation = useWithdrawUser();
 
   return {
     auth: {
@@ -146,6 +160,7 @@ function useAuth() {
     isLogin,
     logoutMutation,
     profileMutation,
+    withdrawMutation,
   };
 }
 

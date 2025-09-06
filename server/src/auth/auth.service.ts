@@ -257,4 +257,28 @@ export class AuthService {
       );
     }
   }
+
+  async withdrawUser(user: User) {
+    try {
+      const existingUser = await this.userRepository.findOneBy({ id: user.id });
+
+      if (!existingUser) {
+        throw new NotFoundException('존재하지 않는 사용자입니다.');
+      }
+
+      await this.userRepository.delete(user.id);
+
+      return { message: '회원탈퇴가 완료되었습니다.' };
+    } catch (error) {
+      console.log(error);
+
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+
+      throw new InternalServerErrorException(
+        '회원탈퇴 처리 중 에러가 발생했습니다.',
+      );
+    }
+  }
 }

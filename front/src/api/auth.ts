@@ -76,6 +76,12 @@ async function editProfile(body: RequestProfile): Promise<Profile> {
   return data;
 }
 
+async function withdrawUser(): Promise<{message: string}> {
+  const {data} = await axiosInstance.delete('/auth/withdraw');
+
+  return data;
+}
+
 export {
   appleLogin,
   editProfile,
@@ -85,4 +91,5 @@ export {
   logout,
   postLogin,
   postSignup,
+  withdrawUser,
 };
