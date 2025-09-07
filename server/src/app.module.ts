@@ -25,6 +25,7 @@ import { LoggerMiddleware } from './@common/logger';
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'uploads'),
+      serveRoot: '/uploads',
     }),
     PostModule,
     AuthModule,
