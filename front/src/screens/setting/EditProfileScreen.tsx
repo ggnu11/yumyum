@@ -75,9 +75,7 @@ function EditProfileScreen() {
             ) : (
               <Image
                 source={{
-                  uri: `${
-                    Platform.OS === 'ios' ? BASE_URL.ios : BASE_URL.android
-                  }/${imagePicker.imageUris[0]?.uri}`,
+                  uri: imagePicker.imageUris[0]?.uri,
                 }}
                 style={styles.image}
                 resizeMode="cover"

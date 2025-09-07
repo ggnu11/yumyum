@@ -45,15 +45,7 @@ function PreviewImageList({
             key={uri}
             style={styles.imageContainer}
             onPress={() => handlePressImage(index)}>
-            <Image
-              style={styles.image}
-              source={{
-                uri: `${
-                  Platform.OS === 'ios' ? BASE_URL.ios : BASE_URL.android
-                }/${uri}`,
-              }}
-              resizeMode="cover"
-            />
+            <Image style={styles.image} source={{uri}} resizeMode="cover" />
             {showDeleteButton && (
               <Pressable
                 style={styles.deleteButton}

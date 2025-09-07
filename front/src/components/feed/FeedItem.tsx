@@ -35,9 +35,7 @@ function FeedItem({post}: FeedItemProps) {
           <Image
             style={styles.image}
             source={{
-              uri: `${
-                Platform.OS === 'ios' ? BASE_URL.ios : BASE_URL.android
-              }/${post.imageUris[0].uri}`,
+              uri: post.imageUris[0].uri,
             }}
             resizeMode="cover"
           />

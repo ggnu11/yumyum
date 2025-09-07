@@ -54,9 +54,7 @@ function ImageCarousel({images, pressedIndex = 0}: ImageCarouselProps) {
             <Image
               style={styles.image}
               source={{
-                uri: `${
-                  Platform.OS === 'ios' ? BASE_URL.ios : BASE_URL.android
-                }/${item.uri}`,
+                uri: item.uri,
               }}
               resizeMode="contain"
             />
