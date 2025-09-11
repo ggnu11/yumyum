@@ -18,7 +18,51 @@ function LoginScreen() {
   });
 
   const handleSubmit = () => {
+    const {email, password} = login.values;
+
+    // 필수 필드 검증
+    if (!email.trim()) {
+      Toast.show({
+        type: 'error',
+        text1: '이메일을 입력해주세요.',
+      });
+      return;
+    }
+
+    if (!password.trim()) {
+      Toast.show({
+        type: 'error',
+        text1: '비밀번호를 입력해주세요.',
+      });
+      return;
+    }
+
+    // 이메일 형식 검증 (실시간 검증과 동일)
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      Toast.show({
+        type: 'error',
+        text1: '올바른 이메일 형식이 아닙니다.',
+      });
+      return;
+    }
+
+    // 비밀번호 길이 검증 (실시간 검증과 동일)
+    if (password.length < 8 || password.length > 20) {
+      Toast.show({
+        type: 'error',
+        text1: '비밀번호는 8~20자 사이로 입력해주세요.',
+      });
+      return;
+    }
+
     loginMutation.mutate(login.values, {
+      onSuccess: () => {
+        Toast.show({
+          type: 'success',
+          text1: '로그인 성공',
+          text2: '환영합니다!',
+        });
+      },
       onError: error =>
         Toast.show({
           type: 'error',
@@ -59,6 +103,7 @@ function LoginScreen() {
         variant="filled"
         size="large"
         onPress={handleSubmit}
+        disabled={loginMutation.isPending}
       />
     </SafeAreaView>
   );

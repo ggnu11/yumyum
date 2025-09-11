@@ -38,8 +38,8 @@ function useLogin<T>(
     onSuccess: async ({accessToken, refreshToken}) => {
       setHeader('Authorization', `Bearer ${accessToken}`);
       await setEncryptStorage(storageKeys.REFRESH_TOKEN, refreshToken);
-      queryClient.fetchQuery({
-        queryKey: [queryKeys.AUTH, queryKeys.GET_ACCESS_TOKEN],
+      await queryClient.invalidateQueries({
+        queryKey: [queryKeys.AUTH],
       });
     },
     throwOnError: error => Number(error.response?.status) >= 500,

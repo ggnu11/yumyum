@@ -78,14 +78,14 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.matzip"
+    namespace "com.yumyum_app"
     defaultConfig {
-        applicationId "com.matzip"
+        applicationId "com.yumyum_app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
-        resValue "string", "build_config_package", "com.matzip"
+        resValue "string", "build_config_package", "com.yumyum_app"
     }
     signingConfigs {
         release {

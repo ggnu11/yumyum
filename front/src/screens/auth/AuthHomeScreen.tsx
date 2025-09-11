@@ -37,11 +37,30 @@ function AuthHomeScreen() {
       });
 
       if (identityToken) {
-        appleLoginMutation.mutate({
-          identityToken,
-          appId: 'com.matzip.app',
-          nickname: fullName?.givenName ?? '',
-        });
+        appleLoginMutation.mutate(
+          {
+            identityToken,
+            appId: 'com.matzip.app',
+            nickname: fullName?.givenName ?? '',
+          },
+          {
+            onSuccess: () => {
+              Toast.show({
+                type: 'success',
+                text1: '애플 로그인 성공',
+                text2: '환영합니다!',
+              });
+            },
+            onError: (error: any) => {
+              Toast.show({
+                type: 'error',
+                text1: '애플 로그인이 실패했습니다.',
+                text2:
+                  error.response?.data?.message || '나중에 다시 시도해주세요',
+              });
+            },
+          },
+        );
       }
     } catch (error: any) {
       if (error.code !== appleAuth.Error.CANCELED) {
@@ -68,9 +87,12 @@ function AuthHomeScreen() {
           <AppleButton
             buttonStyle={AppleButton.Style.BLACK}
             buttonType={AppleButton.Type.SIGN_IN}
-            style={styles.appleButton}
+            style={[
+              styles.appleButton,
+              appleLoginMutation.isPending && styles.disabledButton,
+            ]}
             cornerRadius={3}
-            onPress={handleAppleLogin}
+            onPress={appleLoginMutation.isPending ? () => {} : handleAppleLogin}
           />
         )}
         <CustomButton
@@ -126,6 +148,9 @@ const styling = (theme: Theme) =>
       width: Dimensions.get('screen').width,
       height: 45,
       paddingHorizontal: 30,
+    },
+    disabledButton: {
+      opacity: 0.6,
     },
   });
 

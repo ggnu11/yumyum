@@ -1,4 +1,4 @@
-package com.matzip
+package com.yumyum_app
 
 import android.app.Application
 import com.facebook.react.PackageList

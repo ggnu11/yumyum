@@ -25,7 +25,15 @@ function KakaoLoginScreen() {
       },
     });
 
-    kakaoLoginMutation.mutate(response.data.access_token);
+    kakaoLoginMutation.mutate(response.data.access_token, {
+      onSuccess: () => {
+        setIsLoading(false);
+      },
+      onError: (error: any) => {
+        setIsLoading(false);
+        console.error('카카오 로그인 실패:', error);
+      },
+    });
   };
 
   const handleShouldStartLoadWithRequest = (event: WebViewNavigation) => {

@@ -9,4 +9,4 @@
 
 # Add any project specific keep options here:
 
--keep class com.matzip.BuildConfig { *; }
+-keep class com.yumyum_app.BuildConfig { *; }
