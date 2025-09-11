@@ -30,7 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     window = UIWindow(frame: UIScreen.main.bounds)
 
     factory.startReactNative(
-      withModuleName: "matzip",
+      withModuleName: "yumyum",
       in: window,
       launchOptions: launchOptions
     )
