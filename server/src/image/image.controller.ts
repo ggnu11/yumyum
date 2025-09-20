@@ -12,7 +12,9 @@ import { diskStorage } from 'multer';
 import { basename, extname } from 'path';
 import { numbers } from 'src/@common/constants';
 import { getUniqueFileName } from 'src/@common/utils';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('images')
 @Controller('images')
 @UseGuards(AuthGuard())
 export class ImageController {
