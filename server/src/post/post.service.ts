@@ -24,7 +24,7 @@ export class PostService {
     try {
       const markers = await this.postRepository
         .createQueryBuilder('post')
-        .where('post.userId = :userId', { userId: user.id })
+        .where('post.user_id = :user_id', { user_id: user.user_id })
         .select([
           'post.id',
           'post.latitude',
@@ -52,19 +52,19 @@ export class PostService {
   }
 
   private async getPostsBaseQuery(
-    userId: number,
+    user_id: number,
   ): Promise<SelectQueryBuilder<Post>> {
     return this.postRepository
       .createQueryBuilder('post')
       .leftJoinAndSelect('post.images', 'image')
-      .where('post.userId = :userId', { userId })
+      .where('post.user_id = :user_id', { user_id })
       .orderBy('post.date', 'DESC');
   }
 
   async getMyPosts(page: number, user: User) {
     const perPage = 10;
     const offset = (page - 1) * perPage;
-    const queryBuilder = await this.getPostsBaseQuery(user.id);
+    const queryBuilder = await this.getPostsBaseQuery(user.user_id);
     const posts = await queryBuilder.take(perPage).skip(offset).getMany();
 
     // await sleep(3000);
@@ -79,10 +79,10 @@ export class PostService {
         .leftJoinAndSelect(
           'post.favorites',
           'favorite',
-          'favorite.userId = :userId',
-          { userId: user.id },
+          'favorite.user_id = :user_id',
+          { user_id: user.user_id },
         )
-        .where('post.userId = :userId', { userId: user.id })
+        .where('post.user_id = :user_id', { user_id: user.user_id })
         .andWhere('post.id = :id', { id })
         .getOne();
 
@@ -152,7 +152,7 @@ export class PostService {
         .createQueryBuilder('post')
         .delete()
         .from(Post)
-        .where('userId = :userId', { userId: user.id })
+        .where('post.user_id = :user_id', { user_id: user.user_id })
         .andWhere('id = :id', { id })
         .execute();
 
@@ -175,7 +175,7 @@ export class PostService {
     user: User,
   ) {
     const postEntity = await this.postRepository.findOne({
-      where: { id, user: { id: user.id } },
+      where: { id, user: { user_id: user.user_id } },
       relations: ['images'],
     });
 
@@ -215,7 +215,7 @@ export class PostService {
   async getPostsByMonth(year: number, month: number, user: User) {
     const posts = await this.postRepository
       .createQueryBuilder('post')
-      .where('post.userId = :userId', { userId: user.id })
+      .where('post.user_id = :user_id', { user_id: user.user_id })
       .andWhere('extract(year from post.date) = :year', { year })
       .andWhere('extract(month from post.date) = :month', { month })
       .select([

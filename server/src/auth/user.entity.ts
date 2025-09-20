@@ -16,22 +16,28 @@ import {
 @Unique(['email'])
 export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+  user_id: number;
 
   @Column()
-  loginType: 'email' | 'kakao' | 'apple';
+  social_provider: 'email' | 'kakao' | 'apple';
+
+  @Column()
+  social_id: string;
 
   @Column()
   email: string;
 
-  @Column()
+  @Column({ nullable: true })
   password: string;
 
   @Column({ nullable: true })
-  nickname?: string;
+  nickname?: string | null;
 
   @Column({ nullable: true })
-  imageUri?: string;
+  profile_image_url?: string;
+
+  @Column({ unique: true })
+  invite_code: string;
 
   @CreateDateColumn()
   createdAt: Date;

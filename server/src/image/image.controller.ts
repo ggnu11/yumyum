@@ -10,7 +10,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { basename, extname } from 'path';
-import { numbers } from 'src/@common/contants';
+import { numbers } from 'src/@common/constants';
 import { getUniqueFileName } from 'src/@common/utils';
 
 @Controller('images')
@@ -18,7 +18,7 @@ import { getUniqueFileName } from 'src/@common/utils';
 export class ImageController {
   @UseInterceptors(
     FilesInterceptor('images', numbers.MAX_IMAGE_COUNT, {
-      limits: { fileSize: numbers.MAX_IAMGE_SIZE },
+      limits: { fileSize: numbers.MAX_IMAGE_SIZE },
     }),
   )
   @Post('/')

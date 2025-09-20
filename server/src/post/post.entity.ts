@@ -8,6 +8,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  JoinColumn,
 } from 'typeorm';
 
 import { ColumnNumericTransformer } from 'src/@common/transformers/numeric.transformer';
@@ -66,6 +67,7 @@ export class Post extends BaseEntity {
     eager: false,
     onDelete: 'CASCADE',
   })
+  @JoinColumn({ name: 'user_id' })
   user: User;
 
   @OneToMany(() => Image, (image) => image.post)

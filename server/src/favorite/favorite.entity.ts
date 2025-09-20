@@ -18,17 +18,17 @@ export class Favorite extends BaseEntity {
   id: number;
 
   @Column()
-  postId: number;
+  post_id: number;
 
   @Column()
-  userId: number;
+  user_id: number;
 
   @ManyToOne(() => Post, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'postId' })
+  @JoinColumn({ name: 'post_id' })
   post: Post;
 
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'userId' })
+  @JoinColumn({ name: 'user_id' })
   user: User;
 
   @CreateDateColumn()

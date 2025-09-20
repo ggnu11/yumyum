@@ -17,6 +17,17 @@ import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { EditProfileDto } from './dto/edit-profile.dto';
+import { randomBytes } from 'crypto';
+
+//temporal
+  function generateRandomInviteCode(length = 8): string {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let code = '';
+  for (let i = 0; i < length; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return code;
+}
 
 @Injectable()
 export class AuthService {
@@ -35,7 +46,7 @@ export class AuthService {
     const user = this.userRepository.create({
       email,
       password: hashedPassword,
-      loginType: 'email',
+      social_provider: 'email',
     });
 
     try {
@@ -78,7 +89,7 @@ export class AuthService {
     }
 
     const { accessToken, refreshToken } = await this.getTokens({ email });
-    await this.updateHashedRefreshToken(user.id, refreshToken);
+    await this.updateHashedRefreshToken(user.user_id, refreshToken);
 
     return { accessToken, refreshToken };
   }
@@ -103,7 +114,7 @@ export class AuthService {
       throw new ForbiddenException();
     }
 
-    await this.updateHashedRefreshToken(user.id, refreshToken);
+    await this.updateHashedRefreshToken(user.user_id, refreshToken);
 
     return { accessToken, refreshToken };
   }
@@ -117,7 +128,7 @@ export class AuthService {
   async editProfile(editProfileDto: EditProfileDto, user: User) {
     const profile = await this.userRepository
       .createQueryBuilder('user')
-      .where('user.id = :userId', { userId: user.id })
+      .where('user.id = :userId', { userId: user.user_id })
       .getOne();
 
     if (!profile) {
@@ -126,7 +137,7 @@ export class AuthService {
 
     const { nickname, imageUri } = editProfileDto;
     profile.nickname = nickname;
-    profile.imageUri = imageUri;
+    profile.profile_image_url = imageUri;
 
     try {
       await this.userRepository.save(profile);
@@ -142,12 +153,14 @@ export class AuthService {
 
   async deleteRefreshToken(user: User) {
     try {
-      await this.userRepository.update(user.id, { hashedRefreshToken: null });
+      await this.userRepository.update(user.user_id, { hashedRefreshToken: null });
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException();
     }
   }
+
+  
 
   async kakaoLogin(kakaoToken: { token: string }) {
     const url = 'https://kapi.kakao.com/v2/user/me';
@@ -171,15 +184,17 @@ export class AuthService {
           email: existingUser.email,
         });
 
-        await this.updateHashedRefreshToken(existingUser.id, refreshToken);
+        await this.updateHashedRefreshToken(existingUser.user_id, refreshToken);
         return { accessToken, refreshToken };
       }
 
       const newUser = this.userRepository.create({
-        email: kakaoId,
-        password: nickname ?? '',
+        social_id: kakaoId.toString(),
+        email: kakao_account?.email ?? '',
+        password: null,
         nickname,
-        loginType: 'kakao',
+        social_provider: 'kakao',
+        invite_code: generateRandomInviteCode(),//temporal
       });
 
       try {
@@ -193,7 +208,7 @@ export class AuthService {
         email: newUser.email,
       });
 
-      await this.updateHashedRefreshToken(newUser.id, refreshToken);
+      await this.updateHashedRefreshToken(newUser.user_id, refreshToken);
       return { accessToken, refreshToken };
     } catch (error) {
       console.log(error);
@@ -226,7 +241,7 @@ export class AuthService {
           email: existingUser.email,
         });
 
-        await this.updateHashedRefreshToken(existingUser.id, refreshToken);
+        await this.updateHashedRefreshToken(existingUser.user_id, refreshToken);
         return { accessToken, refreshToken };
       }
 
@@ -234,7 +249,7 @@ export class AuthService {
         email: userAppleId,
         nickname: nickname === null ? '이름없음' : nickname,
         password: '',
-        loginType: 'apple',
+        social_provider: 'apple',
       });
 
       try {
@@ -248,7 +263,7 @@ export class AuthService {
         email: newUser.email,
       });
 
-      await this.updateHashedRefreshToken(newUser.id, refreshToken);
+      await this.updateHashedRefreshToken(newUser.user_id, refreshToken);
       return { accessToken, refreshToken };
     } catch (error) {
       console.log('error', error);
@@ -260,13 +275,13 @@ export class AuthService {
 
   async withdrawUser(user: User) {
     try {
-      const existingUser = await this.userRepository.findOneBy({ id: user.id });
+      const existingUser = await this.userRepository.findOneBy({ user_id: user.user_id });
 
       if (!existingUser) {
         throw new NotFoundException('존재하지 않는 사용자입니다.');
       }
 
-      await this.userRepository.delete(user.id);
+      await this.userRepository.delete(user.user_id);
 
       return { message: '회원탈퇴가 완료되었습니다.' };
     } catch (error) {

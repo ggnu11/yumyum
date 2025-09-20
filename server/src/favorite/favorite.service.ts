@@ -19,44 +19,53 @@ export class FavoriteService {
       .createQueryBuilder('favorite')
       .innerJoinAndSelect('favorite.post', 'post')
       .leftJoinAndSelect('post.images', 'image')
-      .where('favorite.userId = :userId', { userId: user.id })
+      .where('favorite.user_id = :user_id', { user_id: user.user_id })
       .orderBy('post.date', 'DESC')
       .skip(offset)
       .take(perPage)
       .getMany();
-
-    const newPosts = favorites.map((favorite) => {
-      const post = favorite.post;
-      const images = [...post.images].sort((a, b) => (a.id = b.id));
+    const newPosts = favorites.map(fav => {
+      const post = fav.post;
+      const images = post.images?.map(img => ({ uri: img.uri })) || [];
       return { ...post, imageUris: images };
-    });
-
+  });
+    /*
+    const newPosts = favorites.map((favorite) => { 
+    const post = favorite.post; 
+    const images = [...post.images].sort((a, b) => (a.id - b.id)); 
+    return { ...post, imageUris: images }; });
+    */
+   
     // await sleep(3000);
     return newPosts;
   }
 
-  async toggleFavorite(postId: number, user: User) {
-    if (!postId) {
+  async toggleFavorite(post_id: number, user: User) {
+    if (!post_id) {
       throw new BadRequestException('존재하지 않는 피드입니다.');
     }
 
     const existingFavorite = await this.favoriteRepository.findOne({
-      where: { postId, userId: user.id },
-    });
+      where: { 
+       post: { id: post_id },
+       user: { user_id: user.user_id },
+       },
+       relations: ['post', 'user'],
+    }); 
 
     if (existingFavorite) {
       await this.favoriteRepository.delete(existingFavorite.id);
 
-      return existingFavorite.postId;
+      return existingFavorite.post_id;
     }
 
     const favorite = this.favoriteRepository.create({
-      postId,
-      userId: user.id,
+      post: { id: post_id },
+      user: { user_id: user.user_id },
     });
 
     await this.favoriteRepository.save(favorite);
 
-    return favorite.postId;
+    return favorite.post_id;
   }
 }
