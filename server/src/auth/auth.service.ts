@@ -175,8 +175,8 @@ export class AuthService {
       const { id: kakaoId, kakao_account } = userData;
       const nickname = kakao_account?.profile.nickname;
 
-      const existingUser = await this.userRepository.findOneBy({
-        email: kakaoId,
+      const existingUser = await this.userRepository.findOne({
+        where: { social_id: kakaoId.toString(), social_provider: 'kakao' }
       });
 
       if (existingUser) {
