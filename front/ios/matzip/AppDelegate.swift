@@ -4,6 +4,7 @@ import React_RCTAppDelegate
 import ReactAppDependencyProvider
 import GoogleMaps
 import RNBootSplash
+import NaverThirdPartyLogin
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -36,6 +37,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     )
 
     return true
+  }
+  
+  // URL Scheme 처리를 위한 메서드 추가
+  func application(
+    _ application: UIApplication,
+    open url: URL,
+    options: [UIApplication.OpenURLOptionsKey : Any] = [:]
+  ) -> Bool {
+    // 네이버 로그인 URL Scheme 처리
+    return NaverThirdPartyLoginConnection.getSharedInstance().application(application, open: url, options: options)
   }
 }
 

@@ -11,6 +11,7 @@ export type AuthStackParamList = {
   AuthHome: undefined;
   Login: undefined;
   KakaoLogin: undefined;
+  NaverLogin: undefined;
   Signup: undefined;
 };
 

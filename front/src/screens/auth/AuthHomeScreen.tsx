@@ -102,6 +102,12 @@ function AuthHomeScreen() {
           onPress={() => navigation.navigate('KakaoLogin')}
         />
         <CustomButton
+          label="네이버 로그인"
+          style={styles.naverButtonContainer}
+          textStyle={styles.naverButtonText}
+          onPress={() => navigation.navigate('NaverLogin')}
+        />
+        <CustomButton
           label="이메일 로그인"
           onPress={() => navigation.navigate('Login')}
         />
@@ -143,6 +149,12 @@ const styling = (theme: Theme) =>
     },
     kakaoButtonText: {
       color: '#181600',
+    },
+    naverButtonContainer: {
+      backgroundColor: '#03c75a',
+    },
+    naverButtonText: {
+      color: '#ffffff',
     },
     appleButton: {
       width: Dimensions.get('screen').width,
