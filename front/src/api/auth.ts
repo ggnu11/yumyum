@@ -46,6 +46,11 @@ async function appleLogin(body: RequestAppleIdentity): Promise<ResponseToken> {
   return data;
 }
 
+async function naverLogin(token: string): Promise<ResponseToken> {
+  const {data} = await axiosInstance.post('/auth/oauth/naver', {token});
+  return data;
+}
+
 async function getProfile(): Promise<Profile> {
   const {data} = await axiosInstance.get('/user/me');
 
@@ -83,13 +88,14 @@ async function withdrawUser(): Promise<{message: string}> {
 }
 
 export {
-  appleLogin,
-  editProfile,
-  getAccessToken,
-  getProfile,
-  kakaoLogin,
-  logout,
-  postLogin,
   postSignup,
+  postLogin,
+  kakaoLogin,
+  appleLogin,
+  naverLogin,
+  getProfile,
+  getAccessToken,
+  logout,
+  editProfile,
   withdrawUser,
 };
