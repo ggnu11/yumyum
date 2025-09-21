@@ -132,12 +132,8 @@ async function revokeNaverToken(
 }
 
 export {
-  kakaoLogin,
   appleLogin,
-  naverLogin,
-  naverLoginWithProfile,
-  googleLogin,
-  getProfile,
+  editProfile,
   getAccessToken,
   logout,
   editProfile,
