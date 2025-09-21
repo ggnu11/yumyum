@@ -10,8 +10,8 @@ import Indicator from '@/components/common/Indicator';
 import useAuth from '@/hooks/queries/useAuth';
 
 const naverLoginConfig = {
-  consumerKey: Config.NAVER_CLIENT_ID || 'YeN8k9nwVtaOYNEJjGS6', // 네이버 개발자 센터에서 발급받은 Client ID
-  consumerSecret: Config.NAVER_CLIENT_SECRET || 'MPG7yEynQD', // 네이버 개발자 센터에서 발급받은 Client Secret
+  consumerKey: Config.NAVER_CLIENT_ID as string,
+  consumerSecret: Config.NAVER_CLIENT_SECRET as string,
   appName: 'yumyum',
   serviceUrlScheme: 'com.yumyum-app.naver',
   serviceAppUrlScheme: 'com.yumyum-app.naver',
