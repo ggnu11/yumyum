@@ -190,3 +190,41 @@ brew services stop postgresql@14
 ## react-error-boundary
 
 1.`npm install react-error-boundary` 명령어로 설치.
+
+EC2 서버 실행
+
+# 서버 폴더로 이동
+
+cd /path/to/server
+
+# 프로젝트 빌드 (코드 변경 시마다 필요)
+
+npm run build
+
+# PM2로 서버 시작
+
+npx pm2 start dist/main.js --name "yumyum-server" --env production
+
+# 실행 중인 프로세스 목록 확인
+
+npx pm2 list
+
+# 실시간 모니터링 (CPU, 메모리 사용량)
+
+npx pm2 monit
+
+# 서버 상태 간단히 확인
+
+npx pm2 status
+
+# 서버 시작 (이미 설정된 프로세스)
+
+npx pm2 start yumyum-server
+
+# 서버 중지
+
+npx pm2 stop yumyum-server
+
+px pm2 delete yumyum-server
+
+npx pm2 start npm --name "yumyum-server" -- start
