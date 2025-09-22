@@ -11,13 +11,13 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from './user.entity';
-import { AuthDto } from './dto/auth.dto';
+import { User } from '../user/user.entity';
+import { CreateUserDto } from '../user/dto/create-user.dto';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { EditProfileDto } from './dto/edit-profile.dto';
 import { randomBytes } from 'crypto';
+import { AuthDto } from './dto/auth.dto';
 
 //temporal
   function generateRandomInviteCode(length = 8): string {
@@ -47,7 +47,9 @@ export class AuthService {
       email,
       password: hashedPassword,
       social_provider: 'email',
+      invite_code: generateRandomInviteCode()
     });
+
 
     try {
       await this.userRepository.save(user);
@@ -63,7 +65,7 @@ export class AuthService {
     }
   }
 
-  private async getTokens(payload: { email: string }) {
+  private async getTokens(payload: { userId: number }) {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {
         secret: this.configService.get('JWT_SECRET'),
@@ -88,7 +90,7 @@ export class AuthService {
       );
     }
 
-    const { accessToken, refreshToken } = await this.getTokens({ email });
+    const { accessToken, refreshToken } = await this.getTokens({ userId: user.user_id });
     await this.updateHashedRefreshToken(user.user_id, refreshToken);
 
     return { accessToken, refreshToken };
@@ -99,68 +101,45 @@ export class AuthService {
     const hashedRefreshToken = await bcrypt.hash(refreshToken, salt);
 
     try {
-      await this.userRepository.update(id, { hashedRefreshToken });
+      await this.userRepository.update(id, { hashed_refresh_token: hashedRefreshToken });
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException();
     }
   }
 
-  async refreshToken(user: User) {
-    const { email } = user;
-    const { accessToken, refreshToken } = await this.getTokens({ email });
-
-    if (!user.hashedRefreshToken) {
-      throw new ForbiddenException();
-    }
-
-    await this.updateHashedRefreshToken(user.user_id, refreshToken);
-
-    return { accessToken, refreshToken };
+ async refreshToken(providedRefreshToken: string) {
+  let payload: { userId: number };
+  try {
+    payload = this.jwtService.verify(providedRefreshToken, {
+      secret: this.configService.get('JWT_SECRET'),
+    });
+  } catch (e) {
+    throw new ForbiddenException('Invalid refresh token');
   }
 
-  getProfile(user: User) {
-    const { password, hashedRefreshToken, ...rest } = user;
-
-    return { ...rest };
+  const user = await this.userRepository.findOneBy({ user_id: payload.userId });
+  if (!user || !user.hashed_refresh_token) {
+    throw new ForbiddenException('Refresh token not valid');
   }
 
-  async editProfile(editProfileDto: EditProfileDto, user: User) {
-    const profile = await this.userRepository
-      .createQueryBuilder('user')
-      .where('user.id = :userId', { userId: user.user_id })
-      .getOne();
+  const isValid = await bcrypt.compare(providedRefreshToken, user.hashed_refresh_token);
+  if (!isValid) throw new ForbiddenException('Refresh token mismatch');
 
-    if (!profile) {
-      throw new NotFoundException('존재하지 않는 사용자입니다.');
-    }
+  const tokens = await this.getTokens({ userId: user.user_id });
+  await this.updateHashedRefreshToken(user.user_id, tokens.refreshToken);
 
-    const { nickname, imageUri } = editProfileDto;
-    profile.nickname = nickname;
-    profile.profile_image_url = imageUri;
-
-    try {
-      await this.userRepository.save(profile);
-      const { password, hashedRefreshToken, ...rest } = profile;
-      return { ...rest };
-    } catch (error) {
-      console.log(error);
-      throw new InternalServerErrorException(
-        '프로필 수정 도중 에러가 발생했습니다.',
-      );
-    }
-  }
+  return tokens;
+}
 
   async deleteRefreshToken(user: User) {
     try {
-      await this.userRepository.update(user.user_id, { hashedRefreshToken: null });
+      await this.userRepository.update(user.user_id, { hashed_refresh_token: null });
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException();
     }
   }
-
-  
 
   async kakaoLogin(kakaoToken: { token: string }) {
     const url = 'https://kapi.kakao.com/v2/user/me';
@@ -180,12 +159,13 @@ export class AuthService {
       });
 
       if (existingUser) {
-        const { accessToken, refreshToken } = await this.getTokens({
-          email: existingUser.email,
-        });
 
+        const { accessToken, refreshToken } = await this.getTokens({
+          userId: existingUser.user_id,
+        });
         await this.updateHashedRefreshToken(existingUser.user_id, refreshToken);
         return { accessToken, refreshToken };
+
       }
 
       const newUser = this.userRepository.create({
@@ -205,11 +185,11 @@ export class AuthService {
       }
 
       const { accessToken, refreshToken } = await this.getTokens({
-        email: newUser.email,
+        userId: newUser.user_id,
       });
-
       await this.updateHashedRefreshToken(newUser.user_id, refreshToken);
       return { accessToken, refreshToken };
+
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException('Kakao 서버 에러가 발생했습니다.');
@@ -217,83 +197,93 @@ export class AuthService {
   }
 
   async appleLogin(appleIdentity: {
-    identityToken: string;
-    appId: string;
-    nickname: string | null;
-  }) {
-    const { identityToken, appId, nickname } = appleIdentity;
+  identityToken: string;
+  appId: string;
+  nickname: string | null;
+}) {
+  const { identityToken, appId, nickname } = appleIdentity;
 
-    try {
-      const { sub: userAppleId } = await appleSignin.verifyIdToken(
-        identityToken,
-        {
-          audience: appId,
-          ignoreExpiration: true,
-        },
-      );
+  try {
+    // Verify Apple identity token
+    const { sub: appleId, email } = await appleSignin.verifyIdToken(identityToken, {
+      audience: appId,
+      ignoreExpiration: true,
+    });
 
-      const existingUser = await this.userRepository.findOneBy({
-        email: userAppleId,
-      });
+    // Check if user exists
+    let existingUser = await this.userRepository.findOne({
+      where: { social_id: appleId, social_provider: 'apple' },
+    });
 
-      if (existingUser) {
-        const { accessToken, refreshToken } = await this.getTokens({
-          email: existingUser.email,
-        });
-
-        await this.updateHashedRefreshToken(existingUser.user_id, refreshToken);
-        return { accessToken, refreshToken };
-      }
-
-      const newUser = this.userRepository.create({
-        email: userAppleId,
-        nickname: nickname === null ? '이름없음' : nickname,
-        password: '',
-        social_provider: 'apple',
-      });
-
-      try {
-        await this.userRepository.save(newUser);
-      } catch (error) {
-        console.log(error);
-        throw new InternalServerErrorException();
-      }
-
-      const { accessToken, refreshToken } = await this.getTokens({
-        email: newUser.email,
-      });
-
-      await this.updateHashedRefreshToken(newUser.user_id, refreshToken);
-      return { accessToken, refreshToken };
-    } catch (error) {
-      console.log('error', error);
-      throw new InternalServerErrorException(
-        'Apple 로그인 도중 문제가 발생했습니다.',
-      );
+    if (existingUser) {
+      const tokens = await this.getTokens({ userId: existingUser.user_id });
+      await this.updateHashedRefreshToken(existingUser.user_id, tokens.refreshToken);
+      return tokens;
     }
+
+    // If new user, create one
+    const newUser = this.userRepository.create({
+      social_provider: 'apple',
+      social_id: appleId, // use Apple's unique sub, not appId
+      email: email ?? null, // Apple only sends email first time if user consents
+      nickname: nickname ?? '이름없음',
+      profile_image_url: null, // Apple doesn't provide profile picture
+      invite_code: generateRandomInviteCode(),
+    });
+
+    await this.userRepository.save(newUser);
+
+    const tokens = await this.getTokens({ userId: newUser.user_id });
+    await this.updateHashedRefreshToken(newUser.user_id, tokens.refreshToken);
+
+    return tokens;
+  } catch (error) {
+    console.error(error);
+    throw new InternalServerErrorException('Apple SSO login failed.');
   }
+}
 
-  async withdrawUser(user: User) {
-    try {
-      const existingUser = await this.userRepository.findOneBy({ user_id: user.user_id });
 
-      if (!existingUser) {
-        throw new NotFoundException('존재하지 않는 사용자입니다.');
-      }
+  async naverLogin(naverToken: { token: string }) {
+  const url = 'https://openapi.naver.com/v1/nid/me';
+  const headers = { Authorization: `Bearer ${naverToken.token}` };
 
-      await this.userRepository.delete(user.user_id);
+  try {
+    const { data } = await axios.get(url, { headers });
+    const userData = data.response;
+    const { id: naverId, email, nickname, profile_image } = userData;
 
-      return { message: '회원탈퇴가 완료되었습니다.' };
-    } catch (error) {
-      console.log(error);
+    // Check if user exists
+    let existingUser = await this.userRepository.findOne({
+      where: { social_id: naverId, social_provider: 'naver' }
+    });
 
-      if (error instanceof NotFoundException) {
-        throw error;
-      }
-
-      throw new InternalServerErrorException(
-        '회원탈퇴 처리 중 에러가 발생했습니다.',
-      );
+    if (existingUser) {
+      const tokens = await this.getTokens({ userId: existingUser.user_id });
+      await this.updateHashedRefreshToken(existingUser.user_id, tokens.refreshToken);
+      return tokens;
     }
+
+    // If new user, create
+    const newUser = this.userRepository.create({
+      social_provider: 'naver',
+      social_id: naverId,
+      email: email ?? null,
+      nickname,
+      profile_image_url: profile_image,
+      invite_code: generateRandomInviteCode()
+    });
+
+    await this.userRepository.save(newUser);
+
+    const tokens = await this.getTokens({ userId: newUser.user_id });
+    await this.updateHashedRefreshToken(newUser.user_id, tokens.refreshToken);
+
+    return tokens;
+  } catch (error) {
+    console.error(error);
+    throw new InternalServerErrorException('Naver SSO login failed.');
   }
+}
+
 }

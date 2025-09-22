@@ -1,7 +1,7 @@
 import { IsString, MaxLength, MinLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class EditProfileDto {
+export class EditUserDto {
   @ApiProperty({
     description: 'User nickname',
     example: 'fourfourfourfourfour',

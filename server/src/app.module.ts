@@ -8,6 +8,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { FavoriteModule } from './favorite/favorite.module';
 import { LoggerMiddleware } from './@common/logger';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { LoggerMiddleware } from './@common/logger';
     AuthModule,
     ImageModule,
     FavoriteModule,
+    UserModule,
   ],
   providers: [ConfigService],
 })

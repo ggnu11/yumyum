@@ -7,24 +7,28 @@ import {
   Post,
   UseGuards,
   ValidationPipe,
+  UnauthorizedException,
+  Headers,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthDto } from './dto/auth.dto';
-import { User } from './user.entity';
+import { CreateUserDto } from '../user/dto/create-user.dto';
+import { User } from '../user/user.entity';
 import { GetUser } from 'src/@common/decorators/get-user.decorator';
 import { AuthGuard } from '@nestjs/passport';
-import { EditProfileDto } from './dto/edit-profile.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import { AuthDto } from './dto/auth.dto';
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService
+  ) {}
+  
   @Post('/signup')
   @ApiOperation({ summary: 'Sign up a new user' })
   @ApiResponse({ status: 201, description: 'User created successfully.' })
   @ApiBody({ type: AuthDto })
-  @Post('/signup')
   signup(@Body(ValidationPipe) authDto: AuthDto) {
     return this.authService.signup(authDto);
   }
@@ -33,33 +37,20 @@ export class AuthController {
   @ApiOperation({ summary: 'Sign in user' })
   @ApiResponse({ status: 200, description: 'User signed in successfully.' })
   @ApiBody({ type: AuthDto })
-  @Post('/signin')
   signin(@Body(ValidationPipe) authDto: AuthDto) {
     return this.authService.signin(authDto);
   }
 
   @Get('/refresh')
-  @UseGuards(AuthGuard())
   @ApiOperation({ summary: 'Refresh JWT token' })
   @ApiResponse({ status: 200, description: 'Token refreshed successfully.' })
-  refresh(@GetUser() user: User) {
-    return this.authService.refreshToken(user);
-  }
+  async refresh(@Headers('authorization') authHeader: string) {
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      throw new UnauthorizedException('No refresh token provided');
+    }
 
-  @Get('/me')
-  @UseGuards(AuthGuard())
-  @ApiOperation({ summary: 'Get current user profile' })
-  @ApiResponse({ status: 200, description: 'Returns current user profile.' })
-  getProfile(@GetUser() user: User) {
-    return this.authService.getProfile(user);
-  }
-
-  @Patch('/me')
-  @UseGuards(AuthGuard())
-  @ApiOperation({ summary: 'Edit user profile' })
-  @ApiResponse({ status: 200, description: 'Profile updated successfully.' })
-  editProfile(@Body() editProfileDto: EditProfileDto, @GetUser() user: User) {
-    return this.authService.editProfile(editProfileDto, user);
+    const providedRefreshToken = authHeader.split(' ')[1];
+    return this.authService.refreshToken(providedRefreshToken);
   }
 
   @Post('/logout')
@@ -75,6 +66,13 @@ export class AuthController {
   @ApiBody({ schema: { type: 'object', properties: { token: { type: 'string' } } } })
   kakaoLogin(@Body() kakaoToken: { token: string }) {
     return this.authService.kakaoLogin(kakaoToken);
+  }
+
+  @Post('/oauth/naver')
+  @ApiOperation({ summary: 'OAuth login with naver' })
+  @ApiBody({ schema: { type: 'object', properties: { token: { type: 'string' } } } })
+  naverLogin(@Body() naverToken: { token: string }) {
+    return this.authService.naverLogin(naverToken);
   }
 
   @Post('/oauth/apple')
@@ -100,11 +98,4 @@ export class AuthController {
     return this.authService.appleLogin(appleIdentity);
   }
 
-  @Delete('/withdraw')
-  @UseGuards(AuthGuard())
-  @ApiOperation({ summary: 'Withdraw user account' })
-  @ApiResponse({ status: 200, description: 'User withdrawn successfully.' })
-  withdrawUser(@GetUser() user: User) {
-    return this.authService.withdrawUser(user);
-  }
 }
