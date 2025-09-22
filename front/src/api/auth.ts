@@ -47,7 +47,7 @@ async function appleLogin(body: RequestAppleIdentity): Promise<ResponseToken> {
 }
 
 async function getProfile(): Promise<Profile> {
-  const {data} = await axiosInstance.get('/auth/me');
+  const {data} = await axiosInstance.get('/user/me');
 
   return data;
 }
@@ -71,13 +71,13 @@ async function logout() {
 type RequestProfile = Pick<Profile, 'nickname' | 'imageUri'>;
 
 async function editProfile(body: RequestProfile): Promise<Profile> {
-  const {data} = await axiosInstance.patch('/auth/me', body);
+  const {data} = await axiosInstance.patch('/user/me', body);
 
   return data;
 }
 
 async function withdrawUser(): Promise<{message: string}> {
-  const {data} = await axiosInstance.delete('/auth/withdraw');
+  const {data} = await axiosInstance.delete('/user/withdraw');
 
   return data;
 }

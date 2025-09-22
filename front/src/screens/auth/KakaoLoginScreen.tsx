@@ -55,7 +55,7 @@ function KakaoLoginScreen() {
       <WebView
         style={styles.container}
         source={{
-          uri: `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${Config.KAKAO_REST_API_KEY}&redirect_uri=${REDIRECT_URI}`,
+          uri: `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${Config.KAKAO_REST_API_KEY}&redirect_uri=${REDIRECT_URI}&scope=profile_nickname,account_email`,
         }}
         onShouldStartLoadWithRequest={handleShouldStartLoadWithRequest}
       />
