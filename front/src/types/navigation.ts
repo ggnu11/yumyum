@@ -9,6 +9,11 @@ export type MapStackParamList = {
 
 export type AuthStackParamList = {
   AuthHome: undefined;
+  TermsAgreement: undefined;
+  TermsDetail: {
+    type: string;
+    title: string;
+  };
   KakaoLogin: undefined;
   NaverLogin: undefined;
 };

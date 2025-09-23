@@ -29,6 +29,9 @@ function AuthHomeScreen() {
   const {appleLoginMutation} = useAuth();
 
   const handleAppleLogin = async () => {
+    // 임시로 약관 화면으로 이동
+    // navigation.navigate('TermsAgreement');
+
     try {
       const {identityToken, fullName} = await appleAuth.performRequest({
         requestedOperation: appleAuth.Operation.LOGIN,

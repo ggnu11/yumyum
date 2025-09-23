@@ -3,6 +3,8 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {colors} from '@/constants/colors';
 import AuthHomeScreen from '@/screens/auth/AuthHomeScreen';
 import KakaoLoginScreen from '@/screens/auth/KakaoLoginScreen';
+import TermsAgreementScreen from '@/screens/auth/TermsAgreementScreen';
+import TermsDetailScreen from '@/screens/auth/TermsDetailScreen';
 import useThemeStore from '@/store/theme';
 import NaverLoginScreen from '@/screens/auth/NaverLoginScreen';
 
@@ -33,6 +35,16 @@ function AuthNavigation() {
       <Stack.Screen
         name="AuthHome"
         component={AuthHomeScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="TermsAgreement"
+        component={TermsAgreementScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="TermsDetail"
+        component={TermsDetailScreen}
         options={{headerShown: false}}
       />
       <Stack.Screen
