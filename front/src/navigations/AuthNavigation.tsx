@@ -6,6 +6,7 @@ import KakaoLoginScreen from '@/screens/auth/KakaoLoginScreen';
 import LoginScreen from '@/screens/auth/LoginScreen';
 import SignupScreen from '@/screens/auth/SignupScreen';
 import useThemeStore from '@/store/theme';
+import NaverLoginScreen from '@/screens/auth/NaverLoginScreen';
 
 const Stack = createStackNavigator();
 
@@ -50,6 +51,11 @@ function AuthNavigation() {
         name="KakaoLogin"
         component={KakaoLoginScreen}
         options={{title: '카카오 로그인'}}
+      />
+      <Stack.Screen
+        name="NaverLogin"
+        component={NaverLoginScreen}
+        options={{title: '네이버 로그인'}}
       />
     </Stack.Navigator>
   );
