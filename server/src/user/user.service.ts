@@ -19,11 +19,18 @@ export class UserService {
         private userRepository: Repository<User>,
       ) {}
 
-    getUser(user: User) {
-        const { password, hashed_refresh_token: hashedRefreshToken, ...rest } = user;
-    
+    async getUser(user: User) {
+        const profile = await this.userRepository.findOne({
+            where: { user_id: user.user_id },
+        });
+
+        if (!profile) {
+            throw new NotFoundException('User not found');
+        }
+
+        const { password, hashed_refresh_token: hashedRefreshToken, ...rest } = profile;
         return { ...rest };
-      }
+    }
     
 async editUser(editUserDto: EditUserDto, user: User) {
         const profile = await this.userRepository

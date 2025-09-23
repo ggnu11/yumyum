@@ -26,6 +26,7 @@ export class UserController {
       @ApiOperation({ summary: 'Get current user profile' })
       @ApiResponse({ status: 200, description: 'Returns current user profile.' })
       getProfile(@GetUser() user: User) {
+        console.log('Current user from JWT:', user.user_id, user.nickname);
         return this.userService.getUser(user);
       }
     
