@@ -16,6 +16,7 @@ import {
 import CustomButton from '@/components/common/CustomButton';
 import {colors} from '@/constants/colors';
 import useAuth from '@/hooks/queries/useAuth';
+import useAppleSignInState from '@/hooks/useAppleSignInState';
 import useThemeStore, {Theme} from '@/store/theme';
 import {AuthStackParamList} from '@/types/navigation';
 import Toast from 'react-native-toast-message';
@@ -27,13 +28,11 @@ function AuthHomeScreen() {
   const styles = styling(theme);
   const navigation = useNavigation<Navigation>();
   const {appleLoginMutation} = useAuth();
+  const {isAvailable: isAppleSignInAvailable} = useAppleSignInState();
 
   const handleAppleLogin = async () => {
-    // 임시로 약관 화면으로 이동
-    // navigation.navigate('TermsAgreement');
-
     try {
-      const {identityToken, fullName} = await appleAuth.performRequest({
+      const {identityToken, fullName, email} = await appleAuth.performRequest({
         requestedOperation: appleAuth.Operation.LOGIN,
         requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
       });
@@ -43,20 +42,26 @@ function AuthHomeScreen() {
           {
             identityToken,
             appId: 'com.matzip.app',
-            nickname: fullName?.givenName ?? '',
+            email: email || undefined, // 이메일 가리기 포함하여 Apple에서 제공하는 이메일
+            name: fullName
+              ? {
+                  givenName: fullName.givenName,
+                  familyName: fullName.familyName,
+                }
+              : undefined, // 최초 로그인 시에만 제공되는 이름 정보
           },
           {
             onSuccess: () => {
               Toast.show({
                 type: 'success',
-                text1: '애플 로그인 성공',
+                text1: 'Apple 로그인 성공',
                 text2: '환영합니다!',
               });
             },
             onError: (error: any) => {
               Toast.show({
                 type: 'error',
-                text1: '애플 로그인이 실패했습니다.',
+                text1: 'Apple 로그인이 실패했습니다.',
                 text2:
                   error.response?.data?.message || '나중에 다시 시도해주세요',
               });
@@ -65,13 +70,17 @@ function AuthHomeScreen() {
         );
       }
     } catch (error: any) {
-      if (error.code !== appleAuth.Error.CANCELED) {
-        Toast.show({
-          type: 'error',
-          text1: '애플 로그인이 실패했습니다.',
-          text2: '나중에 다시 시도해주세요',
-        });
+      if (error.code === appleAuth.Error.CANCELED) {
+        // 사용자가 로그인을 취소한 경우 - 별도 에러 표시 안함
+        return;
       }
+
+      console.error('Apple 로그인 에러:', error);
+      Toast.show({
+        type: 'error',
+        text1: 'Apple 로그인이 실패했습니다.',
+        text2: '나중에 다시 시도해주세요',
+      });
     }
   };
 
@@ -83,7 +92,7 @@ function AuthHomeScreen() {
         <Text style={styles.subtitleText}>우리만의 맛집 지도, 얌얌</Text>
       </View>
       <View style={styles.buttonContainer}>
-        {Platform.OS === 'ios' && (
+        {Platform.OS === 'ios' && isAppleSignInAvailable && (
           <AppleButton
             buttonStyle={AppleButton.Style.BLACK}
             buttonType={AppleButton.Type.SIGN_IN}
@@ -153,9 +162,8 @@ const styling = (theme: Theme) =>
       color: '#000000',
     },
     appleButton: {
-      width: Dimensions.get('screen').width,
+      width: '100%',
       height: 45,
-      paddingHorizontal: 30,
     },
     disabledButton: {
       opacity: 0.6,

@@ -16,7 +16,12 @@ async function kakaoLogin(token: string): Promise<ResponseToken> {
 type RequestAppleIdentity = {
   identityToken: string;
   appId: string;
-  nickname: string | null;
+  sub?: string;
+  email?: string;
+  name?: {
+    givenName?: string | null;
+    familyName?: string | null;
+  };
 };
 
 async function appleLogin(body: RequestAppleIdentity): Promise<ResponseToken> {
@@ -66,6 +71,16 @@ async function withdrawUser(): Promise<{message: string}> {
   return data;
 }
 
+async function revokeAppleToken(
+  authorizationCode: string,
+): Promise<{message: string}> {
+  const {data} = await axiosInstance.post('/auth/oauth/apple/revoke', {
+    authorizationCode,
+  });
+
+  return data;
+}
+
 export {
   kakaoLogin,
   appleLogin,
@@ -75,4 +90,5 @@ export {
   logout,
   editProfile,
   withdrawUser,
+  revokeAppleToken,
 };
