@@ -76,11 +76,9 @@ function AuthHomeScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.imageContainer}>
-        <Image
-          source={require('@/assets/matzip.png')}
-          style={styles.image}
-          resizeMode="contain"
-        />
+        <Image source={require('@/assets/yumyum.png')} resizeMode="contain" />
+        <Text style={styles.titleText}>YUMYUM</Text>
+        <Text style={styles.subtitleText}>우리만의 맛집 지도, 얌얌</Text>
       </View>
       <View style={styles.buttonContainer}>
         {Platform.OS === 'ios' && (
@@ -127,10 +125,19 @@ const styling = (theme: Theme) =>
     imageContainer: {
       flex: 1.5,
       alignItems: 'center',
+      justifyContent: 'center',
     },
-    image: {
-      width: 300,
-      height: '100%',
+    titleText: {
+      fontSize: 48,
+      fontWeight: 'bold',
+      color: '#ED6029',
+      marginTop: 20,
+    },
+    subtitleText: {
+      fontSize: 24,
+      color: colors[theme].BLACK,
+      marginTop: 10,
+      textAlign: 'center',
     },
     buttonContainer: {
       flex: 1,
@@ -148,13 +155,13 @@ const styling = (theme: Theme) =>
       backgroundColor: '#fee503',
     },
     kakaoButtonText: {
-      color: '#181600',
+      color: '#000000',
     },
     naverButtonContainer: {
       backgroundColor: '#03c75a',
     },
     naverButtonText: {
-      color: '#ffffff',
+      color: '#000000',
     },
     appleButton: {
       width: Dimensions.get('screen').width,
