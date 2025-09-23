@@ -7,7 +7,6 @@ import {
   Dimensions,
   Image,
   Platform,
-  Pressable,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -105,13 +104,6 @@ function AuthHomeScreen() {
           textStyle={styles.naverButtonText}
           onPress={() => navigation.navigate('NaverLogin')}
         />
-        <CustomButton
-          label="이메일 로그인"
-          onPress={() => navigation.navigate('Login')}
-        />
-        <Pressable onPress={() => navigation.navigate('Signup')}>
-          <Text style={styles.emailText}>이메일로 가입하기</Text>
-        </Pressable>
       </View>
     </SafeAreaView>
   );
@@ -143,13 +135,7 @@ const styling = (theme: Theme) =>
       flex: 1,
       alignItems: 'center',
       paddingHorizontal: 30,
-      gap: 5,
-    },
-    emailText: {
-      textDecorationLine: 'underline',
-      fontWeight: '500',
-      padding: 10,
-      color: colors[theme].BLACK,
+      gap: 15,
     },
     kakaoButtonContainer: {
       backgroundColor: '#fee503',

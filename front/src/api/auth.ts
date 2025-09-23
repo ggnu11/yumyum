@@ -2,31 +2,10 @@ import {Profile} from '@/types/domain';
 import {getEncryptStorage} from '@/utils/encryptStorage';
 import axiosInstance from './axios';
 
-type RequsetUser = {
-  email: string;
-  password: string;
-};
-
-async function postSignup({email, password}: RequsetUser): Promise<void> {
-  await axiosInstance.post('/auth/signup', {email, password});
-}
-
 export type ResponseToken = {
   accessToken: string;
   refreshToken: string;
 };
-
-async function postLogin({
-  email,
-  password,
-}: RequsetUser): Promise<ResponseToken> {
-  const {data} = await axiosInstance.post('/auth/signin', {
-    email,
-    password,
-  });
-
-  return data;
-}
 
 async function kakaoLogin(token: string): Promise<ResponseToken> {
   const {data} = await axiosInstance.post('/auth/oauth/kakao', {token});
@@ -88,8 +67,6 @@ async function withdrawUser(): Promise<{message: string}> {
 }
 
 export {
-  postSignup,
-  postLogin,
   kakaoLogin,
   appleLogin,
   naverLogin,

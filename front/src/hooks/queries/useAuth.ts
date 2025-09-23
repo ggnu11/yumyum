@@ -9,8 +9,6 @@ import {
   kakaoLogin,
   naverLogin,
   logout,
-  postLogin,
-  postSignup,
   ResponseToken,
   withdrawUser,
 } from '@/api/auth';
@@ -21,14 +19,6 @@ import {UseMutationCustomOptions, UseQueryCustomOptions} from '@/types/api';
 import {Profile} from '@/types/domain';
 import {removeEncryptStorage, setEncryptStorage} from '@/utils/encryptStorage';
 import {removeHeader, setHeader} from '@/utils/header';
-
-function useSignup(mutationOptions?: UseMutationCustomOptions) {
-  return useMutation({
-    mutationFn: postSignup,
-    throwOnError: error => Number(error.response?.status) >= 500,
-    ...mutationOptions,
-  });
-}
 
 function useLogin<T>(
   loginAPI: MutationFunction<ResponseToken, T>,
@@ -46,10 +36,6 @@ function useLogin<T>(
     throwOnError: error => Number(error.response?.status) >= 500,
     ...mutationOptions,
   });
-}
-
-function useEmailLogin(mutationOptions?: UseMutationCustomOptions) {
-  return useLogin(postLogin, mutationOptions);
 }
 
 function useKakaoLogin(mutationOptions?: UseMutationCustomOptions) {
@@ -139,8 +125,6 @@ function useWithdrawUser(mutationOptions?: UseMutationCustomOptions) {
 }
 
 function useAuth() {
-  const signupMutation = useSignup();
-  const loginMutation = useEmailLogin();
   const kakaoLoginMutation = useKakaoLogin();
   const appleLoginMutation = useAppleLogin();
   const naverLoginMutation = useNaverLogin();
@@ -159,8 +143,6 @@ function useAuth() {
       email: data?.email || '',
       imageUri: data?.imageUri || '',
     },
-    signupMutation,
-    loginMutation,
     kakaoLoginMutation,
     appleLoginMutation,
     naverLoginMutation,
