@@ -1,13 +1,14 @@
-import React, {useState} from 'react';
+import React, {useState, useRef, useCallback} from 'react';
 import {Alert, StyleSheet, View} from 'react-native';
 import MapView, {LatLng, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
+import BottomSheet from '@gorhom/bottom-sheet';
 
 import CustomMarker from '@/components/common/CustomMarker';
 import MapIconButton from '@/components/map/MapIconButton';
 import MarkerFilterAction from '@/components/map/MarkerFilterAction';
-import MarkerModal from '@/components/map/MarkerModal';
+import PlaceBottomSheet from '../../components/map/PlaceBottomSheet';
 import SearchBar from '@/components/map/SearchBar';
 import {numbers} from '@/constants/numbers';
 import useGetMarkers from '@/hooks/queries/useGetMarkers';
@@ -21,6 +22,8 @@ import useThemeStore, {Theme} from '@/store/theme';
 import {MapStackParamList} from '@/types/navigation';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
+import {getPlaceInfo} from '@/api/pin';
+import {PlaceInfo as ApiPlaceInfo} from '@/types/api';
 
 type Navigation = StackNavigationProp<MapStackParamList>;
 
@@ -29,7 +32,10 @@ function MapHomeScreen() {
   const styles = styling(theme);
   const navigation = useNavigation<Navigation>();
   const inset = useSafeAreaInsets();
-  const [markerId, setSetMarkerId] = useState<number>();
+  const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
+  const [selectedPlaceInfo, setSelectedPlaceInfo] =
+    useState<ApiPlaceInfo | null>(null);
+  const bottomSheetRef = useRef<BottomSheet>(null);
   const {selectLocation, setSelectLocation} = useLocationStore();
   const {filters} = useFilterStore();
   const {userLocation, isUserLocationError} = useUserLocation();
@@ -42,7 +48,6 @@ function MapHomeScreen() {
           filters[String(marker.score)] === true,
       ),
   });
-  const markerModal = useModal();
   const filterAction = useModal();
   usePermission('LOCATION');
 
@@ -59,11 +64,36 @@ function MapHomeScreen() {
     moveMapView(userLocation);
   };
 
-  const handlePressMarker = (id: number, coordinate: LatLng) => {
-    setSetMarkerId(id);
-    moveMapView(coordinate);
-    markerModal.show();
-  };
+  const handlePressMarker = useCallback(
+    async (id: number, coordinate: LatLng) => {
+      const placeId = `place_${id}`;
+
+      // try {
+      //   const placeInfo = await getPlaceInfo(placeId);
+      //   setSelectedPlaceInfo(placeInfo);
+      // } catch (error) {
+      //   console.error('장소 정보 조회 실패:', error);
+      //   Alert.alert('오류', '장소 정보를 불러올 수 없습니다.');
+      //   return;
+      // }
+
+      // 임시 데이터 - 백엔드 연동 후 삭제 예정
+      const mockPlaceInfo = {
+        place_id: placeId,
+        place_name: '맛있는 스페인 요리 전문점',
+        address: '서울시 강남구 역삼동 123-45',
+        phone_number: '02-1234-5678',
+        operating_hours: '매일 11:00 - 22:00',
+        total_pin_count: 5,
+      };
+
+      setSelectedPlaceId(placeId);
+      setSelectedPlaceInfo(mockPlaceInfo);
+      moveMapView(coordinate);
+      bottomSheetRef.current?.snapToIndex(0);
+    },
+    [moveMapView],
+  );
 
   const handlePressAddPost = () => {
     if (!selectLocation) {
@@ -79,6 +109,35 @@ function MapHomeScreen() {
     });
     setSelectLocation(null);
   };
+
+  const handleCloseBottomSheet = useCallback(() => {
+    setSelectedPlaceId(null);
+    setSelectedPlaceInfo(null);
+  }, []);
+
+  const handleAddRecord = useCallback(() => {
+    if (selectedPlaceInfo) {
+      // 장소 정보를 기반으로 AddLocation 화면으로 이동
+      navigation.navigate('AddLocation', {
+        location: {
+          latitude: 37.5665, // 임시 좌표
+          longitude: 126.978,
+        },
+      });
+      bottomSheetRef.current?.close();
+    }
+  }, [selectedPlaceInfo, navigation]);
+
+  const handleEditRecord = useCallback((recordId: number) => {
+    // 기록 수정 화면으로 이동
+    console.log('기록 수정:', recordId);
+    bottomSheetRef.current?.close();
+  }, []);
+
+  const handleDeleteRecord = useCallback((recordId: number) => {
+    // 기록 삭제 처리
+    console.log('기록 삭제:', recordId);
+  }, []);
 
   return (
     <>
@@ -118,10 +177,13 @@ function MapHomeScreen() {
         />
       </View>
 
-      <MarkerModal
-        isVisible={markerModal.isVisible}
-        markerId={Number(markerId)}
-        hide={markerModal.hide}
+      <PlaceBottomSheet
+        ref={bottomSheetRef}
+        placeInfo={selectedPlaceInfo}
+        onClose={handleCloseBottomSheet}
+        onAddRecord={handleAddRecord}
+        onEditRecord={handleEditRecord}
+        onDeleteRecord={handleDeleteRecord}
       />
       <MarkerFilterAction
         isVisible={filterAction.isVisible}
