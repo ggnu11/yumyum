@@ -28,7 +28,6 @@ export function useGoogleSignInState() {
       });
       setIsConfigured(true);
     } catch (error) {
-      console.error('Google Sign-In 설정 실패:', error);
       setIsConfigured(false);
     }
   }, []);
@@ -48,7 +47,6 @@ export function useGoogleSignInState() {
       setIsSignedIn(signedIn);
       return signedIn;
     } catch (error) {
-      console.error('Google Sign-In 상태 확인 실패:', error);
       setIsSignedIn(false);
       return false;
     }
@@ -117,7 +115,6 @@ export function useGoogleSignInState() {
         // 자동 로그인 불가 - 정상적인 상황
         return null;
       } else {
-        console.error('Google 자동 로그인 실패:', error);
         return null;
       }
     }
@@ -131,7 +128,7 @@ export function useGoogleSignInState() {
       await GoogleSignin.signOut();
       setIsSignedIn(false);
     } catch (error) {
-      console.error('Google 로그아웃 실패:', error);
+      //
     }
   }, []);
 
@@ -143,7 +140,7 @@ export function useGoogleSignInState() {
       await GoogleSignin.revokeAccess();
       setIsSignedIn(false);
     } catch (error) {
-      console.error('Google 계정 연결 해제 실패:', error);
+      //
     }
   }, []);
 
@@ -155,7 +152,6 @@ export function useGoogleSignInState() {
       const userInfo = await GoogleSignin.getCurrentUser();
       return userInfo || null;
     } catch (error) {
-      console.error('현재 사용자 정보 가져오기 실패:', error);
       return null;
     }
   }, []);
@@ -168,7 +164,6 @@ export function useGoogleSignInState() {
       const tokens = await GoogleSignin.getTokens();
       return tokens;
     } catch (error) {
-      console.error('토큰 가져오기 실패:', error);
       return null;
     }
   }, []);

@@ -79,7 +79,6 @@ function AuthHomeScreen() {
         return;
       }
 
-      console.error('Apple 로그인 에러:', error);
       Toast.show({
         type: 'error',
         text1: 'Apple 로그인이 실패했습니다.',
@@ -102,7 +101,6 @@ function AuthHomeScreen() {
             });
           },
           onError: (error: any) => {
-            console.error('네이버 로그인 에러:', error);
             Toast.show({
               type: 'error',
               text1: '네이버 로그인이 실패했습니다.',
@@ -113,17 +111,10 @@ function AuthHomeScreen() {
         });
       }
     } catch (error: any) {
-      if (error.message === 'CANCELLED') {
+      if (error.message === 'CANCELBYUSER') {
         // 사용자가 로그인을 취소한 경우 - 별도 에러 표시 안함
         return;
       }
-
-      console.error('네이버 로그인 에러:', error);
-      Toast.show({
-        type: 'error',
-        text1: '네이버 로그인이 실패했습니다.',
-        text2: error.message || '나중에 다시 시도해주세요',
-      });
     }
   };
 

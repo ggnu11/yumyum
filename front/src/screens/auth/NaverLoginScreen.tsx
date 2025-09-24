@@ -73,7 +73,6 @@ function NaverLoginScreen() {
       }
     } catch (error: any) {
       setIsLoading(false);
-      console.error('네이버 로그인 오류:', error);
       Toast.show({
         type: 'error',
         text1: '네이버 로그인이 실패했습니다.',

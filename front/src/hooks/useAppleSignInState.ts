@@ -20,7 +20,6 @@ export function useAppleSignInState() {
       const available = appleAuth.isSupported;
       setIsAvailable(available);
     } catch (error) {
-      console.error('Apple Sign In 가용성 확인 실패:', error);
       setIsAvailable(false);
     }
   }, []);
@@ -38,7 +37,6 @@ export function useAppleSignInState() {
         setCredentialState(state);
         return state;
       } catch (error) {
-        console.error('Apple 계정 상태 확인 실패:', error);
         return null;
       }
     },
@@ -89,13 +87,12 @@ export function useAppleSignInState() {
 
         credentialStateChangeListener = appleAuth.onCredentialRevoked(
           async () => {
-            console.warn('Apple 계정 연결이 해제되었습니다.');
             setCredentialState(AppleCredentialState.REVOKED);
             // 여기서 로그아웃 처리나 사용자에게 알림을 보낼 수 있음
           },
         );
       } catch (error) {
-        console.error('Apple Sign In 리스너 설정 실패:', error);
+        //
       }
     };
 

@@ -31,7 +31,6 @@ export class NaverLoginService {
       NaverLogin.initialize(config);
       this.isInitialized = true;
     } catch (error) {
-      console.error('네이버 로그인 초기화 실패:', error);
       this.isInitialized = false;
       throw error;
     }
@@ -103,7 +102,6 @@ export class NaverLoginService {
         throw new Error('프로필 정보를 가져오는데 실패했습니다.');
       }
     } catch (error) {
-      console.error('프로필 정보 조회 실패:', error);
       throw error;
     }
   }
@@ -115,7 +113,6 @@ export class NaverLoginService {
     try {
       await NaverLogin.logout();
     } catch (error) {
-      console.error('네이버 로그아웃 실패:', error);
       throw error;
     }
   }
@@ -127,7 +124,6 @@ export class NaverLoginService {
     try {
       await NaverLogin.deleteToken();
     } catch (error) {
-      console.error('토큰 삭제 실패:', error);
       throw error;
     }
   }

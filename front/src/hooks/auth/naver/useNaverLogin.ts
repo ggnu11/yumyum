@@ -24,7 +24,6 @@ export function useNaverLogin(): NaverSignInState & NaverSignInActions {
       await naverLoginService.initialize();
       setIsInitialized(true);
     } catch (error) {
-      console.error('네이버 로그인 초기화 실패:', error);
       setIsInitialized(false);
     }
   }, []);
@@ -38,7 +37,6 @@ export function useNaverLogin(): NaverSignInState & NaverSignInActions {
       setIsLoggedIn(loggedIn);
       return loggedIn;
     } catch (error) {
-      console.error('네이버 로그인 상태 확인 실패:', error);
       setIsLoggedIn(false);
       return false;
     }
@@ -81,7 +79,6 @@ export function useNaverLogin(): NaverSignInState & NaverSignInActions {
 
         return null;
       } catch (error) {
-        console.error('네이버 자동 로그인 실패:', error);
         setIsLoggedIn(false);
         setAccessToken(null);
         return null;
@@ -97,7 +94,7 @@ export function useNaverLogin(): NaverSignInState & NaverSignInActions {
       setIsLoggedIn(false);
       setAccessToken(null);
     } catch (error) {
-      console.error('네이버 로그아웃 실패:', error);
+      //
     }
   }, []);
 
@@ -110,7 +107,7 @@ export function useNaverLogin(): NaverSignInState & NaverSignInActions {
       setIsLoggedIn(false);
       setAccessToken(null);
     } catch (error) {
-      console.error('토큰 삭제 실패:', error);
+      //
     }
   }, []);
 
@@ -129,7 +126,6 @@ export function useNaverLogin(): NaverSignInState & NaverSignInActions {
       // 네이버 SDK는 토큰을 자동으로 갱신합니다.
       return accessToken;
     } catch (error) {
-      console.error('토큰 갱신 실패:', error);
       return null;
     }
   }, [accessToken]);
@@ -142,7 +138,6 @@ export function useNaverLogin(): NaverSignInState & NaverSignInActions {
       if (!accessToken) return null;
       return await naverLoginService.getProfileWithToken(accessToken);
     } catch (error) {
-      console.error('프로필 정보 가져오기 실패:', error);
       return null;
     }
   }, [accessToken]);
