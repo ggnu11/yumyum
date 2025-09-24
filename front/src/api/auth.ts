@@ -35,6 +35,21 @@ async function naverLogin(token: string): Promise<ResponseToken> {
   return data;
 }
 
+type RequestNaverIdentity = {
+  accessToken: string;
+  id: string;
+  email?: string | null; // 선택 동의 항목
+  nickname?: string;
+  profileImage?: string;
+};
+
+async function naverLoginWithProfile(
+  body: RequestNaverIdentity,
+): Promise<ResponseToken> {
+  const {data} = await axiosInstance.post('/auth/oauth/naver/profile', body);
+  return data;
+}
+
 type RequestGoogleIdentity = {
   idToken: string;
   id: string;
@@ -106,10 +121,21 @@ async function revokeGoogleToken(
   return data;
 }
 
+async function revokeNaverToken(
+  accessToken: string,
+): Promise<{message: string}> {
+  const {data} = await axiosInstance.post('/auth/oauth/naver/revoke', {
+    accessToken,
+  });
+
+  return data;
+}
+
 export {
   kakaoLogin,
   appleLogin,
   naverLogin,
+  naverLoginWithProfile,
   googleLogin,
   getProfile,
   getAccessToken,
@@ -118,4 +144,5 @@ export {
   withdrawUser,
   revokeAppleToken,
   revokeGoogleToken,
+  revokeNaverToken,
 };

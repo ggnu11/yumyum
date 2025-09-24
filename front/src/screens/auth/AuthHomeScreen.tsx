@@ -1,11 +1,9 @@
 import appleAuth, {
   AppleButton,
 } from '@invertase/react-native-apple-authentication';
-import {GoogleSigninButton} from '@react-native-google-signin/google-signin';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {
-  Dimensions,
   Image,
   Platform,
   SafeAreaView,
@@ -16,6 +14,7 @@ import {
 
 import CustomButton from '@/components/common/CustomButton';
 import {colors} from '@/constants/colors';
+import {useNaverLogin} from '@/hooks/auth/naver';
 import useAuth from '@/hooks/queries/useAuth';
 import useAppleSignInState from '@/hooks/useAppleSignInState';
 import useGoogleSignInState from '@/hooks/useGoogleSignInState';
@@ -29,12 +28,14 @@ function AuthHomeScreen() {
   const {theme} = useThemeStore();
   const styles = styling(theme);
   const navigation = useNavigation<Navigation>();
-  const {appleLoginMutation, googleLoginMutation} = useAuth();
+  const {appleLoginMutation, googleLoginMutation, naverLoginMutation} =
+    useAuth();
   const {isAvailable: isAppleSignInAvailable} = useAppleSignInState();
   const {
     isConfigured: isGoogleSignInConfigured,
     performSignIn: performGoogleSignIn,
   } = useGoogleSignInState();
+  const naverLogin = useNaverLogin();
 
   const handleAppleLogin = async () => {
     try {
@@ -90,38 +91,77 @@ function AuthHomeScreen() {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    try {
-      const result = await performGoogleSignIn();
+  // const handleGoogleLogin = async () => {
+  //   try {
+  //     const result = await performGoogleSignIn();
 
-      if (result && result.idToken) {
-        googleLoginMutation.mutate(
-          {
-            idToken: result.idToken,
-            id: result.user.id,
-            email: result.user.email,
-            name: result.user.name,
-            photoUrl: result.user.photo,
+  //     if (result && result.idToken) {
+  //       googleLoginMutation.mutate(
+  //         {
+  //           idToken: result.idToken,
+  //           id: result.user.id,
+  //           email: result.user.email,
+  //           name: result.user.name,
+  //           photoUrl: result.user.photo,
+  //         },
+  //         {
+  //           onSuccess: () => {
+  //             Toast.show({
+  //               type: 'success',
+  //               text1: 'Google 로그인 성공',
+  //               text2: '환영합니다!',
+  //             });
+  //           },
+  //           onError: (error: any) => {
+  //             console.error('Google 로그인 에러:', error);
+  //             Toast.show({
+  //               type: 'error',
+  //               text1: 'Google 로그인이 실패했습니다.',
+  //               text2:
+  //                 error.response?.data?.message || '나중에 다시 시도해주세요',
+  //             });
+  //           },
+  //         },
+  //       );
+  //     }
+  //   } catch (error: any) {
+  //     if (error.message === 'CANCELLED') {
+  //       // 사용자가 로그인을 취소한 경우 - 별도 에러 표시 안함
+  //       return;
+  //     }
+
+  //     console.error('Google 로그인 에러:', error);
+  //     Toast.show({
+  //       type: 'error',
+  //       text1: 'Google 로그인이 실패했습니다.',
+  //       text2: error.message || '나중에 다시 시도해주세요',
+  //     });
+  //   }
+  // };
+
+  const handleNaverLogin = async () => {
+    try {
+      const result = await naverLogin.performLogin();
+
+      if (result) {
+        naverLoginMutation.mutate(result.token, {
+          onSuccess: () => {
+            Toast.show({
+              type: 'success',
+              text1: '네이버 로그인 성공',
+              text2: '환영합니다!',
+            });
           },
-          {
-            onSuccess: () => {
-              Toast.show({
-                type: 'success',
-                text1: 'Google 로그인 성공',
-                text2: '환영합니다!',
-              });
-            },
-            onError: (error: any) => {
-              console.error('Google 로그인 에러:', error);
-              Toast.show({
-                type: 'error',
-                text1: 'Google 로그인이 실패했습니다.',
-                text2:
-                  error.response?.data?.message || '나중에 다시 시도해주세요',
-              });
-            },
+          onError: (error: any) => {
+            console.error('네이버 로그인 에러:', error);
+            Toast.show({
+              type: 'error',
+              text1: '네이버 로그인이 실패했습니다.',
+              text2:
+                error.response?.data?.message || '나중에 다시 시도해주세요',
+            });
           },
-        );
+        });
       }
     } catch (error: any) {
       if (error.message === 'CANCELLED') {
@@ -129,10 +169,10 @@ function AuthHomeScreen() {
         return;
       }
 
-      console.error('Google 로그인 에러:', error);
+      console.error('네이버 로그인 에러:', error);
       Toast.show({
         type: 'error',
-        text1: 'Google 로그인이 실패했습니다.',
+        text1: '네이버 로그인이 실패했습니다.',
         text2: error.message || '나중에 다시 시도해주세요',
       });
     }
@@ -178,12 +218,15 @@ function AuthHomeScreen() {
           textStyle={styles.kakaoButtonText}
           onPress={() => navigation.navigate('KakaoLogin')}
         />
-        <CustomButton
-          label="네이버 로그인"
-          style={styles.naverButtonContainer}
-          textStyle={styles.naverButtonText}
-          onPress={() => navigation.navigate('NaverLogin')}
-        />
+        {naverLogin.isInitialized && (
+          <CustomButton
+            label="네이버 로그인"
+            disabled={naverLoginMutation.isPending}
+            style={styles.naverButtonContainer}
+            textStyle={styles.naverButtonText}
+            onPress={appleLoginMutation.isPending ? () => {} : handleNaverLogin}
+          />
+        )}
       </View>
     </SafeAreaView>
   );
