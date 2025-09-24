@@ -8,7 +8,6 @@ import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {
   Image,
-  Platform,
   Pressable,
   SafeAreaView,
   StyleSheet,
@@ -16,7 +15,6 @@ import {
   View,
 } from 'react-native';
 
-import {BASE_URL} from '@/api/axios';
 import {colors} from '@/constants/colors';
 import useAuth from '@/hooks/queries/useAuth';
 import useThemeStore, {Theme} from '@/store/theme';
@@ -53,7 +51,7 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
       <View style={styles.bottomContainer}>
         <Pressable
           style={styles.bottomMenu}
-          onPress={() => navigation.navigate('Setting')}>
+          onPress={() => navigation.navigate('MyTab', {screen: 'SettingHome'})}>
           <Ionicons
             name="settings-outline"
             size={20}

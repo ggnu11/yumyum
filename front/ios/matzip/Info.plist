@@ -74,16 +74,29 @@
 	<false/>
 	<key>CFBundleURLTypes</key>
 	<array>
-	<dict>
-		<key>CFBundleTypeRole</key>
-		<string>Editor</string>
-		<key>CFBundleURLName</key>
-		<string>naver</string>
-		<key>CFBundleURLSchemes</key>
-		<array>
-			<string>com.yumyum-app.naver</string>
-		</array>
-	</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>naver</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.yumyum-app.naver</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>google</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+				<string>com.googleusercontent.apps.126976760837-kdre6fkjrm1le3bbhi5e7dnpf9t9doas</string>
+			</array>
+		</dict>
 	</array>
+	<key>GIDClientID</key>
+	<string>126976760837-kdre6fkjrm1le3bbhi5e7dnpf9t9doas.apps.googleusercontent.com</string>
 </dict>
 </plist>

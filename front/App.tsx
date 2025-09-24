@@ -2,6 +2,7 @@ import {QueryClientProvider} from '@tanstack/react-query';
 import {useEffect} from 'react';
 import {StatusBar} from 'react-native';
 import BootSplash from 'react-native-bootsplash';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import Toast, {
   BaseToast,
   BaseToastProps,
@@ -46,13 +47,15 @@ function App() {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <StatusBar
-        barStyle={theme === 'light' ? 'dark-content' : 'light-content'}
-      />
-      <RootNavigation />
-      <Toast config={toastConfig} />
-    </QueryClientProvider>
+    <GestureHandlerRootView style={{flex: 1}}>
+      <QueryClientProvider client={queryClient}>
+        <StatusBar
+          barStyle={theme === 'light' ? 'dark-content' : 'light-content'}
+        />
+        <RootNavigation />
+        <Toast config={toastConfig} />
+      </QueryClientProvider>
+    </GestureHandlerRootView>
   );
 }
 

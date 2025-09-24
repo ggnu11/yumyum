@@ -3,7 +3,6 @@ import {createStackNavigator} from '@react-navigation/stack';
 import React from 'react';
 import {Pressable} from 'react-native';
 
-import DrawerButton from '@/components/common/DrawerButton';
 import {colors} from '@/constants/colors';
 import EditLocationScreen from '@/screens/feed/EditLocationScreen';
 import FeedDetailScreen from '@/screens/feed/FeedDetailScreen';
@@ -40,7 +39,6 @@ export function FeedStack() {
         component={FeedListScreen}
         options={({navigation}) => ({
           title: '피드',
-          headerLeft: () => <DrawerButton />,
           headerRight: () => (
             <Pressable
               style={{paddingHorizontal: 12}}

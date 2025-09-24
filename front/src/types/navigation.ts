@@ -9,10 +9,13 @@ export type MapStackParamList = {
 
 export type AuthStackParamList = {
   AuthHome: undefined;
-  Login: undefined;
+  TermsAgreement: undefined;
+  TermsDetail: {
+    type: string;
+    title: string;
+  };
   KakaoLogin: undefined;
   NaverLogin: undefined;
-  Signup: undefined;
 };
 
 export type FeedStackParamList = {
@@ -35,8 +38,15 @@ export type MainDrawerParamList = {
   Setting: undefined;
 };
 
+export type MainBottomTabParamList = {
+  MapTab: NavigatorScreenParams<MapStackParamList>;
+  FeedTab: NavigatorScreenParams<FeedStackParamList>;
+  CalendarTab: undefined;
+  MyTab: NavigatorScreenParams<SettingStackParamList>;
+};
+
 declare global {
   namespace ReactNavigation {
-    interface RootParamList extends MainDrawerParamList {}
+    interface RootParamList extends MainBottomTabParamList {}
   }
 }

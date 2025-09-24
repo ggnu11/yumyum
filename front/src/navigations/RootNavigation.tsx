@@ -2,7 +2,7 @@ import RetryErrorBoundary from '@/components/common/RetryErrorBoundary';
 import useAuth from '@/hooks/queries/useAuth';
 import {NavigationContainer} from '@react-navigation/native';
 import AuthNavigation from './AuthNavigation';
-import DrawerNavigation from './DrawerNavigation';
+import BottomTabNavigation from './BottomTabNavigation';
 
 function RootNavigation() {
   const {isLogin} = useAuth();
@@ -10,7 +10,7 @@ function RootNavigation() {
   return (
     <RetryErrorBoundary>
       <NavigationContainer>
-        {isLogin ? <DrawerNavigation /> : <AuthNavigation />}
+        {isLogin ? <BottomTabNavigation /> : <AuthNavigation />}
       </NavigationContainer>
     </RetryErrorBoundary>
   );

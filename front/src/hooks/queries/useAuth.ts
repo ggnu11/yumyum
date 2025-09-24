@@ -6,13 +6,14 @@ import {
   editProfile,
   getAccessToken,
   getProfile,
+  googleLogin,
   kakaoLogin,
   naverLogin,
   logout,
-  postLogin,
-  postSignup,
   ResponseToken,
   withdrawUser,
+  revokeAppleToken,
+  revokeGoogleToken,
 } from '@/api/auth';
 import queryClient from '@/api/queryClient';
 import {queryKeys, storageKeys} from '@/constants/keys';
@@ -21,14 +22,6 @@ import {UseMutationCustomOptions, UseQueryCustomOptions} from '@/types/api';
 import {Profile} from '@/types/domain';
 import {removeEncryptStorage, setEncryptStorage} from '@/utils/encryptStorage';
 import {removeHeader, setHeader} from '@/utils/header';
-
-function useSignup(mutationOptions?: UseMutationCustomOptions) {
-  return useMutation({
-    mutationFn: postSignup,
-    throwOnError: error => Number(error.response?.status) >= 500,
-    ...mutationOptions,
-  });
-}
 
 function useLogin<T>(
   loginAPI: MutationFunction<ResponseToken, T>,
@@ -48,16 +41,16 @@ function useLogin<T>(
   });
 }
 
-function useEmailLogin(mutationOptions?: UseMutationCustomOptions) {
-  return useLogin(postLogin, mutationOptions);
-}
-
 function useKakaoLogin(mutationOptions?: UseMutationCustomOptions) {
   return useLogin(kakaoLogin, mutationOptions);
 }
 
 function useAppleLogin(mutationOptions?: UseMutationCustomOptions) {
   return useLogin(appleLogin, mutationOptions);
+}
+
+function useGoogleLogin(mutationOptions?: UseMutationCustomOptions) {
+  return useLogin(googleLogin, mutationOptions);
 }
 
 function useNaverLogin(mutationOptions?: UseMutationCustomOptions) {
@@ -139,10 +132,9 @@ function useWithdrawUser(mutationOptions?: UseMutationCustomOptions) {
 }
 
 function useAuth() {
-  const signupMutation = useSignup();
-  const loginMutation = useEmailLogin();
   const kakaoLoginMutation = useKakaoLogin();
   const appleLoginMutation = useAppleLogin();
+  const googleLoginMutation = useGoogleLogin();
   const naverLoginMutation = useNaverLogin();
   const refreshTokenQuery = useGetRefreshToken();
   const {data, isSuccess: isLogin} = useGetProfile({
@@ -159,10 +151,9 @@ function useAuth() {
       email: data?.email || '',
       imageUri: data?.imageUri || '',
     },
-    signupMutation,
-    loginMutation,
     kakaoLoginMutation,
     appleLoginMutation,
+    googleLoginMutation,
     naverLoginMutation,
     isLogin,
     logoutMutation,

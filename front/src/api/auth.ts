@@ -2,31 +2,10 @@ import {Profile} from '@/types/domain';
 import {getEncryptStorage} from '@/utils/encryptStorage';
 import axiosInstance from './axios';
 
-type RequsetUser = {
-  email: string;
-  password: string;
-};
-
-async function postSignup({email, password}: RequsetUser): Promise<void> {
-  await axiosInstance.post('/auth/signup', {email, password});
-}
-
 export type ResponseToken = {
   accessToken: string;
   refreshToken: string;
 };
-
-async function postLogin({
-  email,
-  password,
-}: RequsetUser): Promise<ResponseToken> {
-  const {data} = await axiosInstance.post('/auth/signin', {
-    email,
-    password,
-  });
-
-  return data;
-}
 
 async function kakaoLogin(token: string): Promise<ResponseToken> {
   const {data} = await axiosInstance.post('/auth/oauth/kakao', {token});
@@ -37,7 +16,12 @@ async function kakaoLogin(token: string): Promise<ResponseToken> {
 type RequestAppleIdentity = {
   identityToken: string;
   appId: string;
-  nickname: string | null;
+  sub?: string;
+  email?: string;
+  name?: {
+    givenName?: string | null;
+    familyName?: string | null;
+  };
 };
 
 async function appleLogin(body: RequestAppleIdentity): Promise<ResponseToken> {
@@ -48,6 +32,36 @@ async function appleLogin(body: RequestAppleIdentity): Promise<ResponseToken> {
 
 async function naverLogin(token: string): Promise<ResponseToken> {
   const {data} = await axiosInstance.post('/auth/oauth/naver', {token});
+  return data;
+}
+
+type RequestNaverIdentity = {
+  accessToken: string;
+  id: string;
+  email?: string | null; // 선택 동의 항목
+  nickname?: string;
+  profileImage?: string;
+};
+
+async function naverLoginWithProfile(
+  body: RequestNaverIdentity,
+): Promise<ResponseToken> {
+  const {data} = await axiosInstance.post('/auth/oauth/naver/profile', body);
+  return data;
+}
+
+type RequestGoogleIdentity = {
+  idToken: string;
+  id: string;
+  email: string;
+  name?: string;
+  photoUrl?: string;
+};
+
+async function googleLogin(
+  body: RequestGoogleIdentity,
+): Promise<ResponseToken> {
+  const {data} = await axiosInstance.post('/auth/oauth/google', body);
   return data;
 }
 
@@ -87,15 +101,48 @@ async function withdrawUser(): Promise<{message: string}> {
   return data;
 }
 
+async function revokeAppleToken(
+  authorizationCode: string,
+): Promise<{message: string}> {
+  const {data} = await axiosInstance.post('/auth/oauth/apple/revoke', {
+    authorizationCode,
+  });
+
+  return data;
+}
+
+async function revokeGoogleToken(
+  accessToken: string,
+): Promise<{message: string}> {
+  const {data} = await axiosInstance.post('/auth/oauth/google/revoke', {
+    accessToken,
+  });
+
+  return data;
+}
+
+async function revokeNaverToken(
+  accessToken: string,
+): Promise<{message: string}> {
+  const {data} = await axiosInstance.post('/auth/oauth/naver/revoke', {
+    accessToken,
+  });
+
+  return data;
+}
+
 export {
-  postSignup,
-  postLogin,
   kakaoLogin,
   appleLogin,
   naverLogin,
+  naverLoginWithProfile,
+  googleLogin,
   getProfile,
   getAccessToken,
   logout,
   editProfile,
   withdrawUser,
+  revokeAppleToken,
+  revokeGoogleToken,
+  revokeNaverToken,
 };

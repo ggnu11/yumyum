@@ -4,7 +4,6 @@ import React from 'react';
 import {
   Image,
   Modal,
-  Platform,
   Pressable,
   SafeAreaView,
   StyleSheet,
@@ -12,7 +11,6 @@ import {
   View,
 } from 'react-native';
 
-import {BASE_URL} from '@/api/axios';
 import {colors} from '@/constants/colors';
 import useGetPost from '@/hooks/queries/useGetPost';
 import useThemeStore, {Theme} from '@/store/theme';
@@ -35,7 +33,7 @@ function MarkerModal({markerId, isVisible, hide}: MarkerModalProps) {
   }
 
   const handlePressModal = () => {
-    navigation.navigate('Feed', {
+    navigation.navigate('FeedTab', {
       screen: 'FeedDetail',
       params: {
         id: post.id,
