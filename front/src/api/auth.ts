@@ -35,6 +35,21 @@ async function naverLogin(token: string): Promise<ResponseToken> {
   return data;
 }
 
+type RequestGoogleIdentity = {
+  idToken: string;
+  id: string;
+  email: string;
+  name?: string;
+  photoUrl?: string;
+};
+
+async function googleLogin(
+  body: RequestGoogleIdentity,
+): Promise<ResponseToken> {
+  const {data} = await axiosInstance.post('/auth/oauth/google', body);
+  return data;
+}
+
 async function getProfile(): Promise<Profile> {
   const {data} = await axiosInstance.get('/user/me');
 
@@ -81,14 +96,26 @@ async function revokeAppleToken(
   return data;
 }
 
+async function revokeGoogleToken(
+  accessToken: string,
+): Promise<{message: string}> {
+  const {data} = await axiosInstance.post('/auth/oauth/google/revoke', {
+    accessToken,
+  });
+
+  return data;
+}
+
 export {
   kakaoLogin,
   appleLogin,
   naverLogin,
+  googleLogin,
   getProfile,
   getAccessToken,
   logout,
   editProfile,
   withdrawUser,
   revokeAppleToken,
+  revokeGoogleToken,
 };

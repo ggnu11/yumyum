@@ -6,11 +6,14 @@ import {
   editProfile,
   getAccessToken,
   getProfile,
+  googleLogin,
   kakaoLogin,
   naverLogin,
   logout,
   ResponseToken,
   withdrawUser,
+  revokeAppleToken,
+  revokeGoogleToken,
 } from '@/api/auth';
 import queryClient from '@/api/queryClient';
 import {queryKeys, storageKeys} from '@/constants/keys';
@@ -44,6 +47,10 @@ function useKakaoLogin(mutationOptions?: UseMutationCustomOptions) {
 
 function useAppleLogin(mutationOptions?: UseMutationCustomOptions) {
   return useLogin(appleLogin, mutationOptions);
+}
+
+function useGoogleLogin(mutationOptions?: UseMutationCustomOptions) {
+  return useLogin(googleLogin, mutationOptions);
 }
 
 function useNaverLogin(mutationOptions?: UseMutationCustomOptions) {
@@ -127,6 +134,7 @@ function useWithdrawUser(mutationOptions?: UseMutationCustomOptions) {
 function useAuth() {
   const kakaoLoginMutation = useKakaoLogin();
   const appleLoginMutation = useAppleLogin();
+  const googleLoginMutation = useGoogleLogin();
   const naverLoginMutation = useNaverLogin();
   const refreshTokenQuery = useGetRefreshToken();
   const {data, isSuccess: isLogin} = useGetProfile({
@@ -145,6 +153,7 @@ function useAuth() {
     },
     kakaoLoginMutation,
     appleLoginMutation,
+    googleLoginMutation,
     naverLoginMutation,
     isLogin,
     logoutMutation,
