@@ -35,7 +35,7 @@ function CalendarScreen() {
   };
 
   const handlePressSchedule = (postId: number) => {
-    navigation.navigate('Feed', {
+    navigation.navigate('FeedTab', {
       screen: 'FeedDetail',
       params: {id: postId},
       initial: false,

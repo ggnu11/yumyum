@@ -1,4 +1,3 @@
-import DrawerButton from '@/components/common/DrawerButton';
 import {colors} from '@/constants/colors';
 import EditProfileScreen from '@/screens/setting/EditProfileScreen';
 import SettingHomeScreen from '@/screens/setting/SettingHomeScreen';
@@ -28,8 +27,7 @@ export function SettingStack() {
         name="SettingHome"
         component={SettingHomeScreen}
         options={{
-          title: '설정',
-          headerLeft: () => <DrawerButton />,
+          title: '마이',
           cardStyle: {
             backgroundColor: colors[theme].GRAY_100,
           },

@@ -5,11 +5,10 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 
 import CustomMarker from '@/components/common/CustomMarker';
-import DrawerButton from '@/components/common/DrawerButton';
 import MapIconButton from '@/components/map/MapIconButton';
 import MarkerFilterAction from '@/components/map/MarkerFilterAction';
 import MarkerModal from '@/components/map/MarkerModal';
-import {colors} from '@/constants/colors';
+import SearchBar from '@/components/map/SearchBar';
 import {numbers} from '@/constants/numbers';
 import useGetMarkers from '@/hooks/queries/useGetMarkers';
 import useModal from '@/hooks/useModal';
@@ -83,10 +82,7 @@ function MapHomeScreen() {
 
   return (
     <>
-      <DrawerButton
-        style={[styles.drawerButton, {top: inset.top + 10}]}
-        color={colors[theme].WHITE}
-      />
+      <SearchBar onPress={() => navigation.navigate('SearchLocation')} />
       <MapView
         userInterfaceStyle={theme}
         googleMapId="f727da01391db33238e04009"
@@ -114,10 +110,6 @@ function MapHomeScreen() {
         {selectLocation && <Marker coordinate={selectLocation} />}
       </MapView>
       <View style={styles.buttonList}>
-        <MapIconButton
-          name="magnifying-glass"
-          onPress={() => navigation.navigate('SearchLocation')}
-        />
         <MapIconButton name="filter" onPress={filterAction.show} />
         <MapIconButton name="plus" onPress={handlePressAddPost} />
         <MapIconButton
@@ -144,18 +136,7 @@ const styling = (theme: Theme) =>
     container: {
       flex: 1,
     },
-    drawerButton: {
-      position: 'absolute',
-      left: 0,
-      top: 0,
-      zIndex: 1,
-      paddingVertical: 10,
-      paddingHorizontal: 15,
-      backgroundColor: colors[theme].PINK_700,
-      borderTopRightRadius: 50,
-      borderBottomRightRadius: 50,
-      boxShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
-    },
+
     buttonList: {
       position: 'absolute',
       bottom: 30,

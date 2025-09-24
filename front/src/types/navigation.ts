@@ -38,8 +38,15 @@ export type MainDrawerParamList = {
   Setting: undefined;
 };
 
+export type MainBottomTabParamList = {
+  MapTab: NavigatorScreenParams<MapStackParamList>;
+  FeedTab: NavigatorScreenParams<FeedStackParamList>;
+  CalendarTab: undefined;
+  MyTab: NavigatorScreenParams<SettingStackParamList>;
+};
+
 declare global {
   namespace ReactNavigation {
-    interface RootParamList extends MainDrawerParamList {}
+    interface RootParamList extends MainBottomTabParamList {}
   }
 }
