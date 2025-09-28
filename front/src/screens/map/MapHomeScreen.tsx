@@ -1,9 +1,10 @@
 import React, {useState, useRef, useCallback} from 'react';
 import {Alert, StyleSheet, View} from 'react-native';
-import MapView, {LatLng, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
+import {LatLng, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import BottomSheet from '@gorhom/bottom-sheet';
+import MapView from 'react-native-map-clustering';
 
 import CustomMarker from '@/components/common/CustomMarker';
 import MapIconButton from '@/components/map/MapIconButton';
@@ -145,6 +146,7 @@ function MapHomeScreen() {
       <MapView
         userInterfaceStyle={theme}
         googleMapId="f727da01391db33238e04009"
+        clusterColor="#ED6029"
         style={styles.container}
         ref={mapRef}
         region={{
