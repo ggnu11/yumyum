@@ -46,7 +46,7 @@ function TermsDetailScreen() {
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        <CusmtomText style={styles.contentText}>{content}</CusmtomText>ㄴ
+        <CusmtomText style={styles.contentText}>{content}</CusmtomText>
       </ScrollView>
     </SafeAreaView>
   );

@@ -29,7 +29,6 @@ function RetryErrorBoundary({children}: PropsWithChildren) {
             onPress={resetErrorBoundary}
             style={{width: '50%'}}
           />
-          ㄴ
         </View>
       )}>
       {children}

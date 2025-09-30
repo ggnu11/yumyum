@@ -85,7 +85,7 @@ function SettingHomeScreen() {
 
       <View style={styles.withdrawContainer}>
         <Pressable onPress={handleWithdrawUser} style={styles.withdrawButton}>
-          <CusmtomText style={styles.withdrawText}>회원 탈퇴</CusmtomText>ㄴ
+          <CusmtomText style={styles.withdrawText}>회원 탈퇴</CusmtomText>
         </Pressable>
       </View>
     </SafeAreaView>
