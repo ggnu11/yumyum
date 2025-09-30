@@ -1,17 +1,11 @@
 import SettingItem from '@/components/setting/SettingItem';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import React from 'react';
-import {
-  Alert,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import {Alert, Pressable, ScrollView, StyleSheet, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 
+import CusmtomText from '@/components/common/CustomText';
 import DarkModeActionSheet from '@/components/setting/DarkModeActionSheet';
 import {colors} from '@/constants/colors';
 import useAuth from '@/hooks/queries/useAuth';
@@ -91,7 +85,7 @@ function SettingHomeScreen() {
 
       <View style={styles.withdrawContainer}>
         <Pressable onPress={handleWithdrawUser} style={styles.withdrawButton}>
-          <Text style={styles.withdrawText}>회원 탈퇴</Text>
+          <CusmtomText style={styles.withdrawText}>회원 탈퇴</CusmtomText>ㄴ
         </Pressable>
       </View>
     </SafeAreaView>

@@ -1,8 +1,9 @@
 import React from 'react';
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {Pressable, StyleSheet, View} from 'react-native';
 
 import {colors} from '@/constants/colors';
 import useThemeStore, {Theme} from '@/store/theme';
+import CusmtomText from '../common/CustomText';
 
 interface ScheduleProps {
   subTitle: string;
@@ -18,13 +19,13 @@ function Schedule({subTitle, title, onPress}: ScheduleProps) {
     <Pressable style={styles.container} onPress={onPress}>
       <View style={styles.line} />
       <View style={styles.infoContainer}>
-        <Text
+        <CusmtomText
           numberOfLines={1}
           ellipsizeMode="tail"
           style={styles.subTitleText}>
           {subTitle}
-        </Text>
-        <Text style={styles.titleText}>{title}</Text>
+        </CusmtomText>
+        <CusmtomText style={styles.titleText}>{title}</CusmtomText>
       </View>
     </Pressable>
   );

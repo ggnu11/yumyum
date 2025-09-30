@@ -8,12 +8,12 @@ import {
   PressableProps,
   SafeAreaView,
   StyleSheet,
-  Text,
   View,
 } from 'react-native';
 
 import {colors} from '@/constants/colors';
 import useThemeStore, {Theme} from '@/store/theme';
+import CusmtomText from './CustomText';
 
 interface ActionSheetContextValue {
   onPressOutSide?: (event: GestureResponderEvent) => void;
@@ -100,9 +100,9 @@ function Button({
         styles.actionButton,
       ]}
       {...props}>
-      <Text style={[styles.actionText, isDanger && styles.dangerText]}>
+      <CusmtomText style={[styles.actionText, isDanger && styles.dangerText]}>
         {children}
-      </Text>
+      </CusmtomText>
 
       {isChecked && (
         <Ionicons name="checkmark" size={20} color={colors[theme].BLUE_500} />
@@ -117,7 +117,7 @@ function Title({children}: PropsWithChildren) {
 
   return (
     <View style={styles.titleContainer}>
-      <Text style={styles.titleText}>{children}</Text>
+      <CusmtomText style={styles.titleText}>{children}</CusmtomText>
     </View>
   );
 }
@@ -140,9 +140,10 @@ function Filter({children, isSelected, ...props}: FilterProps) {
 
   return (
     <Pressable style={styles.filterContainer} {...props}>
-      <Text style={isSelected ? styles.filterSelectedText : styles.filterText}>
+      <CusmtomText
+        style={isSelected ? styles.filterSelectedText : styles.filterText}>
         {children}
-      </Text>
+      </CusmtomText>
       <Ionicons
         name="chevron-down"
         size={22}
@@ -180,7 +181,7 @@ function CheckBox({
         name={isChecked ? 'checkmark-circle' : 'checkmark-circle-outline'}
       />
       {icon}
-      <Text style={styles.checkBoxText}>{children}</Text>
+      <CusmtomText style={styles.checkBoxText}>{children}</CusmtomText>
     </Pressable>
   );
 }

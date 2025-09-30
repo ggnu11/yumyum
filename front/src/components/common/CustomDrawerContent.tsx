@@ -6,18 +6,12 @@ import {
 } from '@react-navigation/drawer';
 import {useNavigation} from '@react-navigation/native';
 import React from 'react';
-import {
-  Image,
-  Pressable,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import {Image, Pressable, SafeAreaView, StyleSheet, View} from 'react-native';
 
 import {colors} from '@/constants/colors';
 import useAuth from '@/hooks/queries/useAuth';
 import useThemeStore, {Theme} from '@/store/theme';
+import CusmtomText from './CustomText';
 
 function CustomDrawerContent(props: DrawerContentComponentProps) {
   const {theme} = useThemeStore();
@@ -44,7 +38,7 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
               style={styles.userImage}
             />
           </View>
-          <Text style={styles.nickname}>{auth.nickname}</Text>
+          <CusmtomText style={styles.nickname}>{auth.nickname}</CusmtomText>
         </Pressable>
         <DrawerItemList {...props} />
       </DrawerContentScrollView>
@@ -57,7 +51,7 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
             size={20}
             color={colors[theme].BLACK}
           />
-          <Text style={styles.menuText}>설정</Text>
+          <CusmtomText style={styles.menuText}>설정</CusmtomText>
         </Pressable>
       </View>
     </SafeAreaView>

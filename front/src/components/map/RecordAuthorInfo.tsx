@@ -1,9 +1,10 @@
-import React from 'react';
-import {View, Text, StyleSheet, Image} from 'react-native';
 import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
+import React from 'react';
+import {Image, StyleSheet, View} from 'react-native';
 
 import {colors} from '../../constants/colors';
 import useThemeStore, {Theme} from '../../store/theme';
+import CusmtomText from '../common/CustomText';
 
 interface Author {
   name: string;
@@ -35,7 +36,7 @@ function RecordAuthorInfo({author}: RecordAuthorInfoProps) {
           />
         </View>
       )}
-      <Text style={styles.authorName}>{author.name}</Text>
+      <CusmtomText style={styles.authorName}>{author.name}</CusmtomText>
     </View>
   );
 }

@@ -1,8 +1,9 @@
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 
 import {colors} from '../../constants/colors';
 import useThemeStore, {Theme} from '../../store/theme';
+import CusmtomText from '../common/CustomText';
 
 export type FilterType = 'mine' | 'all';
 
@@ -20,7 +21,7 @@ function FeedFilterSection({
 
   return (
     <View style={styles.feedFilterSection}>
-      <Text style={styles.feedTitle}>기록 피드</Text>
+      <CusmtomText style={styles.feedTitle}>기록 피드</CusmtomText>
       <View style={styles.filterButtons}>
         <TouchableOpacity
           style={[
@@ -28,13 +29,13 @@ function FeedFilterSection({
             activeFilter === 'mine' && styles.activeFilter,
           ]}
           onPress={() => onFilterChange('mine')}>
-          <Text
+          <CusmtomText
             style={[
               styles.filterText,
               activeFilter === 'mine' && styles.activeFilterText,
             ]}>
             나만 보기
-          </Text>
+          </CusmtomText>
         </TouchableOpacity>
         <TouchableOpacity
           style={[
@@ -42,13 +43,13 @@ function FeedFilterSection({
             activeFilter === 'all' && styles.activeFilter,
           ]}
           onPress={() => onFilterChange('all')}>
-          <Text
+          <CusmtomText
             style={[
               styles.filterText,
               activeFilter === 'all' && styles.activeFilterText,
             ]}>
             모두 보기
-          </Text>
+          </CusmtomText>
         </TouchableOpacity>
       </View>
     </View>

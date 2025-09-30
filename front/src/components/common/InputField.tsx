@@ -1,7 +1,8 @@
 import {colors} from '@/constants/colors';
 import useThemeStore, {Theme} from '@/store/theme';
 import React, {Ref} from 'react';
-import {StyleSheet, Text, TextInput, TextInputProps, View} from 'react-native';
+import {StyleSheet, TextInput, TextInputProps, View} from 'react-native';
+import CusmtomText from './CustomText';
 
 interface InputFieldProps extends TextInputProps {
   ref?: Ref<TextInput>;
@@ -37,7 +38,9 @@ function InputField({
         editable={!disabled}
         {...props}
       />
-      {touched && Boolean(error) && <Text style={styles.error}>{error}</Text>}
+      {touched && Boolean(error) && (
+        <CusmtomText style={styles.error}>{error}</CusmtomText>
+      )}
     </View>
   );
 }

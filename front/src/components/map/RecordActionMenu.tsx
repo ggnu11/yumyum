@@ -1,10 +1,11 @@
-import React, {useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
 import Ionicons from '@react-native-vector-icons/ionicons';
+import React, {useState} from 'react';
+import {Alert, StyleSheet, TouchableOpacity, View} from 'react-native';
 
 import {colors} from '../../constants/colors';
 import useThemeStore, {Theme} from '../../store/theme';
+import CusmtomText from '../common/CustomText';
 
 interface RecordActionMenuProps {
   recordId: number;
@@ -60,7 +61,7 @@ function RecordActionMenu({recordId, onEdit, onDelete}: RecordActionMenuProps) {
               size={16}
               color={colors[theme].GRAY_700}
             />
-            <Text style={styles.menuText}>수정하기</Text>
+            <CusmtomText style={styles.menuText}>수정하기</CusmtomText>
           </TouchableOpacity>
           <TouchableOpacity onPress={handleDelete} style={styles.menuItem}>
             <Ionicons
@@ -68,7 +69,9 @@ function RecordActionMenu({recordId, onEdit, onDelete}: RecordActionMenuProps) {
               size={16}
               color={colors[theme].RED_500}
             />
-            <Text style={[styles.menuText, styles.deleteText]}>삭제하기</Text>
+            <CusmtomText style={[styles.menuText, styles.deleteText]}>
+              삭제하기
+            </CusmtomText>
           </TouchableOpacity>
         </View>
       )}

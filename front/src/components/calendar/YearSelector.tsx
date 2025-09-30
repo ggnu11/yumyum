@@ -1,10 +1,11 @@
 import Ionicons from '@react-native-vector-icons/ionicons';
 import React, {useEffect, useState} from 'react';
-import {FlatList, Pressable, StyleSheet, Text, View} from 'react-native';
+import {FlatList, Pressable, StyleSheet, View} from 'react-native';
 
 import {colors} from '@/constants/colors';
 import {numbers} from '@/constants/numbers';
 import useThemeStore, {Theme} from '@/store/theme';
+import CusmtomText from '../common/CustomText';
 
 interface YearSelectorProps {
   isVisible: boolean;
@@ -61,13 +62,13 @@ function YearSelector({
                     styles.yearButton,
                     currentyear === item.num && styles.currentYearButton,
                   ]}>
-                  <Text
+                  <CusmtomText
                     style={[
                       styles.yearText,
                       currentyear === item.num && styles.currentYearText,
                     ]}>
                     {item.num}
-                  </Text>
+                  </CusmtomText>
                 </Pressable>
               )}
               keyExtractor={item => String(item.num)}
@@ -75,7 +76,7 @@ function YearSelector({
             />
           </View>
           <Pressable style={styles.closeButton} onPress={hide}>
-            <Text style={styles.closeText}>닫기</Text>
+            <CusmtomText style={styles.closeText}>닫기</CusmtomText>
             <Ionicons name="chevron-up" size={20} color={colors[theme].BLACK} />
           </Pressable>
         </View>

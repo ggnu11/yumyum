@@ -1,4 +1,3 @@
-import {BASE_URL} from '@/api/axios';
 import {colors} from '@/constants/colors';
 import useThemeStore, {Theme} from '@/store/theme';
 import {Post} from '@/types/domain';
@@ -7,15 +6,8 @@ import {getDateWithSeparator} from '@/utils/date';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import React from 'react';
-import {
-  Dimensions,
-  Image,
-  Platform,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import {Dimensions, Image, Pressable, StyleSheet, View} from 'react-native';
+import CusmtomText from '../common/CustomText';
 
 interface FeedItemProps {
   post: Post;
@@ -43,17 +35,17 @@ function FeedItem({post}: FeedItemProps) {
       )}
       {post.imageUris.length === 0 && (
         <View style={[styles.imageContainer, styles.emptyImageContainer]}>
-          <Text style={styles.descriptionText}>No Image</Text>
+          <CusmtomText style={styles.descriptionText}>No Image</CusmtomText>
         </View>
       )}
       <View style={styles.textContainer}>
-        <Text style={styles.dateText}>
+        <CusmtomText style={styles.dateText}>
           {getDateWithSeparator(post.date, '/')}
-        </Text>
-        <Text style={styles.titleText}>{post.title}</Text>
-        <Text style={styles.descriptionText} numberOfLines={1}>
+        </CusmtomText>
+        <CusmtomText style={styles.titleText}>{post.title}</CusmtomText>
+        <CusmtomText style={styles.descriptionText} numberOfLines={1}>
           {post.description}
-        </Text>
+        </CusmtomText>
       </View>
     </Pressable>
   );

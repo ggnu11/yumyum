@@ -1,14 +1,15 @@
-import React from 'react';
-import {FlatList, Pressable, StyleSheet, Text, View} from 'react-native';
-import Ionicons from '@react-native-vector-icons/ionicons';
-import {colors} from '@/constants/colors';
-import {isSameAsCurrentDate, MonthYear} from '@/utils/date';
-import DayOfWeeks from './DayOfWeeks';
-import DateBox from './DateBox';
 import {ResponseCalendarPost} from '@/api/post';
+import {colors} from '@/constants/colors';
 import useModal from '@/hooks/useModal';
-import YearSelector from './YearSelector';
 import useThemeStore, {Theme} from '@/store/theme';
+import {isSameAsCurrentDate, MonthYear} from '@/utils/date';
+import Ionicons from '@react-native-vector-icons/ionicons';
+import React from 'react';
+import {FlatList, Pressable, StyleSheet, View} from 'react-native';
+import CusmtomText from '../common/CustomText';
+import DateBox from './DateBox';
+import DayOfWeeks from './DayOfWeeks';
+import YearSelector from './YearSelector';
 
 interface CalendarProps {
   monthYear: MonthYear;
@@ -45,9 +46,9 @@ function Calendar({
         <Pressable
           style={styles.monthYearContainer}
           onPress={yearSelector.show}>
-          <Text style={styles.monthYearText}>
+          <CusmtomText style={styles.monthYearText}>
             {year}년 {month}월
-          </Text>
+          </CusmtomText>
           <Ionicons
             name="chevron-down"
             size={20}

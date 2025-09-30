@@ -3,16 +3,10 @@ import appleAuth, {
 } from '@invertase/react-native-apple-authentication';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {
-  Image,
-  Platform,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import {Image, Platform, SafeAreaView, StyleSheet, View} from 'react-native';
 
 import CustomButton from '@/components/common/CustomButton';
+import CusmtomText from '@/components/common/CustomText';
 import {colors} from '@/constants/colors';
 import {useNaverLogin} from '@/hooks/auth/naver';
 import useAuth from '@/hooks/queries/useAuth';
@@ -122,8 +116,10 @@ function AuthHomeScreen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.imageContainer}>
         <Image source={require('@/assets/yumyum.png')} resizeMode="contain" />
-        <Text style={styles.titleText}>YUMYUM</Text>
-        <Text style={styles.subtitleText}>우리만의 맛집 지도, 얌얌</Text>
+        <CusmtomText style={styles.titleText}>YUMYUM</CusmtomText>
+        <CusmtomText style={styles.subtitleText}>
+          우리만의 맛집 지도, 얌얌
+        </CusmtomText>
       </View>
       <View style={styles.buttonContainer}>
         {Platform.OS === 'ios' && isAppleSignInAvailable && (

@@ -1,15 +1,15 @@
+import {useNavigation, useRoute} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
 import React from 'react';
 import {
   SafeAreaView,
   ScrollView,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import {useNavigation, useRoute} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
 
+import CusmtomText from '@/components/common/CustomText';
 import {colors} from '@/constants/colors';
 import {TERMS_CONTENT} from '@/constants/termsContent';
 import useThemeStore, {Theme} from '@/store/theme';
@@ -42,11 +42,11 @@ function TermsDetailScreen() {
           onPress={() => navigation.goBack()}>
           <View style={styles.backButtonIcon} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>{title}</Text>
+        <CusmtomText style={styles.headerTitle}>{title}</CusmtomText>
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        <Text style={styles.contentText}>{content}</Text>
+        <CusmtomText style={styles.contentText}>{content}</CusmtomText>ㄴ
       </ScrollView>
     </SafeAreaView>
   );

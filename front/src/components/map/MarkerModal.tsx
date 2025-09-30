@@ -7,7 +7,6 @@ import {
   Pressable,
   SafeAreaView,
   StyleSheet,
-  Text,
   View,
 } from 'react-native';
 
@@ -15,6 +14,7 @@ import {colors} from '@/constants/colors';
 import useGetPost from '@/hooks/queries/useGetPost';
 import useThemeStore, {Theme} from '@/store/theme';
 import {getDateWithSeparator} from '@/utils/date';
+import CusmtomText from '../common/CustomText';
 
 interface MarkerModalProps {
   markerId: number;
@@ -64,7 +64,7 @@ function MarkerModal({markerId, isVisible, hide}: MarkerModalProps) {
               {post.imageUris.length === 0 && (
                 <View
                   style={[styles.imageContainer, styles.emptyImageContainer]}>
-                  <Text style={styles.emptyText}>No Image</Text>
+                  <CusmtomText style={styles.emptyText}>No Image</CusmtomText>
                 </View>
               )}
               <View style={styles.infoContainer}>
@@ -74,22 +74,22 @@ function MarkerModal({markerId, isVisible, hide}: MarkerModalProps) {
                     size={10}
                     color={colors[theme].GRAY_500}
                   />
-                  <Text
+                  <CusmtomText
                     style={styles.addressText}
                     numberOfLines={1}
                     ellipsizeMode="tail">
                     {post.address}
-                  </Text>
+                  </CusmtomText>
                 </View>
-                <Text
+                <CusmtomText
                   style={styles.titleText}
                   numberOfLines={1}
                   ellipsizeMode="tail">
                   {post.title}
-                </Text>
-                <Text style={styles.dateText}>
+                </CusmtomText>
+                <CusmtomText style={styles.dateText}>
                   {getDateWithSeparator(post.date, '.')}
-                </Text>
+                </CusmtomText>
               </View>
             </View>
 

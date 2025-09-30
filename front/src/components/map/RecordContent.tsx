@@ -1,9 +1,10 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 
 import {colors} from '../../constants/colors';
 import useThemeStore, {Theme} from '../../store/theme';
 import {getDateWithSeparator} from '../../utils/date';
+import CusmtomText from '../common/CustomText';
 
 interface RecordContentProps {
   title: string;
@@ -17,9 +18,11 @@ function RecordContent({title, content, date}: RecordContentProps) {
 
   return (
     <View style={styles.content}>
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.description}>{content}</Text>
-      <Text style={styles.date}>{getDateWithSeparator(date, '.')}</Text>
+      <CusmtomText style={styles.title}>{title}</CusmtomText>
+      <CusmtomText style={styles.description}>{content}</CusmtomText>
+      <CusmtomText style={styles.date}>
+        {getDateWithSeparator(date, '.')}
+      </CusmtomText>
     </View>
   );
 }

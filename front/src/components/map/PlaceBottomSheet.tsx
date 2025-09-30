@@ -1,20 +1,17 @@
-import React, {forwardRef, useState, useMemo, useCallback} from 'react';
-import {View, Text} from 'react-native';
 import BottomSheet, {
-  BottomSheetView,
   BottomSheetScrollView,
+  BottomSheetView,
 } from '@gorhom/bottom-sheet';
+import React, {forwardRef, useCallback, useMemo, useState} from 'react';
+import {View} from 'react-native';
 import {colors} from '../../constants/colors';
-import {
-  usePlacePins,
-  usePlaceInfo,
-  useFilteredRecords,
-} from '../../hooks/usePin';
+import {useFilteredRecords, usePlacePins} from '../../hooks/usePin';
 import {PlaceInfo as ApiPlaceInfo} from '../../types/api';
-import PlaceSummaryView from './PlaceSummaryView';
-import FeedFilterSection from './FeedFilterSection';
-import RecordsList from './RecordsList';
+import CusmtomText from '../common/CustomText';
 import AddRecordButton from './AddRecordButton';
+import FeedFilterSection from './FeedFilterSection';
+import PlaceSummaryView from './PlaceSummaryView';
+import RecordsList from './RecordsList';
 
 export type FilterType = 'mine' | 'all';
 
@@ -90,15 +87,15 @@ const PlaceBottomSheet = forwardRef<BottomSheet, PlaceBottomSheetProps>(
 
             {isPinsLoading ? (
               <View style={{padding: 20, alignItems: 'center'}}>
-                <Text style={{color: colors.light.GRAY_500}}>
+                <CusmtomText style={{color: colors.light.GRAY_500}}>
                   기록을 불러오는 중...
-                </Text>
+                </CusmtomText>
               </View>
             ) : pinsError ? (
               <View style={{padding: 20, alignItems: 'center'}}>
-                <Text style={{color: colors.light.RED_500}}>
+                <CusmtomText style={{color: colors.light.RED_500}}>
                   기록을 불러오는데 실패했습니다.
-                </Text>
+                </CusmtomText>
               </View>
             ) : (
               <RecordsList

@@ -1,11 +1,12 @@
-import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
 import Ionicons from '@react-native-vector-icons/ionicons';
+import React from 'react';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 
 import {colors} from '../../constants/colors';
 import useThemeStore, {Theme} from '../../store/theme';
 import {PlaceInfo} from '../../types/api';
+import CusmtomText from '../common/CustomText';
 
 interface PlaceSummaryViewProps {
   placeInfo: PlaceInfo | null;
@@ -29,7 +30,9 @@ function PlaceSummaryView({
     <View style={styles.summarySection}>
       {/* 장소 이름과 즐겨찾기 */}
       <View style={styles.placeHeader}>
-        <Text style={styles.placeName}>{placeInfo.place_name}</Text>
+        <CusmtomText style={styles.placeName}>
+          {placeInfo.place_name}
+        </CusmtomText>
         <TouchableOpacity
           style={styles.bookmarkButton}
           onPress={onBookmarkPress}>
@@ -45,9 +48,9 @@ function PlaceSummaryView({
       </View>
 
       {/* 총 핀 개수 */}
-      <Text style={styles.pinCount}>
+      <CusmtomText style={styles.pinCount}>
         총 {placeInfo.total_pin_count}개의 기록
-      </Text>
+      </CusmtomText>
 
       {/* 장소 기본 정보 */}
       <View style={styles.placeInfoSection}>
@@ -58,7 +61,9 @@ function PlaceSummaryView({
               size={16}
               color={colors[theme].GRAY_500}
             />
-            <Text style={styles.infoText}>{placeInfo.address}</Text>
+            <CusmtomText style={styles.infoText}>
+              {placeInfo.address}
+            </CusmtomText>
           </View>
         )}
 
@@ -69,7 +74,9 @@ function PlaceSummaryView({
               size={16}
               color={colors[theme].GRAY_500}
             />
-            <Text style={styles.infoText}>{placeInfo.phone_number}</Text>
+            <CusmtomText style={styles.infoText}>
+              {placeInfo.phone_number}
+            </CusmtomText>
           </View>
         )}
 
@@ -80,7 +87,9 @@ function PlaceSummaryView({
               size={16}
               color={colors[theme].GRAY_500}
             />
-            <Text style={styles.infoText}>{placeInfo.operating_hours}</Text>
+            <CusmtomText style={styles.infoText}>
+              {placeInfo.operating_hours}
+            </CusmtomText>
           </View>
         )}
       </View>

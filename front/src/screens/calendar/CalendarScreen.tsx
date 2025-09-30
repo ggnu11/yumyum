@@ -1,15 +1,10 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
-import {
-  Pressable,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-} from 'react-native';
+import {Pressable, SafeAreaView, ScrollView, StyleSheet} from 'react-native';
 
 import Calendar from '@/components/calendar/Calendar';
 import Schedule from '@/components/calendar/Schedule';
+import CusmtomText from '@/components/common/CustomText';
 import {colors} from '@/constants/colors';
 import useGetCalendarPosts from '@/hooks/queries/useGetCalendarPosts';
 import useThemeStore, {Theme} from '@/store/theme';
@@ -46,9 +41,10 @@ function CalendarScreen() {
     navigation.setOptions({
       headerRight: () => (
         <Pressable onPress={moveToToday} style={{paddingHorizontal: 10}}>
-          <Text style={{color: colors[theme].PINK_700, fontWeight: 'bold'}}>
+          <CusmtomText
+            style={{color: colors[theme].PINK_700, fontWeight: 'bold'}}>
             오늘
-          </Text>
+          </CusmtomText>
         </Pressable>
       ),
     });

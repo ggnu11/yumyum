@@ -1,8 +1,9 @@
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 
 import {colors} from '@/constants/colors';
 import useThemeStore, {Theme} from '@/store/theme';
+import CusmtomText from '../common/CustomText';
 import {TermsItemComponentProps} from './types';
 
 function TermsItemComponent({
@@ -17,58 +18,60 @@ function TermsItemComponent({
   const renderTermText = () => {
     if (item.id === 'all') {
       return (
-        <Text style={[styles.termText, styles.allTermText]}>{item.title}</Text>
+        <CusmtomText style={[styles.termText, styles.allTermText]}>
+          {item.title}
+        </CusmtomText>
       );
     }
 
     if (item.id === 'terms') {
       return (
-        <Text style={styles.termText}>
-          <Text
+        <CusmtomText style={styles.termText}>
+          <CusmtomText
             style={styles.underlineText}
             onPress={() => onDetailPress('terms', '이용약관')}>
             이용약관
-          </Text>
+          </CusmtomText>
           {' 및 '}
-          <Text
+          <CusmtomText
             style={styles.underlineText}
             onPress={() => onDetailPress('privacy', '개인정보위탁방침')}>
             개인정보위탁방침
-          </Text>
+          </CusmtomText>
           {' (필수)'}
-        </Text>
+        </CusmtomText>
       );
     }
 
     if (item.id === 'location') {
       return (
-        <Text style={styles.termText}>
-          <Text
+        <CusmtomText style={styles.termText}>
+          <CusmtomText
             style={styles.underlineText}
             onPress={() =>
               onDetailPress('location', '위치기반서비스 이용약관')
             }>
             위치기반서비스
-          </Text>
+          </CusmtomText>
           {' 이용약관 (필수)'}
-        </Text>
+        </CusmtomText>
       );
     }
 
     if (item.id === 'marketing') {
       return (
-        <Text style={styles.termText}>
-          <Text
+        <CusmtomText style={styles.termText}>
+          <CusmtomText
             style={styles.underlineText}
             onPress={() => onDetailPress('marketing', '마케팅 정보 수신 동의')}>
             마케팅 정보 수신 동의
-          </Text>
+          </CusmtomText>
           {' (선택)'}
-        </Text>
+        </CusmtomText>
       );
     }
 
-    return <Text style={styles.termText}>{item.title}</Text>;
+    return <CusmtomText style={styles.termText}>{item.title}</CusmtomText>;
   };
 
   return (
@@ -81,7 +84,9 @@ function TermsItemComponent({
           onPress={() => onItemCheck(item.id)}>
           <View
             style={[styles.checkbox, item.isChecked && styles.checkedCheckbox]}>
-            {item.isChecked && <Text style={styles.checkmark}>✓</Text>}
+            {item.isChecked && (
+              <CusmtomText style={styles.checkmark}>✓</CusmtomText>
+            )}
           </View>
         </TouchableOpacity>
       </View>

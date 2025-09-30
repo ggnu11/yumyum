@@ -3,8 +3,9 @@ import useThemeStore, {Theme} from '@/store/theme';
 import {useQueryErrorResetBoundary} from '@tanstack/react-query';
 import React, {PropsWithChildren} from 'react';
 import {ErrorBoundary} from 'react-error-boundary';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import CustomButton from './CustomButton';
+import CusmtomText from './CustomText';
 
 function RetryErrorBoundary({children}: PropsWithChildren) {
   const {reset} = useQueryErrorResetBoundary();
@@ -16,16 +17,19 @@ function RetryErrorBoundary({children}: PropsWithChildren) {
       onReset={reset}
       fallbackRender={({resetErrorBoundary}) => (
         <View style={styles.container}>
-          <Text style={styles.titleText}>잠시 후 다시 시도해주세요.</Text>
-          <Text style={styles.descriptionText}>
+          <CusmtomText style={styles.titleText}>
+            잠시 후 다시 시도해주세요.
+          </CusmtomText>
+          <CusmtomText style={styles.descriptionText}>
             요청 사항을 처리하는데 실패했습니다.
-          </Text>
+          </CusmtomText>
           <CustomButton
             label="다시 시도"
             variant="outlined"
             onPress={resetErrorBoundary}
             style={{width: '50%'}}
           />
+          ㄴ
         </View>
       )}>
       {children}

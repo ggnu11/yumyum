@@ -1,8 +1,9 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 
 import {colors} from '@/constants/colors';
 import useThemeStore, {Theme} from '@/store/theme';
+import CusmtomText from '../common/CustomText';
 import {TermsHeaderProps} from './types';
 
 function TermsHeader({title}: TermsHeaderProps) {
@@ -11,7 +12,7 @@ function TermsHeader({title}: TermsHeaderProps) {
 
   return (
     <View style={styles.header}>
-      <Text style={styles.headerTitle}>{title}</Text>
+      <CusmtomText style={styles.headerTitle}>{title}</CusmtomText>
     </View>
   );
 }

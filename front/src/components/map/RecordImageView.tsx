@@ -1,8 +1,9 @@
 import React from 'react';
-import {View, Text, StyleSheet, Image} from 'react-native';
+import {Image, StyleSheet, View} from 'react-native';
 
 import {colors} from '../../constants/colors';
 import useThemeStore, {Theme} from '../../store/theme';
+import CusmtomText from '../common/CustomText';
 
 interface RecordImageViewProps {
   images: string[];
@@ -21,7 +22,9 @@ function RecordImageView({images}: RecordImageViewProps) {
       <Image source={{uri: images[0]}} style={styles.recordImage} />
       {images.length > 1 && (
         <View style={styles.imageCountBadge}>
-          <Text style={styles.imageCountText}>+{images.length - 1}</Text>
+          <CusmtomText style={styles.imageCountText}>
+            +{images.length - 1}
+          </CusmtomText>
         </View>
       )}
     </View>

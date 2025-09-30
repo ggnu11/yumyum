@@ -1,8 +1,9 @@
 import {colors} from '@/constants/colors';
 import useThemeStore, {Theme} from '@/store/theme';
 import React from 'react';
-import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Pressable, ScrollView, StyleSheet, View} from 'react-native';
 import CustomMarker from '../common/CustomMarker';
+import CusmtomText from '../common/CustomText';
 
 interface MarkerColorInputProps {
   color: string;
@@ -20,7 +21,7 @@ function MarkerColorInput({
 
   return (
     <View style={styles.container}>
-      <Text style={styles.markerLabel}>마커선택</Text>
+      <CusmtomText style={styles.markerLabel}>마커선택</CusmtomText>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         <View style={styles.markerInputScroll}>
           {[

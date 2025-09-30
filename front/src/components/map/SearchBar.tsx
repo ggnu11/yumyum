@@ -1,10 +1,11 @@
-import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
+import React from 'react';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {colors} from '@/constants/colors';
 import useThemeStore, {Theme} from '@/store/theme';
+import CusmtomText from '../common/CustomText';
 
 interface SearchBarProps {
   onPress: () => void;
@@ -27,7 +28,9 @@ function SearchBar({onPress}: SearchBarProps) {
           color={colors[theme].GRAY_500}
           iconStyle="solid"
         />
-        <Text style={styles.placeholder}>찾고 싶은 맛집을 검색해주세요</Text>
+        <CusmtomText style={styles.placeholder}>
+          찾고 싶은 맛집을 검색해주세요
+        </CusmtomText>
       </View>
     </TouchableOpacity>
   );
