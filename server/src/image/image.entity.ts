@@ -19,13 +19,13 @@ export class Image extends BaseEntity {
   uri: string;
 
   @CreateDateColumn()
-  createdAt: Date;
+  created_at: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updated_at: Date;
 
   @DeleteDateColumn()
-  deletedAt: Date | null;
+  deleted_at: Date | null;
 
   @ManyToOne(() => Post, (post) => post.images, {
     onDelete: 'CASCADE',

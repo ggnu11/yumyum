@@ -9,6 +9,13 @@ import { join } from 'path';
 import { FavoriteModule } from './favorite/favorite.module';
 import { LoggerMiddleware } from './@common/logger';
 import { UserModule } from './user/user.module';
+import { PlaceModule } from './place/place.module';
+import { PinController } from './pin/pin.controller';
+import { PinService } from './pin/pin.service';
+import { PinModule } from './pin/pin.module';
+import { WishListController } from './wish-list/wish-list.controller';
+import { WishListService } from './wish-list/wish-list.service';
+import { WishListModule } from './wish-list/wish-list.module';
 
 @Module({
   imports: [
@@ -33,8 +40,12 @@ import { UserModule } from './user/user.module';
     ImageModule,
     FavoriteModule,
     UserModule,
+    PlaceModule,
+    PinModule,
+    WishListModule,
   ],
-  providers: [ConfigService],
+  providers: [ConfigService, PinService, WishListService],
+  controllers: [PinController, WishListController],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

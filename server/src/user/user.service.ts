@@ -69,6 +69,11 @@ async withdrawUser( userId: number ) {
   try {
     
     await this.userRepository.delete(userId);
+    /*maybe implement .softDelete
+    have to make restore too if thats the case in authservice
+    existing user logic
+    also the reject token thing
+    */
     
     return { message: '회원탈퇴가 완료되었습니다.' };
   } catch (error) {

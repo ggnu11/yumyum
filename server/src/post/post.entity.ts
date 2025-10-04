@@ -55,13 +55,13 @@ export class Post extends BaseEntity {
   score: number;
 
   @CreateDateColumn()
-  createdAt: Date;
+  created_at: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updated_at: Date;
 
   @DeleteDateColumn()
-  deletedAt: Date | null;
+  deleted_at: Date | null;
 
   @ManyToOne(() => User, (user) => user.post, {
     eager: false,

@@ -1,5 +1,7 @@
 import { Favorite } from 'src/favorite/favorite.entity';
 import { Post } from 'src/post/post.entity';
+import { Pin } from 'src/pin/pin.entity';
+import { WishList } from 'src/wish-list/wish-list.entity';
 import {
   BaseEntity,
   Column,
@@ -57,13 +59,13 @@ export class User extends BaseEntity {
   birthday?: Date;
 
   @CreateDateColumn()
-  createdAt: Date;
+  created_at: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updated_at: Date;
 
   @DeleteDateColumn()
-  deletedAt: Date | null;
+  deleted_at: Date | null;
 
   @Column({ nullable: true })
   hashed_refresh_token?: string;
@@ -73,4 +75,10 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Favorite, (favorite) => favorite.user, { eager: false })
   favorites: Favorite[];
+
+  @OneToMany(() => Pin, (pin) => pin.user, { eager: false })
+  pin: Pin[];
+
+  @OneToMany(() => WishList, (wishList) => wishList.user, { eager: false })
+  wishList: WishList[];
 }
