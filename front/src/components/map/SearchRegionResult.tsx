@@ -24,14 +24,17 @@ function SearchRegionResult({regionInfo}: SearchRegionResultProps) {
   const {theme} = useThemeStore();
   const styles = styling(theme);
   const navigation = useNavigation();
-  const {setMoveLocation, setSelectLocation} = useLocationStore();
+  const {setMoveLocation, setSelectLocation, setSelectedPlaceFromSearch} =
+    useLocationStore();
 
-  const handlePressRegionInfo = (latitude: string, longitude: string) => {
+  const handlePressRegionInfo = (regionInfo: RegionInfo) => {
     const regionLocation = {
-      latitude: Number(latitude),
-      longitude: Number(longitude),
+      latitude: Number(regionInfo.y),
+      longitude: Number(regionInfo.x),
     };
 
+    // 선택된 장소 정보를 저장
+    setSelectedPlaceFromSearch(regionInfo);
     moveToMapScreen(regionLocation);
   };
 
@@ -52,7 +55,7 @@ function SearchRegionResult({regionInfo}: SearchRegionResultProps) {
               styles.itemBorder,
               index === regionInfo.length - 1 && styles.noItemBorder,
             ]}
-            onPress={() => handlePressRegionInfo(info.y, info.x)}>
+            onPress={() => handlePressRegionInfo(info)}>
             <View style={styles.placeNameContainer}>
               <Ionicons
                 name="location"

@@ -6,15 +6,19 @@ import SearchInput from '@/components/map/SearchInput';
 import SearchRegionResult from '@/components/map/SearchRegionResult';
 import useSearchLocation from '@/hooks/useSearchLocation';
 import useUserLocation from '@/hooks/useUserLocation';
+import useLocationStore from '@/store/location';
 
 function SearchLocationScreen() {
   const [keyword, setKeyword] = useState('');
   const [searchKeyword, setSearchKeyword] = useState('');
   const {userLocation} = useUserLocation();
+  const {setSelectedPlaceFromSearch} = useLocationStore();
   const {regionInfo, pageParam, fetchNextPage, fetchPrevPage, hasNextPage} =
     useSearchLocation(searchKeyword, userLocation);
 
   const handleSubmitKeyword = () => {
+    // 새로운 검색 시 이전 선택 상태 초기화
+    setSelectedPlaceFromSearch(null);
     setSearchKeyword(keyword);
     Keyboard.dismiss();
   };

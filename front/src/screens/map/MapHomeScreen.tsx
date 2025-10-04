@@ -1,4 +1,4 @@
-import React, {useState, useRef, useCallback} from 'react';
+import React, {useState, useRef, useCallback, useEffect} from 'react';
 import {Alert, StyleSheet, View} from 'react-native';
 import {LatLng, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -24,7 +24,6 @@ import useThemeStore, {Theme} from '@/store/theme';
 import {MapStackParamList} from '@/types/navigation';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {getPlaceInfo} from '@/api/pin';
 import {PlaceInfo as ApiPlaceInfo} from '@/types/api';
 
 type Navigation = StackNavigationProp<MapStackParamList>;
@@ -38,7 +37,12 @@ function MapHomeScreen() {
   const [selectedPlaceInfo, setSelectedPlaceInfo] =
     useState<ApiPlaceInfo | null>(null);
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const {selectLocation, setSelectLocation} = useLocationStore();
+  const {
+    selectLocation,
+    setSelectLocation,
+    selectedPlaceFromSearch,
+    setSelectedPlaceFromSearch,
+  } = useLocationStore();
   const {filters} = useFilterStore();
   const {userLocation, isUserLocationError} = useUserLocation();
   const {mapRef, moveMapView, handleChangeDelta} = useMoveMapView();
@@ -52,6 +56,34 @@ function MapHomeScreen() {
   });
   const filterAction = useModal();
   usePermission('LOCATION');
+
+  // 검색에서 선택된 장소가 있을 때 바텀시트 표시
+  useEffect(() => {
+    if (selectedPlaceFromSearch) {
+      const convertedPlaceInfo = {
+        place_id: selectedPlaceFromSearch.id,
+        place_name: selectedPlaceFromSearch.place_name,
+        address:
+          selectedPlaceFromSearch.road_address_name ||
+          selectedPlaceFromSearch.address_name,
+        phone_number: selectedPlaceFromSearch.phone || '',
+        total_pin_count: 0, // 검색 결과에서는 0으로 설정
+      };
+
+      const coordinate = {
+        latitude: Number(selectedPlaceFromSearch.y),
+        longitude: Number(selectedPlaceFromSearch.x),
+      };
+
+      setSelectedPlaceId(selectedPlaceFromSearch.id);
+      setSelectedPlaceInfo(convertedPlaceInfo);
+      moveMapView(coordinate);
+      bottomSheetRef.current?.snapToIndex(0);
+
+      // 사용 후 초기화
+      setSelectedPlaceFromSearch(null);
+    }
+  }, [selectedPlaceFromSearch, moveMapView, setSelectedPlaceFromSearch]);
 
   const handlePressUserLocation = () => {
     if (isUserLocationError) {
