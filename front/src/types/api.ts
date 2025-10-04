@@ -29,7 +29,6 @@ export interface PlaceInfo {
   place_name: string;
   address: string;
   phone_number: string;
-  operating_hours: string | null;
   total_pin_count: number;
 }
 

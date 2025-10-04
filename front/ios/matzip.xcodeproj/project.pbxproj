@@ -24,7 +24,6 @@
 		B69D9C66BD634BE9A32B23FF /* Pretendard-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 33F5E17B1B004361B643C7E7 /* Pretendard-Regular.otf */; };
 		7BF12A267A9D4B798EB8F895 /* Pretendard-SemiBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 5AF7619B188C460C86EBCE0B /* Pretendard-SemiBold.otf */; };
 		047DD0A6A1AD46CCB598E5E9 /* Pretendard-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = 6B3C4BB7F88341A79428E03B /* Pretendard-Thin.otf */; };
-		3E9BA162ACF947D88A0D71A1 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = C4BFFF476C264CC89E53EC23 /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,7 +51,6 @@
 		33F5E17B1B004361B643C7E7 /* Pretendard-Regular.otf */ = {isa = PBXFileReference; name = "Pretendard-Regular.otf"; path = "../src/assets/fonts/Pretendard-Regular.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		5AF7619B188C460C86EBCE0B /* Pretendard-SemiBold.otf */ = {isa = PBXFileReference; name = "Pretendard-SemiBold.otf"; path = "../src/assets/fonts/Pretendard-SemiBold.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		6B3C4BB7F88341A79428E03B /* Pretendard-Thin.otf */ = {isa = PBXFileReference; name = "Pretendard-Thin.otf"; path = "../src/assets/fonts/Pretendard-Thin.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		C4BFFF476C264CC89E53EC23 /* README.md */ = {isa = PBXFileReference; name = "README.md"; path = "../src/assets/fonts/README.md"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -144,7 +142,6 @@
 				33F5E17B1B004361B643C7E7 /* Pretendard-Regular.otf */,
 				5AF7619B188C460C86EBCE0B /* Pretendard-SemiBold.otf */,
 				6B3C4BB7F88341A79428E03B /* Pretendard-Thin.otf */,
-				C4BFFF476C264CC89E53EC23 /* README.md */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -225,7 +222,6 @@
 				B69D9C66BD634BE9A32B23FF /* Pretendard-Regular.otf in Resources */,
 				7BF12A267A9D4B798EB8F895 /* Pretendard-SemiBold.otf in Resources */,
 				047DD0A6A1AD46CCB598E5E9 /* Pretendard-Thin.otf in Resources */,
-				3E9BA162ACF947D88A0D71A1 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

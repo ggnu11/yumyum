@@ -10,18 +10,25 @@ export type FilterType = 'mine' | 'all';
 interface FeedFilterSectionProps {
   activeFilter: FilterType;
   onFilterChange: (filter: FilterType) => void;
+  placeName?: string;
 }
 
 function FeedFilterSection({
   activeFilter,
   onFilterChange,
+  placeName,
 }: FeedFilterSectionProps) {
   const {theme} = useThemeStore();
   const styles = styling(theme);
 
   return (
     <View style={styles.feedFilterSection}>
-      <CusmtomText style={styles.feedTitle}>기록 피드</CusmtomText>
+      <CusmtomText style={styles.feedTitle}>
+        이 장소에 등록된 기록카드
+      </CusmtomText>
+      <CusmtomText style={styles.feedSubtitle}>
+        {placeName}에 대해 이야기 해 주세요!
+      </CusmtomText>
       <View style={styles.filterButtons}>
         <TouchableOpacity
           style={[
@@ -65,6 +72,11 @@ const styling = (theme: Theme) =>
       fontSize: 18,
       fontWeight: 'bold',
       color: colors[theme].BLACK,
+      marginBottom: 4,
+    },
+    feedSubtitle: {
+      fontSize: 14,
+      color: colors[theme].BLUE_100,
       marginBottom: 12,
     },
     filterButtons: {

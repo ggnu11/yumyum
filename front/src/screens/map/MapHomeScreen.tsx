@@ -11,6 +11,7 @@ import MapIconButton from '@/components/map/MapIconButton';
 import MarkerFilterAction from '@/components/map/MarkerFilterAction';
 import PlaceBottomSheet from '../../components/map/PlaceBottomSheet';
 import SearchBar from '@/components/map/SearchBar';
+import {getCombinedPlaceInfo} from '@/api/kakao';
 import {numbers} from '@/constants/numbers';
 import useGetMarkers from '@/hooks/queries/useGetMarkers';
 import useModal from '@/hooks/useModal';
@@ -69,6 +70,7 @@ function MapHomeScreen() {
     async (id: number, coordinate: LatLng) => {
       const placeId = `place_${id}`;
 
+      // 카카오 API로 장소 정보 조회 (백엔드 연동 후 활성화)
       // try {
       //   const placeInfo = await getPlaceInfo(placeId);
       //   setSelectedPlaceInfo(placeInfo);
@@ -78,20 +80,56 @@ function MapHomeScreen() {
       //   return;
       // }
 
-      // 임시 데이터 - 백엔드 연동 후 삭제 예정
+      // 임시 데이터 - 카카오 API로만 구성
       const mockPlaceInfo = {
         place_id: placeId,
-        place_name: '맛있는 스페인 요리 전문점',
-        address: '서울시 강남구 역삼동 123-45',
-        phone_number: '02-1234-5678',
-        operating_hours: '매일 11:00 - 22:00',
-        total_pin_count: 5,
+        place_name: '엄마손칼국수', // 카카오 API에서 가져온 상호명
+        address: '대전 서구 문정로 64', // 카카오 API 주소
+        phone_number: '042-489-4900', // 카카오 API 전화번호 (복사 기능)
+        total_pin_count: 2, // 백엔드에서 계산된 기록 카드 수
       };
 
       setSelectedPlaceId(placeId);
       setSelectedPlaceInfo(mockPlaceInfo);
       moveMapView(coordinate);
       bottomSheetRef.current?.snapToIndex(0);
+    },
+    [moveMapView],
+  );
+
+  // 구글맵 POI(장소) 클릭 처리 - 구글과 카카오 API 조합으로 정확한 장소 정보 조회
+  const handlePressMapPoi = useCallback(
+    async (event: any) => {
+      const {coordinate, name, placeId} = event.nativeEvent;
+
+      if (!coordinate) {
+        return;
+      }
+
+      try {
+        // 구글과 카카오 API를 조합하여 최적의 장소 정보 가져오기
+        const placeInfo = await getCombinedPlaceInfo(placeId, coordinate, name);
+
+        setSelectedPlaceId(placeInfo.place_id);
+        setSelectedPlaceInfo(placeInfo);
+        moveMapView(coordinate);
+        bottomSheetRef.current?.snapToIndex(0);
+      } catch (error) {
+        console.error('장소 정보 조회 실패:', error);
+
+        const fallbackPlaceInfo = {
+          place_id: placeId || `google_${Date.now()}`,
+          place_name: name || '알 수 없는 장소',
+          address: '주소 정보 없음',
+          phone_number: '',
+          total_pin_count: 0,
+        };
+
+        setSelectedPlaceId(fallbackPlaceInfo.place_id);
+        setSelectedPlaceInfo(fallbackPlaceInfo);
+        moveMapView(coordinate);
+        bottomSheetRef.current?.snapToIndex(0);
+      }
     },
     [moveMapView],
   );
@@ -157,7 +195,9 @@ function MapHomeScreen() {
         onRegionChangeComplete={handleChangeDelta}
         onLongPress={({nativeEvent}) =>
           setSelectLocation(nativeEvent.coordinate)
-        }>
+        }
+        onPoiClick={handlePressMapPoi}
+        showsPointsOfInterests={true}>
         {markers.map(({id, color, score, ...coordinate}) => (
           <CustomMarker
             key={id}

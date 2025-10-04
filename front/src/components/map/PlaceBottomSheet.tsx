@@ -39,6 +39,11 @@ const PlaceBottomSheet = forwardRef<BottomSheet, PlaceBottomSheetProps>(
     // 필터링된 레코드
     const filteredRecords = useFilteredRecords(allRecords, activeFilter);
 
+    // 모든 기록들의 이미지 추출
+    const recordImages = allRecords
+      .flatMap(record => record.images || [])
+      .filter((image, index, self) => self.indexOf(image) === index); // 중복 제거
+
     const snapPoints = useMemo(() => ['25%', '50%', '90%'], []);
 
     const handleSheetChanges = useCallback((index: number) => {
@@ -67,7 +72,7 @@ const PlaceBottomSheet = forwardRef<BottomSheet, PlaceBottomSheetProps>(
           width: 40,
         }}>
         <BottomSheetView style={{flex: 1, paddingHorizontal: 20}}>
-          <PlaceSummaryView placeInfo={placeInfo} />
+          <PlaceSummaryView placeInfo={placeInfo} recordImages={recordImages} />
 
           <View
             style={{
@@ -83,6 +88,7 @@ const PlaceBottomSheet = forwardRef<BottomSheet, PlaceBottomSheetProps>(
             <FeedFilterSection
               activeFilter={activeFilter}
               onFilterChange={setActiveFilter}
+              placeName={placeInfo.place_name}
             />
 
             {isPinsLoading ? (

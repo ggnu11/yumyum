@@ -20,7 +20,7 @@ function AddRecordButton({onPress}: AddRecordButtonProps) {
         <FontAwesome6
           name="plus"
           size={16}
-          color={colors[theme].WHITE}
+          color={colors[theme].COMMON_WHITE}
           iconStyle="solid"
         />
         <CusmtomText style={styles.addRecordText}>내 기록 추가하기</CusmtomText>
@@ -43,7 +43,7 @@ const styling = (theme: Theme) =>
       borderTopColor: colors[theme].GRAY_200,
     },
     addRecordButton: {
-      backgroundColor: colors[theme].PINK_700,
+      backgroundColor: colors[theme].COMMON_BLACK,
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
@@ -52,7 +52,7 @@ const styling = (theme: Theme) =>
       gap: 8,
     },
     addRecordText: {
-      color: colors[theme].WHITE,
+      color: colors[theme].COMMON_WHITE,
       fontSize: 16,
       fontWeight: '600',
     },
