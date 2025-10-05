@@ -29,7 +29,7 @@ function SearchBar({onPress}: SearchBarProps) {
           iconStyle="solid"
         />
         <CusmtomText style={styles.placeholder}>
-          찾고 싶은 맛집을 검색해주세요
+          오늘 하루는 어떤 맛이었나요?
         </CusmtomText>
       </View>
     </TouchableOpacity>

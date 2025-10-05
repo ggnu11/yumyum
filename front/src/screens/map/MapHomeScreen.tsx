@@ -7,6 +7,7 @@ import BottomSheet from '@gorhom/bottom-sheet';
 import MapView from 'react-native-map-clustering';
 
 import CustomMarker from '@/components/common/CustomMarker';
+import FilterButtons from '@/components/map/FilterButtons';
 import MapIconButton from '@/components/map/MapIconButton';
 import MarkerFilterAction from '@/components/map/MarkerFilterAction';
 import PlaceBottomSheet from '../../components/map/PlaceBottomSheet';
@@ -36,6 +37,7 @@ function MapHomeScreen() {
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
   const [selectedPlaceInfo, setSelectedPlaceInfo] =
     useState<ApiPlaceInfo | null>(null);
+  const [activeFilters, setActiveFilters] = useState<string[]>(['all']);
   const bottomSheetRef = useRef<BottomSheet>(null);
   const {
     selectLocation,
@@ -47,12 +49,26 @@ function MapHomeScreen() {
   const {userLocation, isUserLocationError} = useUserLocation();
   const {mapRef, moveMapView, handleChangeDelta} = useMoveMapView();
   const {data: markers = []} = useGetMarkers({
-    select: data =>
-      data.filter(
+    select: data => {
+      let filteredData = data.filter(
         marker =>
           filters[marker.color] === true &&
           filters[String(marker.score)] === true,
-      ),
+      );
+
+      // 추가 필터링 로직 (임시 구현)
+      if (!activeFilters.includes('all')) {
+        // 실제 구현에서는 백엔드에서 필터링된 데이터를 받아야 함
+        // 현재는 모든 마커를 표시하는 임시 로직
+        filteredData = data.filter(
+          marker =>
+            filters[marker.color] === true &&
+            filters[String(marker.score)] === true,
+        );
+      }
+
+      return filteredData;
+    },
   });
   const filterAction = useModal();
   usePermission('LOCATION');
@@ -210,9 +226,31 @@ function MapHomeScreen() {
     console.log('기록 삭제:', recordId);
   }, []);
 
+  const handleFilterPress = useCallback((filter: string) => {
+    setActiveFilters(prevFilters => {
+      if (filter === 'all') {
+        // '모두 보기'를 선택하면 다른 필터들을 모두 해제
+        return ['all'];
+      } else {
+        // 다른 필터를 선택하면 '모두 보기'를 해제하고 해당 필터를 토글
+        const newFilters = prevFilters.filter(f => f !== 'all');
+        if (newFilters.includes(filter)) {
+          const filtered = newFilters.filter(f => f !== filter);
+          return filtered.length === 0 ? ['all'] : filtered;
+        } else {
+          return [...newFilters, filter];
+        }
+      }
+    });
+  }, []);
+
   return (
     <>
       <SearchBar onPress={() => navigation.navigate('SearchLocation')} />
+      <FilterButtons
+        activeFilters={activeFilters}
+        onFilterPress={handleFilterPress}
+      />
       <MapView
         userInterfaceStyle={theme}
         googleMapId="f727da01391db33238e04009"

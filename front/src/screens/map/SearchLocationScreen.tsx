@@ -30,7 +30,7 @@ function SearchLocationScreen() {
         value={keyword}
         onChangeText={setKeyword}
         onSubmit={handleSubmitKeyword}
-        placeholder="검색할 장소를 입력해주세요."
+        placeholder="오늘 하루는 어떤 맛이었나요?"
       />
       <SearchRegionResult regionInfo={regionInfo} />
       <Pagination

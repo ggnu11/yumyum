@@ -34,14 +34,21 @@ function MapIconButton({name, onPress}: MapIconButtonProps) {
 const styling = (theme: Theme) =>
   StyleSheet.create({
     mapButton: {
-      backgroundColor: colors[theme].PINK_700,
+      backgroundColor: colors[theme].BLUE_500,
       marginVertical: 5,
       height: 45,
       width: 45,
       borderRadius: 45,
       alignItems: 'center',
       justifyContent: 'center',
-      boxShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
+      shadowColor: colors[theme].BLACK,
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5,
     },
   });
 

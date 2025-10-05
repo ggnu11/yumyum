@@ -42,7 +42,7 @@ function TabIcons(
       name={iconName}
       iconStyle="solid"
       size={20}
-      color={focused ? colors[theme].PINK_700 : colors[theme].GRAY_500}
+      color={focused ? colors[theme].BLUE_500 : colors[theme].GRAY_500}
     />
   );
 }
@@ -59,7 +59,7 @@ export default function BottomTabNavigation() {
       }) => ({
         tabBarIcon: ({focused}: {focused: boolean}) =>
           TabIcons(route.name as keyof MainBottomTabParamList, focused, theme),
-        tabBarActiveTintColor: colors[theme].PINK_700,
+        tabBarActiveTintColor: colors[theme].BLUE_500,
         tabBarInactiveTintColor: colors[theme].GRAY_500,
         tabBarStyle: {
           backgroundColor: colors[theme].WHITE,
