@@ -4,7 +4,7 @@ import {StyleSheet, TouchableOpacity, View} from 'react-native';
 
 import {colors} from '../../constants/colors';
 import useThemeStore, {Theme} from '../../store/theme';
-import CusmtomText from '../common/CustomText';
+import CustomText from '../common/CustomText';
 
 interface AddRecordButtonProps {
   onPress: () => void;
@@ -23,7 +23,7 @@ function AddRecordButton({onPress}: AddRecordButtonProps) {
           color={colors[theme].COMMON_WHITE}
           iconStyle="solid"
         />
-        <CusmtomText style={styles.addRecordText}>내 기록 추가하기</CusmtomText>
+        <CustomText style={styles.addRecordText}>내 기록 추가하기</CustomText>
       </TouchableOpacity>
     </View>
   );

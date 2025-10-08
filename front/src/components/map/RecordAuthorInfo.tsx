@@ -4,7 +4,7 @@ import {Image, StyleSheet, View} from 'react-native';
 
 import {colors} from '../../constants/colors';
 import useThemeStore, {Theme} from '../../store/theme';
-import CusmtomText from '../common/CustomText';
+import CustomText from '../common/CustomText';
 
 interface Author {
   name: string;
@@ -36,7 +36,7 @@ function RecordAuthorInfo({author}: RecordAuthorInfoProps) {
           />
         </View>
       )}
-      <CusmtomText style={styles.authorName}>{author.name}</CusmtomText>
+      <CustomText style={styles.authorName}>{author.name}</CustomText>
     </View>
   );
 }

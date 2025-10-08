@@ -7,7 +7,7 @@ import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import React from 'react';
 import {Dimensions, Image, Pressable, StyleSheet, View} from 'react-native';
-import CusmtomText from '../common/CustomText';
+import CustomText from '../common/CustomText';
 
 interface FeedItemProps {
   post: Post;
@@ -35,17 +35,17 @@ function FeedItem({post}: FeedItemProps) {
       )}
       {post.imageUris.length === 0 && (
         <View style={[styles.imageContainer, styles.emptyImageContainer]}>
-          <CusmtomText style={styles.descriptionText}>No Image</CusmtomText>
+          <CustomText style={styles.descriptionText}>No Image</CustomText>
         </View>
       )}
       <View style={styles.textContainer}>
-        <CusmtomText style={styles.dateText}>
+        <CustomText style={styles.dateText}>
           {getDateWithSeparator(post.date, '/')}
-        </CusmtomText>
-        <CusmtomText style={styles.titleText}>{post.title}</CusmtomText>
-        <CusmtomText style={styles.descriptionText} numberOfLines={1}>
+        </CustomText>
+        <CustomText style={styles.titleText}>{post.title}</CustomText>
+        <CustomText style={styles.descriptionText} numberOfLines={1}>
           {post.description}
-        </CusmtomText>
+        </CustomText>
       </View>
     </Pressable>
   );

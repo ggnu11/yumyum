@@ -6,7 +6,7 @@ import {isSameAsCurrentDate, MonthYear} from '@/utils/date';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import React from 'react';
 import {FlatList, Pressable, StyleSheet, View} from 'react-native';
-import CusmtomText from '../common/CustomText';
+import CustomText from '../common/CustomText';
 import DateBox from './DateBox';
 import DayOfWeeks from './DayOfWeeks';
 import YearSelector from './YearSelector';
@@ -46,9 +46,9 @@ function Calendar({
         <Pressable
           style={styles.monthYearContainer}
           onPress={yearSelector.show}>
-          <CusmtomText style={styles.monthYearText}>
+          <CustomText style={styles.monthYearText}>
             {year}년 {month}월
-          </CusmtomText>
+          </CustomText>
           <Ionicons
             name="chevron-down"
             size={20}

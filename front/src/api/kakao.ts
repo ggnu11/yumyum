@@ -3,6 +3,13 @@ import Config from 'react-native-config';
 import {LatLng} from 'react-native-maps';
 
 // 구글 Places API 응답 타입 정의
+export interface GooglePlacePhoto {
+  photo_reference: string;
+  height: number;
+  width: number;
+  html_attributions: string[];
+}
+
 export interface GooglePlaceDetails {
   place_id: string;
   name: string;
@@ -18,12 +25,21 @@ export interface GooglePlaceDetails {
   types: string[];
   rating?: number;
   user_ratings_total?: number;
+  photos?: GooglePlacePhoto[];
 }
 
 export interface GooglePlaceDetailsResponse {
   result: GooglePlaceDetails;
   status: string;
 }
+
+// Google Places Photo URL 생성 함수
+export const getGooglePlacePhotoUrl = (
+  photoReference: string,
+  maxWidth: number = 400,
+): string => {
+  return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photo_reference=${photoReference}&key=${Config.GOOGLE_MAP_API_KEY}`;
+};
 
 // 카카오 API 응답 타입 정의
 export interface KakaoPlace {
@@ -66,7 +82,7 @@ export const getGooglePlaceDetails = async (
         params: {
           place_id: placeId,
           fields:
-            'place_id,name,formatted_address,formatted_phone_number,international_phone_number,geometry,types,rating,user_ratings_total',
+            'place_id,name,formatted_address,formatted_phone_number,international_phone_number,geometry,types,rating,user_ratings_total,photos',
           key: Config.GOOGLE_MAP_API_KEY,
           language: 'ko', // 한국어로 결과 받기
         },
@@ -101,6 +117,12 @@ export const getCombinedPlaceInfo = async (
     // 3. 두 API 정보 조합
     if (googlePlace) {
       // 구글 정보를 기본으로 하고 카카오 정보로 보완
+      const placeImages = googlePlace.photos
+        ? googlePlace.photos
+            .slice(0, 10)
+            .map(photo => getGooglePlacePhotoUrl(photo.photo_reference, 400))
+        : [];
+
       return {
         place_id: googlePlace.place_id,
         place_name: googlePlace.name,
@@ -114,6 +136,7 @@ export const getCombinedPlaceInfo = async (
         rating: googlePlace.rating,
         user_ratings_total: googlePlace.user_ratings_total,
         types: googlePlace.types,
+        place_images: placeImages,
         coordinate: {
           latitude: googlePlace.geometry.location.lat,
           longitude: googlePlace.geometry.location.lng,
@@ -130,6 +153,7 @@ export const getCombinedPlaceInfo = async (
         address: '주소 정보 없음',
         phone_number: '',
         total_pin_count: 0,
+        place_images: [],
       };
     }
   } catch (error) {
@@ -140,6 +164,7 @@ export const getCombinedPlaceInfo = async (
       address: '주소 정보 없음',
       phone_number: '',
       total_pin_count: 0,
+      place_images: [],
     };
   }
 };
@@ -219,7 +244,6 @@ export const searchPlaceByCoordinate = async (
 
     return null;
   } catch (error) {
-    console.error('카카오 장소 검색 실패:', error);
     return null;
   }
 };
@@ -235,6 +259,7 @@ export const transformKakaoPlaceToPlaceInfo = (
     address: kakaoPlace.road_address_name || kakaoPlace.address_name,
     phone_number: kakaoPlace.phone || '',
     total_pin_count: pinCount,
+    place_images: [],
   };
 };
 

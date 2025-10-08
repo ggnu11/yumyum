@@ -6,7 +6,7 @@ import {Dimensions, Image, ScrollView, StyleSheet, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import CustomButton from '@/components/common/CustomButton';
-import CusmtomText from '@/components/common/CustomText';
+import CustomText from '@/components/common/CustomText';
 import PreviewImageList from '@/components/common/PreviewImageList';
 import FeedDetailActionSheet from '@/components/feed/FeedDetailActionSheet';
 import {colors} from '@/constants/colors';
@@ -73,7 +73,7 @@ function FeedDetailScreen({route}: Props) {
           )}
           {post.imageUris.length === 0 && (
             <View style={styles.emptyImageContainer}>
-              <CusmtomText>No Image</CusmtomText>
+              <CustomText>No Image</CustomText>
             </View>
           )}
         </View>
@@ -85,45 +85,45 @@ function FeedDetailScreen({route}: Props) {
               size={10}
               color={colors[theme].GRAY_500}
             />
-            <CusmtomText
+            <CustomText
               style={styles.addressText}
               ellipsizeMode="tail"
               numberOfLines={1}>
               {post.address}
-            </CusmtomText>
+            </CustomText>
           </View>
-          <CusmtomText style={styles.titleText}>{post.title}</CusmtomText>
+          <CustomText style={styles.titleText}>{post.title}</CustomText>
           <View style={styles.infoContainer}>
             <View style={styles.infoRow}>
               <View style={styles.infoColumn}>
-                <CusmtomText style={styles.infoColumnKeyText}>
+                <CustomText style={styles.infoColumnKeyText}>
                   방문날짜
-                </CusmtomText>
-                <CusmtomText style={styles.infoColumnValueText}>
+                </CustomText>
+                <CustomText style={styles.infoColumnValueText}>
                   {getDateWithSeparator(post.date, '.')}
-                </CusmtomText>
+                </CustomText>
               </View>
               <View style={styles.infoColumn}>
-                <CusmtomText style={styles.infoColumnKeyText}>평점</CusmtomText>
-                <CusmtomText style={styles.infoColumnValueText}>
+                <CustomText style={styles.infoColumnKeyText}>평점</CustomText>
+                <CustomText style={styles.infoColumnValueText}>
                   {post.score}
-                </CusmtomText>
+                </CustomText>
               </View>
             </View>
             <View style={styles.infoRow}>
               <View style={styles.infoColumn}>
-                <CusmtomText style={styles.infoColumnKeyText}>
+                <CustomText style={styles.infoColumnKeyText}>
                   마커색상
-                </CusmtomText>
+                </CustomText>
                 <View
                   style={[styles.markerColor, {backgroundColor: post.color}]}
                 />
               </View>
             </View>
           </View>
-          <CusmtomText style={styles.descriptionText}>
+          <CustomText style={styles.descriptionText}>
             {post.description}
-          </CusmtomText>
+          </CustomText>
         </View>
         <View style={{height: 10, backgroundColor: colors[theme].GRAY_100}} />
         {post.imageUris.length > 0 && (

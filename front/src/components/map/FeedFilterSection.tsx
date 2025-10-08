@@ -3,7 +3,7 @@ import {StyleSheet, TouchableOpacity, View} from 'react-native';
 
 import {colors} from '../../constants/colors';
 import useThemeStore, {Theme} from '../../store/theme';
-import CusmtomText from '../common/CustomText';
+import CustomText from '../common/CustomText';
 
 export type FilterType = 'mine' | 'all';
 
@@ -23,12 +23,12 @@ function FeedFilterSection({
 
   return (
     <View style={styles.feedFilterSection}>
-      <CusmtomText style={styles.feedTitle}>
+      <CustomText style={styles.feedTitle}>
         이 장소에 등록된 기록카드
-      </CusmtomText>
-      <CusmtomText style={styles.feedSubtitle}>
+      </CustomText>
+      <CustomText style={styles.feedSubtitle}>
         {placeName}에 대해 이야기 해 주세요!
-      </CusmtomText>
+      </CustomText>
       <View style={styles.filterButtons}>
         <TouchableOpacity
           style={[
@@ -36,13 +36,13 @@ function FeedFilterSection({
             activeFilter === 'mine' && styles.activeFilter,
           ]}
           onPress={() => onFilterChange('mine')}>
-          <CusmtomText
+          <CustomText
             style={[
               styles.filterText,
               activeFilter === 'mine' && styles.activeFilterText,
             ]}>
             나만 보기
-          </CusmtomText>
+          </CustomText>
         </TouchableOpacity>
         <TouchableOpacity
           style={[
@@ -50,13 +50,13 @@ function FeedFilterSection({
             activeFilter === 'all' && styles.activeFilter,
           ]}
           onPress={() => onFilterChange('all')}>
-          <CusmtomText
+          <CustomText
             style={[
               styles.filterText,
               activeFilter === 'all' && styles.activeFilterText,
             ]}>
             모두 보기
-          </CusmtomText>
+          </CustomText>
         </TouchableOpacity>
       </View>
     </View>

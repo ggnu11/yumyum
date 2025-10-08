@@ -11,6 +11,7 @@ import FilterButtons from '@/components/map/FilterButtons';
 import MapIconButton from '@/components/map/MapIconButton';
 import MarkerFilterAction from '@/components/map/MarkerFilterAction';
 import PlaceBottomSheet from '../../components/map/PlaceBottomSheet';
+import AddRecordFloatingButton from '../../components/map/AddRecordFloatingButton';
 import SearchBar from '@/components/map/SearchBar';
 import {getCombinedPlaceInfo} from '@/api/kakao';
 import {numbers} from '@/constants/numbers';
@@ -37,6 +38,7 @@ function MapHomeScreen() {
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
   const [selectedPlaceInfo, setSelectedPlaceInfo] =
     useState<ApiPlaceInfo | null>(null);
+  const [isButtonVisible, setIsButtonVisible] = useState<boolean>(false); // 버튼 표시 상태 추가
   const [activeFilters, setActiveFilters] = useState<string[]>(['all']);
   const bottomSheetRef = useRef<BottomSheet>(null);
   const {
@@ -93,6 +95,7 @@ function MapHomeScreen() {
 
       setSelectedPlaceId(selectedPlaceFromSearch.id);
       setSelectedPlaceInfo(convertedPlaceInfo);
+      setIsButtonVisible(true); // 버튼 즉시 표시
       moveMapView(coordinate);
       bottomSheetRef.current?.snapToIndex(0);
 
@@ -160,6 +163,7 @@ function MapHomeScreen() {
 
         setSelectedPlaceId(placeInfo.place_id);
         setSelectedPlaceInfo(placeInfo);
+        setIsButtonVisible(true); // 버튼 즉시 표시
         moveMapView(coordinate);
         bottomSheetRef.current?.snapToIndex(0);
       } catch (error) {
@@ -175,6 +179,7 @@ function MapHomeScreen() {
 
         setSelectedPlaceId(fallbackPlaceInfo.place_id);
         setSelectedPlaceInfo(fallbackPlaceInfo);
+        setIsButtonVisible(true); // 버튼 즉시 표시
         moveMapView(coordinate);
         bottomSheetRef.current?.snapToIndex(0);
       }
@@ -197,7 +202,40 @@ function MapHomeScreen() {
     setSelectLocation(null);
   };
 
+  // 바텀시트 상태 변경 감지
+  const handleBottomSheetChange = useCallback((index: number) => {
+    console.log('Bottom sheet index changed to:', index);
+    // 바텀시트가 닫히기 시작하면 (-1) 또는 닫히는 과정에서 버튼을 즉시 숨김
+    if (index === -1) {
+      setIsButtonVisible(false);
+    }
+    // 바텀시트가 열릴 때 (index >= 0) 버튼을 표시
+    else if (index >= 0) {
+      setIsButtonVisible(true);
+    }
+  }, []);
+
+  // 바텀시트 애니메이션 감지 - 닫히기 시작할 때 버튼 즉시 숨김
+  const handleBottomSheetAnimate = useCallback(
+    (fromIndex: number, toIndex: number) => {
+      console.log('Bottom sheet animating from', fromIndex, 'to', toIndex);
+      // 바텀시트가 닫히는 애니메이션이 시작되면 (toIndex가 -1) 버튼을 즉시 숨김
+      if (toIndex === -1) {
+        setIsButtonVisible(false);
+      }
+    },
+    [],
+  );
+
   const handleCloseBottomSheet = useCallback(() => {
+    // 버튼을 즉시 숨김 (바텀시트와 동시에 애니메이션 시작)
+    setIsButtonVisible(false);
+    // 바텀시트를 부드럽게 닫기 (애니메이션 포함)
+    bottomSheetRef.current?.close();
+  }, []);
+
+  // 바텀시트가 완전히 닫힌 후 상태 초기화
+  const handleBottomSheetClosed = useCallback(() => {
     setSelectedPlaceId(null);
     setSelectedPlaceInfo(null);
   }, []);
@@ -263,6 +301,7 @@ function MapHomeScreen() {
         }}
         provider={PROVIDER_GOOGLE}
         onRegionChangeComplete={handleChangeDelta}
+        onPress={handleCloseBottomSheet} // 지도 클릭 시 바텀시트 닫기
         onLongPress={({nativeEvent}) =>
           setSelectLocation(nativeEvent.coordinate)
         }
@@ -292,10 +331,16 @@ function MapHomeScreen() {
       <PlaceBottomSheet
         ref={bottomSheetRef}
         placeInfo={selectedPlaceInfo}
-        onClose={handleCloseBottomSheet}
+        onClose={handleBottomSheetClosed}
+        onSheetChange={handleBottomSheetChange}
+        onSheetAnimate={handleBottomSheetAnimate}
         onAddRecord={handleAddRecord}
         onEditRecord={handleEditRecord}
         onDeleteRecord={handleDeleteRecord}
+      />
+      <AddRecordFloatingButton
+        onPress={handleAddRecord}
+        isVisible={isButtonVisible} // 별도 상태로 즉시 제어
       />
       <MarkerFilterAction
         isVisible={filterAction.isVisible}

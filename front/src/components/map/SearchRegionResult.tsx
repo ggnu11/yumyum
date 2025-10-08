@@ -14,7 +14,7 @@ import useLocationStore from '@/store/location';
 import useThemeStore, {Theme} from '@/store/theme';
 import {useNavigation} from '@react-navigation/native';
 import {LatLng} from 'react-native-maps';
-import CusmtomText from '../common/CustomText';
+import CustomText from '../common/CustomText';
 
 interface SearchRegionResultProps {
   regionInfo: RegionInfo[];
@@ -62,32 +62,32 @@ function SearchRegionResult({regionInfo}: SearchRegionResultProps) {
                 size={10}
                 color={colors[theme].PINK_700}
               />
-              <CusmtomText
+              <CustomText
                 style={styles.placeText}
                 ellipsizeMode="tail"
                 numberOfLines={1}>
                 {info.place_name}
-              </CusmtomText>
+              </CustomText>
             </View>
             <View style={styles.categoryContainer}>
-              <CusmtomText style={styles.distanceText}>
+              <CustomText style={styles.distanceText}>
                 {(Number(info.distance) / 1000).toFixed(2)}km
-              </CusmtomText>
-              <CusmtomText style={styles.subInfoText}>
+              </CustomText>
+              <CustomText style={styles.subInfoText}>
                 {info.category_name}
-              </CusmtomText>
+              </CustomText>
             </View>
-            <CusmtomText style={styles.subInfoText}>
+            <CustomText style={styles.subInfoText}>
               {info.road_address_name}
-            </CusmtomText>
+            </CustomText>
           </Pressable>
         ))}
 
         {regionInfo.length === 0 && (
           <View style={styles.noResultContainer}>
-            <CusmtomText style={styles.noResultText}>
+            <CustomText style={styles.noResultText}>
               검색 결과가 없습니다.
-            </CusmtomText>
+            </CustomText>
           </View>
         )}
       </ScrollView>

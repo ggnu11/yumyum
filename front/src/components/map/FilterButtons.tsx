@@ -4,7 +4,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {colors} from '@/constants/colors';
 import useThemeStore, {Theme} from '@/store/theme';
-import CusmtomText from '../common/CustomText';
+import CustomText from '../common/CustomText';
 
 interface FilterButtonsProps {
   activeFilters: string[];
@@ -49,14 +49,14 @@ function FilterButtons({activeFilters, onFilterPress}: FilterButtonsProps) {
               ]}
               onPress={() => onFilterPress(filter.id)}
               activeOpacity={0.7}>
-              <CusmtomText
+              <CustomText
                 style={[
                   styles.filterText,
                   isActive && styles.activeFilterText,
                   isGroupFilter && isActive && styles.activeGroupText,
                 ]}>
                 {filter.label}
-              </CusmtomText>
+              </CustomText>
             </TouchableOpacity>
           );
         })}

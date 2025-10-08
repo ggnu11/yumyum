@@ -30,6 +30,7 @@ export interface PlaceInfo {
   address: string;
   phone_number: string;
   total_pin_count: number;
+  place_images?: string[]; // Google Places API에서 가져온 장소 이미지들
 }
 
 export interface PinObject {

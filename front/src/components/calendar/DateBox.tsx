@@ -3,7 +3,7 @@ import {Dimensions, Pressable, StyleSheet, View} from 'react-native';
 
 import {colors} from '@/constants/colors';
 import useThemeStore, {Theme} from '@/store/theme';
-import CusmtomText from '../common/CustomText';
+import CustomText from '../common/CustomText';
 
 interface DateBoxProps {
   date: number;
@@ -34,14 +34,14 @@ function DateBox({
               styles.dateContainer,
               selectedDate === date && styles.selectedContainer,
             ]}>
-            <CusmtomText
+            <CustomText
               style={[
                 styles.dateText,
                 isToday && styles.todayText,
                 selectedDate === date && styles.selectedDateText,
               ]}>
               {date}
-            </CusmtomText>
+            </CustomText>
           </View>
           {hasSchedule && <View style={styles.scheduleIndicator} />}
         </>

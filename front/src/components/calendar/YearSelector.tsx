@@ -5,7 +5,7 @@ import {FlatList, Pressable, StyleSheet, View} from 'react-native';
 import {colors} from '@/constants/colors';
 import {numbers} from '@/constants/numbers';
 import useThemeStore, {Theme} from '@/store/theme';
-import CusmtomText from '../common/CustomText';
+import CustomText from '../common/CustomText';
 
 interface YearSelectorProps {
   isVisible: boolean;
@@ -62,13 +62,13 @@ function YearSelector({
                     styles.yearButton,
                     currentyear === item.num && styles.currentYearButton,
                   ]}>
-                  <CusmtomText
+                  <CustomText
                     style={[
                       styles.yearText,
                       currentyear === item.num && styles.currentYearText,
                     ]}>
                     {item.num}
-                  </CusmtomText>
+                  </CustomText>
                 </Pressable>
               )}
               keyExtractor={item => String(item.num)}
@@ -76,7 +76,7 @@ function YearSelector({
             />
           </View>
           <Pressable style={styles.closeButton} onPress={hide}>
-            <CusmtomText style={styles.closeText}>닫기</CusmtomText>
+            <CustomText style={styles.closeText}>닫기</CustomText>
             <Ionicons name="chevron-up" size={20} color={colors[theme].BLACK} />
           </Pressable>
         </View>

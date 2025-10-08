@@ -8,23 +8,23 @@ import {
   ScrollView,
   Image,
   Dimensions,
+  Clipboard,
+  Alert,
 } from 'react-native';
 
 import {colors} from '../../constants/colors';
 import useThemeStore, {Theme} from '../../store/theme';
 import {PlaceInfo} from '../../types/api';
-import CusmtomText from '../common/CustomText';
+import CustomText from '../common/CustomText';
 
 interface PlaceSummaryViewProps {
   placeInfo: PlaceInfo | null;
-  recordImages?: string[]; // 해당 장소의 기록 이미지들
   isBookmarked?: boolean;
   onBookmarkPress?: () => void;
 }
 
 function PlaceSummaryView({
   placeInfo,
-  recordImages = [],
   isBookmarked = false,
   onBookmarkPress,
 }: PlaceSummaryViewProps) {
@@ -37,23 +37,23 @@ function PlaceSummaryView({
 
   return (
     <View style={styles.summarySection}>
-      {/* 장소 이름과 즐겨찾기 */}
+      {/* 장소 이름과 위시(즐겨찾기) */}
       <View style={styles.placeHeader}>
-        <CusmtomText style={styles.placeName}>
-          {placeInfo.place_name}
-        </CusmtomText>
-        <TouchableOpacity
-          style={styles.bookmarkButton}
-          onPress={onBookmarkPress}>
-          <FontAwesome6
-            name="bookmark"
-            size={20}
+        <CustomText style={styles.placeName}>{placeInfo.place_name}</CustomText>
+        <TouchableOpacity style={styles.wishButton} onPress={onBookmarkPress}>
+          <Ionicons
+            name={isBookmarked ? 'star' : 'star-outline'}
+            size={24}
             color={
-              isBookmarked ? colors[theme].PINK_700 : colors[theme].GRAY_500
+              isBookmarked ? colors[theme].YELLOW_500 : colors[theme].GRAY_500
             }
-            iconStyle={isBookmarked ? 'solid' : 'regular'}
           />
         </TouchableOpacity>
+      </View>
+
+      {/* 장소 카테고리 */}
+      <View style={styles.categorySection}>
+        <CustomText style={styles.categoryText}>칼국수, 만두</CustomText>
       </View>
 
       {/* 기록카드 갯수 */}
@@ -63,9 +63,9 @@ function PlaceSummaryView({
           size={16}
           color={colors[theme].GRAY_500}
         />
-        <CusmtomText style={styles.recordCount}>
+        <CustomText style={styles.recordCount}>
           기록카드 {placeInfo.total_pin_count}개
-        </CusmtomText>
+        </CustomText>
       </View>
 
       {/* 장소 기본 정보 */}
@@ -76,44 +76,61 @@ function PlaceSummaryView({
             size={16}
             color={colors[theme].GRAY_500}
           />
-          <CusmtomText style={styles.infoText}>
+          <CustomText style={styles.infoText}>
             {placeInfo.address || '주소 정보 없음'}
-          </CusmtomText>
+          </CustomText>
         </View>
 
         {placeInfo.phone_number && (
-          <View style={styles.infoRow}>
+          <TouchableOpacity
+            style={styles.phoneRow}
+            onPress={() => {
+              Clipboard.setString(placeInfo.phone_number);
+              Alert.alert('복사됨', '전화번호가 클립보드에 복사되었습니다.');
+            }}>
             <Ionicons
               name="call-outline"
               size={16}
               color={colors[theme].BLUE_100}
             />
-            <CusmtomText style={[styles.infoText, styles.phoneText]}>
+            <CustomText style={[styles.infoText, styles.phoneText]}>
               {placeInfo.phone_number}
-            </CusmtomText>
-          </View>
+            </CustomText>
+            <CustomText style={styles.copyText}>복사</CustomText>
+          </TouchableOpacity>
         )}
       </View>
 
-      {/* 기록 이미지들 - 가로 스크롤 */}
-      {recordImages.length > 0 && (
-        <View style={styles.recordImagesSection}>
+      {/* Google Places에서 가져온 장소 이미지들 */}
+      {placeInfo.place_images && placeInfo.place_images.length > 0 && (
+        <View style={styles.placeImagesSection}>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.imagesScrollContent}>
-            {recordImages.slice(0, 6).map((imageUri, index) => (
-              <View key={index} style={styles.imageContainer}>
-                <Image source={{uri: imageUri}} style={styles.recordImage} />
-                {index === 5 && recordImages.length > 6 && (
-                  <View style={styles.moreImagesOverlay}>
-                    <CusmtomText style={styles.moreImagesText}>
-                      +{recordImages.length - 5}
-                    </CusmtomText>
-                  </View>
-                )}
-              </View>
-            ))}
+            {placeInfo.place_images.slice(0, 6).map((imageUri, index) => {
+              const isLastItem = index === 5;
+              const hasMoreImages = placeInfo.place_images!.length > 6;
+              const showMoreButton = isLastItem && hasMoreImages;
+
+              return (
+                <View key={`place-${index}`} style={styles.imageContainer}>
+                  <Image source={{uri: imageUri}} style={styles.placeImage} />
+                  {showMoreButton && (
+                    <TouchableOpacity
+                      style={styles.moreImagesOverlay}
+                      onPress={() => {
+                        // TODO: 더보기 기능 구현
+                        console.log('더보기 클릭');
+                      }}>
+                      <CustomText style={styles.moreImagesText}>
+                        +{placeInfo.place_images!.length - 5}
+                      </CustomText>
+                    </TouchableOpacity>
+                  )}
+                </View>
+              );
+            })}
           </ScrollView>
         </View>
       )}
@@ -138,8 +155,16 @@ const styling = (theme: Theme) =>
       color: colors[theme].BLACK,
       flex: 1,
     },
-    bookmarkButton: {
+    wishButton: {
       padding: 8,
+    },
+    categorySection: {
+      marginBottom: 12,
+    },
+    categoryText: {
+      fontSize: 14,
+      color: colors[theme].GRAY_700,
+      fontWeight: '500',
     },
     recordCountRow: {
       flexDirection: 'row',
@@ -160,6 +185,12 @@ const styling = (theme: Theme) =>
       alignItems: 'center',
       gap: 8,
     },
+    phoneRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+      paddingVertical: 4,
+    },
     infoText: {
       fontSize: 14,
       color: colors[theme].GRAY_700,
@@ -168,8 +199,14 @@ const styling = (theme: Theme) =>
     phoneText: {
       color: colors[theme].BLUE_100,
     },
-    recordImagesSection: {
-      marginTop: 8,
+    copyText: {
+      fontSize: 12,
+      color: colors[theme].BLUE_100,
+      fontWeight: '600',
+      marginLeft: 4,
+    },
+    placeImagesSection: {
+      marginBottom: 12,
     },
     imagesScrollContent: {
       paddingRight: 20,
@@ -178,10 +215,10 @@ const styling = (theme: Theme) =>
       position: 'relative',
       marginRight: 8,
     },
-    recordImage: {
-      width: 60,
-      height: 60,
-      borderRadius: 8,
+    placeImage: {
+      width: 80,
+      height: 80,
+      borderRadius: 12,
       backgroundColor: colors[theme].GRAY_200,
     },
     moreImagesOverlay: {
@@ -191,7 +228,7 @@ const styling = (theme: Theme) =>
       right: 0,
       bottom: 0,
       backgroundColor: 'rgba(0, 0, 0, 0.6)',
-      borderRadius: 8,
+      borderRadius: 12,
       justifyContent: 'center',
       alignItems: 'center',
     },

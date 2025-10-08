@@ -9,7 +9,7 @@ import {
   View,
 } from 'react-native';
 
-import CusmtomText from '@/components/common/CustomText';
+import CustomText from '@/components/common/CustomText';
 import {colors} from '@/constants/colors';
 import {TERMS_CONTENT} from '@/constants/termsContent';
 import useThemeStore, {Theme} from '@/store/theme';
@@ -42,11 +42,11 @@ function TermsDetailScreen() {
           onPress={() => navigation.goBack()}>
           <View style={styles.backButtonIcon} />
         </TouchableOpacity>
-        <CusmtomText style={styles.headerTitle}>{title}</CusmtomText>
+        <CustomText style={styles.headerTitle}>{title}</CustomText>
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        <CusmtomText style={styles.contentText}>{content}</CusmtomText>
+        <CustomText style={styles.contentText}>{content}</CustomText>
       </ScrollView>
     </SafeAreaView>
   );

@@ -13,7 +13,7 @@ import {
 
 import {colors} from '@/constants/colors';
 import useThemeStore, {Theme} from '@/store/theme';
-import CusmtomText from './CustomText';
+import CustomText from './CustomText';
 
 interface ActionSheetContextValue {
   onPressOutSide?: (event: GestureResponderEvent) => void;
@@ -100,9 +100,9 @@ function Button({
         styles.actionButton,
       ]}
       {...props}>
-      <CusmtomText style={[styles.actionText, isDanger && styles.dangerText]}>
+      <CustomText style={[styles.actionText, isDanger && styles.dangerText]}>
         {children}
-      </CusmtomText>
+      </CustomText>
 
       {isChecked && (
         <Ionicons name="checkmark" size={20} color={colors[theme].BLUE_500} />
@@ -117,7 +117,7 @@ function Title({children}: PropsWithChildren) {
 
   return (
     <View style={styles.titleContainer}>
-      <CusmtomText style={styles.titleText}>{children}</CusmtomText>
+      <CustomText style={styles.titleText}>{children}</CustomText>
     </View>
   );
 }
@@ -140,10 +140,10 @@ function Filter({children, isSelected, ...props}: FilterProps) {
 
   return (
     <Pressable style={styles.filterContainer} {...props}>
-      <CusmtomText
+      <CustomText
         style={isSelected ? styles.filterSelectedText : styles.filterText}>
         {children}
-      </CusmtomText>
+      </CustomText>
       <Ionicons
         name="chevron-down"
         size={22}
@@ -181,7 +181,7 @@ function CheckBox({
         name={isChecked ? 'checkmark-circle' : 'checkmark-circle-outline'}
       />
       {icon}
-      <CusmtomText style={styles.checkBoxText}>{children}</CusmtomText>
+      <CustomText style={styles.checkBoxText}>{children}</CustomText>
     </Pressable>
   );
 }

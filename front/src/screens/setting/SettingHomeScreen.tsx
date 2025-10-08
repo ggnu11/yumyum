@@ -5,7 +5,7 @@ import {Alert, Pressable, ScrollView, StyleSheet, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 
-import CusmtomText from '@/components/common/CustomText';
+import CustomText from '@/components/common/CustomText';
 import DarkModeActionSheet from '@/components/setting/DarkModeActionSheet';
 import {colors} from '@/constants/colors';
 import useAuth from '@/hooks/queries/useAuth';
@@ -85,7 +85,7 @@ function SettingHomeScreen() {
 
       <View style={styles.withdrawContainer}>
         <Pressable onPress={handleWithdrawUser} style={styles.withdrawButton}>
-          <CusmtomText style={styles.withdrawText}>회원 탈퇴</CusmtomText>
+          <CustomText style={styles.withdrawText}>회원 탈퇴</CustomText>
         </Pressable>
       </View>
     </SafeAreaView>

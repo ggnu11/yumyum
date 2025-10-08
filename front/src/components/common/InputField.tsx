@@ -2,7 +2,7 @@ import {colors} from '@/constants/colors';
 import useThemeStore, {Theme} from '@/store/theme';
 import React, {Ref} from 'react';
 import {StyleSheet, TextInput, TextInputProps, View} from 'react-native';
-import CusmtomText from './CustomText';
+import CustomText from './CustomText';
 
 interface InputFieldProps extends TextInputProps {
   ref?: Ref<TextInput>;
@@ -39,7 +39,7 @@ function InputField({
         {...props}
       />
       {touched && Boolean(error) && (
-        <CusmtomText style={styles.error}>{error}</CusmtomText>
+        <CustomText style={styles.error}>{error}</CustomText>
       )}
     </View>
   );

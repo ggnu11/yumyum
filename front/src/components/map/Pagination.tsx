@@ -3,7 +3,7 @@ import useThemeStore, {Theme} from '@/store/theme';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import React from 'react';
 import {Pressable, StyleSheet, View} from 'react-native';
-import CusmtomText from '../common/CustomText';
+import CustomText from '../common/CustomText';
 
 interface PaginationProps {
   pageParam: number;
@@ -34,10 +34,10 @@ function Pagination({
           size={15}
           color={pageParam > 1 ? colors[theme].BLACK : colors[theme].GRAY_300}
         />
-        <CusmtomText
+        <CustomText
           style={pageParam > 1 ? styles.pageText : styles.disabledText}>
           이전페이지
-        </CusmtomText>
+        </CustomText>
       </Pressable>
       <Pressable
         style={styles.pageButton}
@@ -52,14 +52,14 @@ function Pagination({
               : colors[theme].GRAY_300
           }
         />
-        <CusmtomText
+        <CustomText
           style={
             totalLength > 0 && hasNextPage
               ? styles.pageText
               : styles.disabledText
           }>
           다음페이지
-        </CusmtomText>
+        </CustomText>
       </Pressable>
     </View>
   );

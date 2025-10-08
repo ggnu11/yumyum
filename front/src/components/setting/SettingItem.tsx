@@ -2,7 +2,7 @@ import {colors} from '@/constants/colors';
 import useThemeStore, {Theme} from '@/store/theme';
 import React from 'react';
 import {Pressable, PressableProps, StyleSheet} from 'react-native';
-import CusmtomText from '../common/CustomText';
+import CustomText from '../common/CustomText';
 
 interface SettingItemProps extends PressableProps {
   title: string;
@@ -20,10 +20,10 @@ function SettingItem({title, color, ...props}: SettingItemProps) {
         styles.container,
         pressed && styles.pressedContainer,
       ]}>
-      <CusmtomText
+      <CustomText
         style={[styles.titleText, {color: color ?? colors[theme].BLACK}]}>
         {title}
-      </CusmtomText>
+      </CustomText>
     </Pressable>
   );
 }

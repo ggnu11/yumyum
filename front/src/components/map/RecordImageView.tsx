@@ -3,7 +3,7 @@ import {Image, StyleSheet, View} from 'react-native';
 
 import {colors} from '../../constants/colors';
 import useThemeStore, {Theme} from '../../store/theme';
-import CusmtomText from '../common/CustomText';
+import CustomText from '../common/CustomText';
 
 interface RecordImageViewProps {
   images: string[];
@@ -22,9 +22,9 @@ function RecordImageView({images}: RecordImageViewProps) {
       <Image source={{uri: images[0]}} style={styles.recordImage} />
       {images.length > 1 && (
         <View style={styles.imageCountBadge}>
-          <CusmtomText style={styles.imageCountText}>
+          <CustomText style={styles.imageCountText}>
             +{images.length - 1}
-          </CusmtomText>
+          </CustomText>
         </View>
       )}
     </View>

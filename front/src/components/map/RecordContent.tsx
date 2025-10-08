@@ -4,7 +4,7 @@ import {StyleSheet, View} from 'react-native';
 import {colors} from '../../constants/colors';
 import useThemeStore, {Theme} from '../../store/theme';
 import {getDateWithSeparator} from '../../utils/date';
-import CusmtomText from '../common/CustomText';
+import CustomText from '../common/CustomText';
 
 interface RecordContentProps {
   title: string;
@@ -18,11 +18,11 @@ function RecordContent({title, content, date}: RecordContentProps) {
 
   return (
     <View style={styles.content}>
-      <CusmtomText style={styles.title}>{title}</CusmtomText>
-      <CusmtomText style={styles.description}>{content}</CusmtomText>
-      <CusmtomText style={styles.date}>
+      <CustomText style={styles.title}>{title}</CustomText>
+      <CustomText style={styles.description}>{content}</CustomText>
+      <CustomText style={styles.date}>
         {getDateWithSeparator(date, '.')}
-      </CusmtomText>
+      </CustomText>
     </View>
   );
 }

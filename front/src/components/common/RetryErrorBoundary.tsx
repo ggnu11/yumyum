@@ -5,7 +5,7 @@ import React, {PropsWithChildren} from 'react';
 import {ErrorBoundary} from 'react-error-boundary';
 import {StyleSheet, View} from 'react-native';
 import CustomButton from './CustomButton';
-import CusmtomText from './CustomText';
+import CustomText from './CustomText';
 
 function RetryErrorBoundary({children}: PropsWithChildren) {
   const {reset} = useQueryErrorResetBoundary();
@@ -17,12 +17,12 @@ function RetryErrorBoundary({children}: PropsWithChildren) {
       onReset={reset}
       fallbackRender={({resetErrorBoundary}) => (
         <View style={styles.container}>
-          <CusmtomText style={styles.titleText}>
+          <CustomText style={styles.titleText}>
             잠시 후 다시 시도해주세요.
-          </CusmtomText>
-          <CusmtomText style={styles.descriptionText}>
+          </CustomText>
+          <CustomText style={styles.descriptionText}>
             요청 사항을 처리하는데 실패했습니다.
-          </CusmtomText>
+          </CustomText>
           <CustomButton
             label="다시 시도"
             variant="outlined"

@@ -10,7 +10,7 @@ import {
 
 import {colors} from '@/constants/colors';
 import useThemeStore, {Theme} from '@/store/theme';
-import CusmtomText from './CustomText';
+import CustomText from './CustomText';
 
 interface CustomButtonProps extends PressableProps {
   label: string | ReactNode;
@@ -42,9 +42,9 @@ function CustomButton({
       ]}
       {...props}>
       {typeof label === 'string' ? (
-        <CusmtomText style={[styles[`${variant}Text`], textStyle]}>
+        <CustomText style={[styles[`${variant}Text`], textStyle]}>
           {label}
-        </CusmtomText>
+        </CustomText>
       ) : (
         label
       )}

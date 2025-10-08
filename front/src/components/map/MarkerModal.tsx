@@ -14,7 +14,7 @@ import {colors} from '@/constants/colors';
 import useGetPost from '@/hooks/queries/useGetPost';
 import useThemeStore, {Theme} from '@/store/theme';
 import {getDateWithSeparator} from '@/utils/date';
-import CusmtomText from '../common/CustomText';
+import CustomText from '../common/CustomText';
 
 interface MarkerModalProps {
   markerId: number;
@@ -64,7 +64,7 @@ function MarkerModal({markerId, isVisible, hide}: MarkerModalProps) {
               {post.imageUris.length === 0 && (
                 <View
                   style={[styles.imageContainer, styles.emptyImageContainer]}>
-                  <CusmtomText style={styles.emptyText}>No Image</CusmtomText>
+                  <CustomText style={styles.emptyText}>No Image</CustomText>
                 </View>
               )}
               <View style={styles.infoContainer}>
@@ -74,22 +74,22 @@ function MarkerModal({markerId, isVisible, hide}: MarkerModalProps) {
                     size={10}
                     color={colors[theme].GRAY_500}
                   />
-                  <CusmtomText
+                  <CustomText
                     style={styles.addressText}
                     numberOfLines={1}
                     ellipsizeMode="tail">
                     {post.address}
-                  </CusmtomText>
+                  </CustomText>
                 </View>
-                <CusmtomText
+                <CustomText
                   style={styles.titleText}
                   numberOfLines={1}
                   ellipsizeMode="tail">
                   {post.title}
-                </CusmtomText>
-                <CusmtomText style={styles.dateText}>
+                </CustomText>
+                <CustomText style={styles.dateText}>
                   {getDateWithSeparator(post.date, '.')}
-                </CusmtomText>
+                </CustomText>
               </View>
             </View>
 

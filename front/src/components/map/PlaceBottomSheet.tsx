@@ -7,8 +7,7 @@ import {View} from 'react-native';
 import {colors} from '../../constants/colors';
 import {useFilteredRecords, usePlacePins} from '../../hooks/usePin';
 import {PlaceInfo as ApiPlaceInfo} from '../../types/api';
-import CusmtomText from '../common/CustomText';
-import AddRecordButton from './AddRecordButton';
+import CustomText from '../common/CustomText';
 import FeedFilterSection from './FeedFilterSection';
 import PlaceSummaryView from './PlaceSummaryView';
 import RecordsList from './RecordsList';
@@ -18,13 +17,26 @@ export type FilterType = 'mine' | 'all';
 interface PlaceBottomSheetProps {
   placeInfo: ApiPlaceInfo | null;
   onClose?: () => void;
+  onSheetChange?: (index: number) => void;
+  onSheetAnimate?: (fromIndex: number, toIndex: number) => void;
   onAddRecord?: (placeId: string) => void;
   onEditRecord?: (recordId: number) => void;
   onDeleteRecord?: (recordId: number) => void;
 }
 
 const PlaceBottomSheet = forwardRef<BottomSheet, PlaceBottomSheetProps>(
-  ({placeInfo, onClose, onAddRecord, onEditRecord, onDeleteRecord}, ref) => {
+  (
+    {
+      placeInfo,
+      onClose,
+      onSheetChange,
+      onSheetAnimate,
+      onAddRecord,
+      onEditRecord,
+      onDeleteRecord,
+    },
+    ref,
+  ) => {
     const [activeFilter, setActiveFilter] = useState<FilterType>('mine');
 
     // API 호출 - 장소의 핀 목록 조회
@@ -39,17 +51,34 @@ const PlaceBottomSheet = forwardRef<BottomSheet, PlaceBottomSheetProps>(
     // 필터링된 레코드
     const filteredRecords = useFilteredRecords(allRecords, activeFilter);
 
-    // 모든 기록들의 이미지 추출
-    const recordImages = allRecords
-      .flatMap(record => record.images || [])
-      .filter((image, index, self) => self.indexOf(image) === index); // 중복 제거
+    const snapPoints = useMemo(() => [300, '90%'], []);
 
-    const snapPoints = useMemo(() => ['25%', '50%', '90%'], []);
+    const handleSheetChanges = useCallback(
+      (index: number) => {
+        // Bottom sheet 상태 변경 처리
+        console.log('handleSheetChanges', index);
 
-    const handleSheetChanges = useCallback((index: number) => {
-      // Bottom sheet 상태 변경 처리
-      console.log('handleSheetChanges', index);
-    }, []);
+        // 상태 변경을 부모 컴포넌트에 알림
+        if (onSheetChange) {
+          onSheetChange(index);
+        }
+
+        // 바텀시트가 완전히 닫혔을 때 (-1) onClose 콜백 호출
+        if (index === -1 && onClose) {
+          onClose();
+        }
+      },
+      [onClose, onSheetChange],
+    );
+
+    const handleSheetAnimate = useCallback(
+      (fromIndex: number, toIndex: number) => {
+        if (onSheetAnimate) {
+          onSheetAnimate(fromIndex, toIndex);
+        }
+      },
+      [onSheetAnimate],
+    );
 
     if (!placeInfo) {
       return null;
@@ -61,7 +90,9 @@ const PlaceBottomSheet = forwardRef<BottomSheet, PlaceBottomSheetProps>(
         index={0}
         snapPoints={snapPoints}
         onChange={handleSheetChanges}
+        onAnimate={handleSheetAnimate}
         enablePanDownToClose={true}
+        enableDynamicSizing={false}
         backgroundStyle={{
           backgroundColor: colors.light.WHITE,
           borderTopLeftRadius: 20,
@@ -72,7 +103,7 @@ const PlaceBottomSheet = forwardRef<BottomSheet, PlaceBottomSheetProps>(
           width: 40,
         }}>
         <BottomSheetView style={{flex: 1, paddingHorizontal: 20}}>
-          <PlaceSummaryView placeInfo={placeInfo} recordImages={recordImages} />
+          <PlaceSummaryView placeInfo={placeInfo} />
 
           <View
             style={{
@@ -93,15 +124,15 @@ const PlaceBottomSheet = forwardRef<BottomSheet, PlaceBottomSheetProps>(
 
             {isPinsLoading ? (
               <View style={{padding: 20, alignItems: 'center'}}>
-                <CusmtomText style={{color: colors.light.GRAY_500}}>
+                <CustomText style={{color: colors.light.GRAY_500}}>
                   기록을 불러오는 중...
-                </CusmtomText>
+                </CustomText>
               </View>
             ) : pinsError ? (
               <View style={{padding: 20, alignItems: 'center'}}>
-                <CusmtomText style={{color: colors.light.RED_500}}>
+                <CustomText style={{color: colors.light.RED_500}}>
                   기록을 불러오는데 실패했습니다.
-                </CusmtomText>
+                </CustomText>
               </View>
             ) : (
               <RecordsList
@@ -112,8 +143,6 @@ const PlaceBottomSheet = forwardRef<BottomSheet, PlaceBottomSheetProps>(
               />
             )}
           </BottomSheetScrollView>
-
-          <AddRecordButton onPress={() => onAddRecord?.(placeInfo?.place_id)} />
         </BottomSheetView>
       </BottomSheet>
     );

@@ -3,7 +3,7 @@ import {StyleSheet, View} from 'react-native';
 
 import {colors} from '@/constants/colors';
 import useThemeStore, {Theme} from '@/store/theme';
-import CusmtomText from '../common/CustomText';
+import CustomText from '../common/CustomText';
 import {TermsHeaderProps} from './types';
 
 function TermsHeader({title}: TermsHeaderProps) {
@@ -12,7 +12,7 @@ function TermsHeader({title}: TermsHeaderProps) {
 
   return (
     <View style={styles.header}>
-      <CusmtomText style={styles.headerTitle}>{title}</CusmtomText>
+      <CustomText style={styles.headerTitle}>{title}</CustomText>
     </View>
   );
 }

@@ -2,7 +2,7 @@ import {colors} from '@/constants/colors';
 import useThemeStore, {Theme} from '@/store/theme';
 import React from 'react';
 import {Dimensions, StyleSheet, View} from 'react-native';
-import CusmtomText from '../common/CustomText';
+import CustomText from '../common/CustomText';
 
 const deviceWidth = Dimensions.get('window').width;
 
@@ -15,14 +15,14 @@ function DayOfWeeks() {
       {['일', '월', '화', '수', '목', '금', '토'].map((dayOfWeek, index) => {
         return (
           <View key={index} style={styles.item}>
-            <CusmtomText
+            <CustomText
               style={[
                 styles.text,
                 dayOfWeek === '토' && styles.saturdayText,
                 dayOfWeek === '일' && styles.sundayText,
               ]}>
               {dayOfWeek}
-            </CusmtomText>
+            </CustomText>
           </View>
         );
       })}

@@ -11,7 +11,7 @@ import {Image, Pressable, SafeAreaView, StyleSheet, View} from 'react-native';
 import {colors} from '@/constants/colors';
 import useAuth from '@/hooks/queries/useAuth';
 import useThemeStore, {Theme} from '@/store/theme';
-import CusmtomText from './CustomText';
+import CustomText from './CustomText';
 
 function CustomDrawerContent(props: DrawerContentComponentProps) {
   const {theme} = useThemeStore();
@@ -38,7 +38,7 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
               style={styles.userImage}
             />
           </View>
-          <CusmtomText style={styles.nickname}>{auth.nickname}</CusmtomText>
+          <CustomText style={styles.nickname}>{auth.nickname}</CustomText>
         </Pressable>
         <DrawerItemList {...props} />
       </DrawerContentScrollView>
@@ -51,7 +51,7 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
             size={20}
             color={colors[theme].BLACK}
           />
-          <CusmtomText style={styles.menuText}>설정</CusmtomText>
+          <CustomText style={styles.menuText}>설정</CustomText>
         </Pressable>
       </View>
     </SafeAreaView>

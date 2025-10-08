@@ -6,7 +6,7 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {Image, Platform, SafeAreaView, StyleSheet, View} from 'react-native';
 
 import CustomButton from '@/components/common/CustomButton';
-import CusmtomText from '@/components/common/CustomText';
+import CustomText from '@/components/common/CustomText';
 import {colors} from '@/constants/colors';
 import {useNaverLogin} from '@/hooks/auth/naver';
 import useAuth from '@/hooks/queries/useAuth';
@@ -116,10 +116,10 @@ function AuthHomeScreen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.imageContainer}>
         <Image source={require('@/assets/yumyum.png')} resizeMode="contain" />
-        <CusmtomText style={styles.titleText}>YUMYUM</CusmtomText>
-        <CusmtomText style={styles.subtitleText}>
+        <CustomText style={styles.titleText}>YUMYUM</CustomText>
+        <CustomText style={styles.subtitleText}>
           우리만의 맛집 지도, 얌얌
-        </CusmtomText>
+        </CustomText>
       </View>
       <View style={styles.buttonContainer}>
         {Platform.OS === 'ios' && isAppleSignInAvailable && (

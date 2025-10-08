@@ -5,7 +5,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {colors} from '@/constants/colors';
 import useThemeStore, {Theme} from '@/store/theme';
-import CusmtomText from '../common/CustomText';
+import CustomText from '../common/CustomText';
 
 interface SearchBarProps {
   onPress: () => void;
@@ -28,9 +28,9 @@ function SearchBar({onPress}: SearchBarProps) {
           color={colors[theme].GRAY_500}
           iconStyle="solid"
         />
-        <CusmtomText style={styles.placeholder}>
+        <CustomText style={styles.placeholder}>
           오늘 하루는 어떤 맛이었나요?
-        </CusmtomText>
+        </CustomText>
       </View>
     </TouchableOpacity>
   );
