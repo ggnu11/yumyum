@@ -320,8 +320,6 @@ function MapHomeScreen() {
         {selectLocation && <Marker coordinate={selectLocation} />}
       </MapView>
       <View style={styles.buttonList}>
-        <MapIconButton name="filter" onPress={filterAction.show} />
-        <MapIconButton name="plus" onPress={handlePressAddPost} />
         <MapIconButton
           name="location-crosshairs"
           onPress={handlePressUserLocation}
