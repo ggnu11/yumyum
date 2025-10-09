@@ -37,9 +37,14 @@ function PlaceSummaryView({
 
   return (
     <View style={styles.summarySection}>
-      {/* 장소 이름과 위시(즐겨찾기) */}
+      {/* 장소 이름, 카테고리, 위시(즐겨찾기) */}
       <View style={styles.placeHeader}>
-        <CustomText style={styles.placeName}>{placeInfo.place_name}</CustomText>
+        <View style={styles.placeNameRow}>
+          <CustomText style={styles.placeName}>
+            {placeInfo.place_name}
+          </CustomText>
+          <CustomText style={styles.categoryText}>칼국수, 만두</CustomText>
+        </View>
         <TouchableOpacity style={styles.wishButton} onPress={onBookmarkPress}>
           <Ionicons
             name={isBookmarked ? 'star' : 'star-outline'}
@@ -49,11 +54,6 @@ function PlaceSummaryView({
             }
           />
         </TouchableOpacity>
-      </View>
-
-      {/* 장소 카테고리 */}
-      <View style={styles.categorySection}>
-        <CustomText style={styles.categoryText}>칼국수, 만두</CustomText>
       </View>
 
       {/* 기록카드 갯수 */}
@@ -82,22 +82,26 @@ function PlaceSummaryView({
         </View>
 
         {placeInfo.phone_number && (
-          <TouchableOpacity
-            style={styles.phoneRow}
-            onPress={() => {
-              Clipboard.setString(placeInfo.phone_number);
-              Alert.alert('복사됨', '전화번호가 클립보드에 복사되었습니다.');
-            }}>
-            <Ionicons
-              name="call-outline"
-              size={16}
-              color={colors[theme].BLUE_100}
-            />
-            <CustomText style={[styles.infoText, styles.phoneText]}>
-              {placeInfo.phone_number}
-            </CustomText>
-            <CustomText style={styles.copyText}>복사</CustomText>
-          </TouchableOpacity>
+          <View style={styles.phoneRow}>
+            <View style={styles.phoneNumberRow}>
+              <Ionicons
+                name="call-outline"
+                size={16}
+                color={colors[theme].GRAY_500}
+              />
+              <CustomText style={styles.infoText}>
+                {placeInfo.phone_number}
+              </CustomText>
+            </View>
+            <TouchableOpacity
+              style={styles.copyButton}
+              onPress={() => {
+                Clipboard.setString(placeInfo.phone_number);
+                Alert.alert('복사됨', '전화번호가 클립보드에 복사되었습니다.');
+              }}>
+              <CustomText style={styles.copyText}>복사</CustomText>
+            </TouchableOpacity>
+          </View>
         )}
       </View>
 
@@ -146,25 +150,27 @@ const styling = (theme: Theme) =>
     placeHeader: {
       flexDirection: 'row',
       justifyContent: 'space-between',
-      alignItems: 'center',
-      marginBottom: 8,
+      alignItems: 'flex-start',
+      marginBottom: 16,
+    },
+    placeNameRow: {
+      flexDirection: 'row',
+      alignItems: 'baseline',
+      gap: 8,
+      flex: 1,
     },
     placeName: {
       fontSize: 20,
       fontWeight: 'bold',
       color: colors[theme].BLACK,
-      flex: 1,
-    },
-    wishButton: {
-      padding: 8,
-    },
-    categorySection: {
-      marginBottom: 12,
     },
     categoryText: {
       fontSize: 14,
-      color: colors[theme].GRAY_700,
-      fontWeight: '500',
+      color: colors[theme].GRAY_500,
+      fontWeight: '400',
+    },
+    wishButton: {
+      padding: 8,
     },
     recordCountRow: {
       flexDirection: 'row',
@@ -189,21 +195,24 @@ const styling = (theme: Theme) =>
       flexDirection: 'row',
       alignItems: 'center',
       gap: 8,
-      paddingVertical: 4,
+    },
+    phoneNumberRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
     },
     infoText: {
       fontSize: 14,
       color: colors[theme].GRAY_700,
-      flex: 1,
     },
-    phoneText: {
-      color: colors[theme].BLUE_100,
+    copyButton: {
+      paddingHorizontal: 8,
+      paddingVertical: 4,
     },
     copyText: {
       fontSize: 12,
-      color: colors[theme].BLUE_100,
+      color: colors[theme].BLUE_500,
       fontWeight: '600',
-      marginLeft: 4,
     },
     placeImagesSection: {
       marginBottom: 12,
@@ -216,8 +225,8 @@ const styling = (theme: Theme) =>
       marginRight: 8,
     },
     placeImage: {
-      width: 80,
-      height: 80,
+      width: 100,
+      height: 100,
       borderRadius: 12,
       backgroundColor: colors[theme].GRAY_200,
     },

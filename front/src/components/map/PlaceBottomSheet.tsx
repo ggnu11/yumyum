@@ -51,7 +51,7 @@ const PlaceBottomSheet = forwardRef<BottomSheet, PlaceBottomSheetProps>(
     // 필터링된 레코드
     const filteredRecords = useFilteredRecords(allRecords, activeFilter);
 
-    const snapPoints = useMemo(() => [300, '100%'], []);
+    const snapPoints = useMemo(() => [397, '100%'], []);
 
     const handleSheetChanges = useCallback(
       (index: number) => {

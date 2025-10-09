@@ -23,6 +23,7 @@ import useUserLocation from '@/hooks/useUserLocation';
 import useFilterStore from '@/store/filter';
 import useLocationStore from '@/store/location';
 import useThemeStore, {Theme} from '@/store/theme';
+import useBottomSheetStore from '@/store/bottomSheet';
 import {MapStackParamList} from '@/types/navigation';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
@@ -48,6 +49,7 @@ function MapHomeScreen() {
     setSelectedPlaceFromSearch,
   } = useLocationStore();
   const {filters} = useFilterStore();
+  const {setIsVisible: setBottomSheetVisible} = useBottomSheetStore();
   const {userLocation, isUserLocationError} = useUserLocation();
   const {mapRef, moveMapView, handleChangeDelta} = useMoveMapView();
   const {data: markers = []} = useGetMarkers({
@@ -96,6 +98,7 @@ function MapHomeScreen() {
       setSelectedPlaceId(selectedPlaceFromSearch.id);
       setSelectedPlaceInfo(convertedPlaceInfo);
       setIsButtonVisible(true); // 버튼 즉시 표시
+      setBottomSheetVisible(true); // 탭바 즉시 숨김
       moveMapView(coordinate);
       bottomSheetRef.current?.snapToIndex(0);
 
@@ -164,6 +167,7 @@ function MapHomeScreen() {
         setSelectedPlaceId(placeInfo.place_id);
         setSelectedPlaceInfo(placeInfo);
         setIsButtonVisible(true); // 버튼 즉시 표시
+        setBottomSheetVisible(true); // 탭바 즉시 숨김
         moveMapView(coordinate);
         bottomSheetRef.current?.snapToIndex(0);
       } catch (error) {
@@ -180,6 +184,7 @@ function MapHomeScreen() {
         setSelectedPlaceId(fallbackPlaceInfo.place_id);
         setSelectedPlaceInfo(fallbackPlaceInfo);
         setIsButtonVisible(true); // 버튼 즉시 표시
+        setBottomSheetVisible(true); // 탭바 즉시 숨김
         moveMapView(coordinate);
         bottomSheetRef.current?.snapToIndex(0);
       }
@@ -203,36 +208,48 @@ function MapHomeScreen() {
   };
 
   // 바텀시트 상태 변경 감지
-  const handleBottomSheetChange = useCallback((index: number) => {
-    console.log('Bottom sheet index changed to:', index);
-    // 바텀시트가 닫히기 시작하면 (-1) 또는 닫히는 과정에서 버튼을 즉시 숨김
-    if (index === -1) {
-      setIsButtonVisible(false);
-    }
-    // 바텀시트가 열릴 때 (index >= 0) 버튼을 표시
-    else if (index >= 0) {
-      setIsButtonVisible(true);
-    }
-  }, []);
+  const handleBottomSheetChange = useCallback(
+    (index: number) => {
+      console.log('Bottom sheet index changed to:', index);
+      // 바텀시트가 닫히기 시작하면 (-1) 또는 닫히는 과정에서 버튼을 즉시 숨김
+      if (index === -1) {
+        setIsButtonVisible(false);
+        setBottomSheetVisible(false); // 탭바 표시
+      }
+      // 바텀시트가 열릴 때 (index >= 0) 버튼을 표시
+      else if (index >= 0) {
+        setIsButtonVisible(true);
+        setBottomSheetVisible(true); // 탭바 숨김
+      }
+    },
+    [setBottomSheetVisible],
+  );
 
-  // 바텀시트 애니메이션 감지 - 닫히기 시작할 때 버튼 즉시 숨김
+  // 바텀시트 애니메이션 감지 - 애니메이션 시작 시 즉시 반영
   const handleBottomSheetAnimate = useCallback(
     (fromIndex: number, toIndex: number) => {
       console.log('Bottom sheet animating from', fromIndex, 'to', toIndex);
-      // 바텀시트가 닫히는 애니메이션이 시작되면 (toIndex가 -1) 버튼을 즉시 숨김
+      // 바텀시트가 닫히는 애니메이션이 시작되면 (toIndex가 -1) 버튼과 탭바를 즉시 변경
       if (toIndex === -1) {
         setIsButtonVisible(false);
+        setBottomSheetVisible(false); // 탭바 표시
+      }
+      // 바텀시트가 열리는 애니메이션이 시작되면 (toIndex >= 0) 버튼과 탭바를 즉시 변경
+      else if (toIndex >= 0 && fromIndex === -1) {
+        setIsButtonVisible(true);
+        setBottomSheetVisible(true); // 탭바 숨김
       }
     },
-    [],
+    [setBottomSheetVisible],
   );
 
   const handleCloseBottomSheet = useCallback(() => {
     // 버튼을 즉시 숨김 (바텀시트와 동시에 애니메이션 시작)
     setIsButtonVisible(false);
+    setBottomSheetVisible(false); // 탭바 표시
     // 바텀시트를 부드럽게 닫기 (애니메이션 포함)
     bottomSheetRef.current?.close();
-  }, []);
+  }, [setBottomSheetVisible]);
 
   // 바텀시트가 완전히 닫힌 후 상태 초기화
   const handleBottomSheetClosed = useCallback(() => {

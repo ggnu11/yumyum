@@ -6,6 +6,7 @@ import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 import {colors} from '@/constants/colors';
 import CalendarScreen from '@/screens/calendar/CalendarScreen';
 import useThemeStore, {Theme} from '@/store/theme';
+import useBottomSheetStore from '@/store/bottomSheet';
 import {MainBottomTabParamList} from '@/types/navigation';
 import {FeedStack} from './FeedNavigation';
 import {MapStack} from './MapNavigation';
@@ -49,6 +50,7 @@ function TabIcons(
 
 export default function BottomTabNavigation() {
   const {theme} = useThemeStore();
+  const {isVisible: isBottomSheetVisible} = useBottomSheetStore();
 
   return (
     <Tab.Navigator
@@ -61,13 +63,15 @@ export default function BottomTabNavigation() {
           TabIcons(route.name as keyof MainBottomTabParamList, focused, theme),
         tabBarActiveTintColor: colors[theme].BLUE_500,
         tabBarInactiveTintColor: colors[theme].GRAY_500,
-        tabBarStyle: {
-          backgroundColor: colors[theme].WHITE,
-          borderTopColor: colors[theme].GRAY_200,
-          paddingTop: 8,
-          paddingBottom: 8,
-          height: 60,
-        },
+        tabBarStyle: isBottomSheetVisible
+          ? {display: 'none'}
+          : {
+              backgroundColor: colors[theme].WHITE,
+              borderTopColor: colors[theme].GRAY_200,
+              paddingTop: 8,
+              paddingBottom: 8,
+              height: 60,
+            },
         tabBarLabelStyle: {
           fontSize: 12,
           fontWeight: '600',
