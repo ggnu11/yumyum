@@ -1,5 +1,5 @@
 import React, {useState, useRef, useCallback, useEffect} from 'react';
-import {Alert, StyleSheet, View} from 'react-native';
+import {Alert, StyleSheet, View, Animated} from 'react-native';
 import {LatLng, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
@@ -40,7 +40,10 @@ function MapHomeScreen() {
   const [selectedPlaceInfo, setSelectedPlaceInfo] =
     useState<ApiPlaceInfo | null>(null);
   const [isButtonVisible, setIsButtonVisible] = useState<boolean>(false); // 버튼 표시 상태 추가
+  const [isBottomSheetExpanded, setIsBottomSheetExpanded] =
+    useState<boolean>(false); // 바텀시트 100% 확장 상태
   const [activeFilters, setActiveFilters] = useState<string[]>(['all']);
+  const searchBarTranslateY = useRef(new Animated.Value(0)).current; // 검색바 애니메이션
   const bottomSheetRef = useRef<BottomSheet>(null);
   const {
     selectLocation,
@@ -215,11 +218,19 @@ function MapHomeScreen() {
       if (index === -1) {
         setIsButtonVisible(false);
         setBottomSheetVisible(false); // 탭바 표시
+        setIsBottomSheetExpanded(false); // 검색창/필터바 표시
       }
-      // 바텀시트가 열릴 때 (index >= 0) 버튼을 표시
-      else if (index >= 0) {
+      // 바텀시트가 100%로 확장되었을 때 (index === 1)
+      else if (index === 1) {
         setIsButtonVisible(true);
         setBottomSheetVisible(true); // 탭바 숨김
+        setIsBottomSheetExpanded(true); // 검색창/필터바 숨김
+      }
+      // 바텀시트가 기본 상태일 때 (index === 0)
+      else if (index === 0) {
+        setIsButtonVisible(true);
+        setBottomSheetVisible(true); // 탭바 숨김
+        setIsBottomSheetExpanded(false); // 검색창/필터바 표시
       }
     },
     [setBottomSheetVisible],
@@ -233,14 +244,41 @@ function MapHomeScreen() {
       if (toIndex === -1) {
         setIsButtonVisible(false);
         setBottomSheetVisible(false); // 탭바 표시
+        setIsBottomSheetExpanded(false); // 검색창/필터바 표시
+        // 검색바 다시 내려오기
+        Animated.timing(searchBarTranslateY, {
+          toValue: 0,
+          duration: 250,
+          useNativeDriver: true,
+        }).start();
+      }
+      // 바텀시트가 100%로 확장되는 애니메이션이 시작되면 (toIndex === 1)
+      else if (toIndex === 1) {
+        setIsBottomSheetExpanded(true); // 검색창/필터바 숨김
+        // 검색바 위로 올리기
+        Animated.timing(searchBarTranslateY, {
+          toValue: -200, // 검색바 + 필터바 높이만큼 위로
+          duration: 250,
+          useNativeDriver: true,
+        }).start();
+      }
+      // 바텀시트가 기본 상태로 돌아오는 애니메이션이 시작되면 (toIndex === 0)
+      else if (toIndex === 0) {
+        setIsBottomSheetExpanded(false); // 검색창/필터바 표시
+        // 검색바 다시 내려오기
+        Animated.timing(searchBarTranslateY, {
+          toValue: 0,
+          duration: 250,
+          useNativeDriver: true,
+        }).start();
       }
       // 바텀시트가 열리는 애니메이션이 시작되면 (toIndex >= 0) 버튼과 탭바를 즉시 변경
-      else if (toIndex >= 0 && fromIndex === -1) {
+      if (toIndex >= 0 && fromIndex === -1) {
         setIsButtonVisible(true);
         setBottomSheetVisible(true); // 탭바 숨김
       }
     },
-    [setBottomSheetVisible],
+    [setBottomSheetVisible, searchBarTranslateY],
   );
 
   const handleCloseBottomSheet = useCallback(() => {
@@ -301,11 +339,21 @@ function MapHomeScreen() {
 
   return (
     <>
-      <SearchBar onPress={() => navigation.navigate('SearchLocation')} />
-      <FilterButtons
-        activeFilters={activeFilters}
-        onFilterPress={handleFilterPress}
-      />
+      <Animated.View
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 10,
+          transform: [{translateY: searchBarTranslateY}],
+        }}>
+        <SearchBar onPress={() => navigation.navigate('SearchLocation')} />
+        <FilterButtons
+          activeFilters={activeFilters}
+          onFilterPress={handleFilterPress}
+        />
+      </Animated.View>
       <MapView
         userInterfaceStyle={theme}
         googleMapId="f727da01391db33238e04009"

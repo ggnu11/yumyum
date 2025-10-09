@@ -109,7 +109,8 @@ const PlaceBottomSheet = forwardRef<BottomSheet, PlaceBottomSheetProps>(
             style={{
               height: 1,
               backgroundColor: colors.light.GRAY_200,
-              marginVertical: 20,
+              marginTop: 20,
+              marginBottom: 12,
             }}
           />
 
