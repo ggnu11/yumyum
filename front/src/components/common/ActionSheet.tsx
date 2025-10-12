@@ -1,6 +1,15 @@
 import Ionicons from '@react-native-vector-icons/ionicons';
-import {createContext, PropsWithChildren, ReactNode, useContext} from 'react';
 import {
+  createContext,
+  PropsWithChildren,
+  ReactNode,
+  useContext,
+  useRef,
+  useEffect,
+} from 'react';
+import {
+  Animated,
+  Dimensions,
   GestureResponderEvent,
   Modal,
   ModalProps,
@@ -8,6 +17,7 @@ import {
   PressableProps,
   SafeAreaView,
   StyleSheet,
+  TouchableHighlight,
   View,
 } from 'react-native';
 
@@ -15,8 +25,12 @@ import {colors} from '@/constants/colors';
 import useThemeStore, {Theme} from '@/store/theme';
 import CustomText from './CustomText';
 
+const {height: SCREEN_HEIGHT} = Dimensions.get('window');
+
 interface ActionSheetContextValue {
   onPressOutSide?: (event: GestureResponderEvent) => void;
+  backgroundOpacity?: Animated.Value;
+  containerTranslateY?: Animated.Value;
 }
 
 const ActionSheetContext = createContext<ActionSheetContextValue | undefined>(
@@ -33,10 +47,45 @@ interface ActionMainProps extends ModalProps {
 function ActionMain({
   children,
   isVisible,
-  animationType = 'slide',
+  animationType = 'none',
   hideAction,
   ...props
 }: ActionMainProps) {
+  const backgroundOpacity = useRef(new Animated.Value(0)).current;
+  const containerTranslateY = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
+
+  useEffect(() => {
+    if (isVisible) {
+      // 열기 애니메이션
+      Animated.parallel([
+        Animated.timing(backgroundOpacity, {
+          toValue: 1,
+          duration: 250,
+          useNativeDriver: true,
+        }),
+        Animated.timing(containerTranslateY, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    } else {
+      // 닫기 애니메이션
+      Animated.parallel([
+        Animated.timing(backgroundOpacity, {
+          toValue: 0,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+        Animated.timing(containerTranslateY, {
+          toValue: SCREEN_HEIGHT,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    }
+  }, [isVisible, backgroundOpacity, containerTranslateY]);
+
   const onPressOutSide = (event: GestureResponderEvent) => {
     if (event.target === event.currentTarget) {
       hideAction();
@@ -50,7 +99,8 @@ function ActionMain({
       animationType={animationType}
       onRequestClose={hideAction}
       {...props}>
-      <ActionSheetContext value={{onPressOutSide}}>
+      <ActionSheetContext
+        value={{onPressOutSide, backgroundOpacity, containerTranslateY}}>
         {children}
       </ActionSheetContext>
     </Modal>
@@ -63,11 +113,35 @@ function Background({children}: PropsWithChildren) {
   const actionSheetContext = useContext(ActionSheetContext);
 
   return (
-    <SafeAreaView
+    <Pressable
       style={styles.actionBackground}
-      onTouchEnd={actionSheetContext?.onPressOutSide}>
-      {children}
-    </SafeAreaView>
+      onPress={actionSheetContext?.onPressOutSide}>
+      {/* 배경 */}
+      <Animated.View
+        style={[
+          StyleSheet.absoluteFill,
+          {
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            opacity: actionSheetContext?.backgroundOpacity || 1,
+          },
+        ]}
+      />
+
+      {/* 컨테이너 */}
+      <Animated.View
+        style={[
+          styles.animatedContainer,
+          {
+            transform: [
+              {translateY: actionSheetContext?.containerTranslateY || 0},
+            ],
+          },
+        ]}>
+        <Pressable onPress={e => e.stopPropagation()}>
+          <SafeAreaView style={styles.safeArea}>{children}</SafeAreaView>
+        </Pressable>
+      </Animated.View>
+    </Pressable>
   );
 }
 
@@ -78,10 +152,11 @@ function Container({children}: PropsWithChildren) {
   return <View style={styles.actionContainer}>{children}</View>;
 }
 
-interface ButtonProps extends PressableProps {
+interface ButtonProps {
   children: ReactNode;
   isDanger?: boolean;
   isChecked?: boolean;
+  onPress?: () => void;
 }
 
 function Button({
@@ -94,20 +169,20 @@ function Button({
   const styles = styling(theme);
 
   return (
-    <Pressable
-      style={({pressed}) => [
-        pressed && styles.actionButtonPressed,
-        styles.actionButton,
-      ]}
+    <TouchableHighlight
+      style={styles.actionButton}
+      underlayColor={colors[theme].GRAY_200}
       {...props}>
-      <CustomText style={[styles.actionText, isDanger && styles.dangerText]}>
-        {children}
-      </CustomText>
+      <View style={styles.actionButtonContent}>
+        <CustomText style={[styles.actionText, isDanger && styles.dangerText]}>
+          {children}
+        </CustomText>
 
-      {isChecked && (
-        <Ionicons name="checkmark" size={20} color={colors[theme].BLUE_500} />
-      )}
-    </Pressable>
+        {isChecked && (
+          <Ionicons name="checkmark" size={20} color={colors[theme].BLUE_500} />
+        )}
+      </View>
+    </TouchableHighlight>
   );
 }
 
@@ -153,10 +228,11 @@ function Filter({children, isSelected, ...props}: FilterProps) {
   );
 }
 
-interface CheckBoxProps extends PressableProps {
+interface CheckBoxProps {
   children?: ReactNode;
   icon?: ReactNode;
   isChecked?: boolean;
+  onPress?: () => void;
 }
 
 function CheckBox({
@@ -169,20 +245,20 @@ function CheckBox({
   const styles = styling(theme);
 
   return (
-    <Pressable
-      {...props}
-      style={({pressed}) => [
-        pressed && styles.actionButtonPressed,
-        styles.checkBoxContainer,
-      ]}>
-      <Ionicons
-        size={22}
-        color={colors[theme].BLUE_500}
-        name={isChecked ? 'checkmark-circle' : 'checkmark-circle-outline'}
-      />
-      {icon}
-      <CustomText style={styles.checkBoxText}>{children}</CustomText>
-    </Pressable>
+    <TouchableHighlight
+      style={styles.checkBoxContainer}
+      underlayColor={colors[theme].GRAY_200}
+      {...props}>
+      <View style={styles.checkBoxContent}>
+        <Ionicons
+          size={22}
+          color={colors[theme].BLUE_500}
+          name={isChecked ? 'checkmark-circle' : 'checkmark-circle-outline'}
+        />
+        {icon}
+        <CustomText style={styles.checkBoxText}>{children}</CustomText>
+      </View>
+    </TouchableHighlight>
   );
 }
 
@@ -201,19 +277,24 @@ const styling = (theme: Theme) =>
     actionBackground: {
       flex: 1,
       justifyContent: 'flex-end',
-      backgroundColor: 'rgba(0 0 0 / 0.5)',
+    },
+    animatedContainer: {
+      justifyContent: 'flex-end',
+    },
+    safeArea: {
+      paddingHorizontal: 10,
+      paddingBottom: 10,
     },
     actionContainer: {
       backgroundColor: colors[theme].GRAY_100,
       overflow: 'hidden',
       borderRadius: 15,
-      marginHorizontal: 10,
       marginBottom: 10,
     },
-    actionButtonPressed: {
-      backgroundColor: colors[theme].GRAY_200,
-    },
     actionButton: {
+      height: 50,
+    },
+    actionButtonContent: {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
@@ -258,10 +339,12 @@ const styling = (theme: Theme) =>
       fontWeight: '500',
     },
     checkBoxContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
       paddingVertical: 10,
       paddingHorizontal: 30,
+    },
+    checkBoxContent: {
+      flexDirection: 'row',
+      alignItems: 'center',
       gap: 10,
     },
     checkBoxText: {

@@ -1,17 +1,20 @@
 import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 import {
   StyleSheet,
   TouchableOpacity,
+  TouchableHighlight,
   View,
   Modal,
   Pressable,
   Dimensions,
+  Animated,
 } from 'react-native';
 
 import {colors} from '../../constants/colors';
 import useThemeStore, {Theme} from '../../store/theme';
 import CustomText from '../common/CustomText';
+import CommonActionSheet from '../common/CommonActionSheet';
 
 interface RecordActionMenuProps {
   recordId: number;
@@ -27,35 +30,103 @@ function RecordActionMenu({recordId, onEdit, onDelete}: RecordActionMenuProps) {
   const [showActionSheet, setShowActionSheet] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
+  // DeleteModal 애니메이션 값들
+  const deleteModalOpacity = useRef(new Animated.Value(0)).current;
+  const deleteModalScale = useRef(new Animated.Value(0.8)).current;
+
+  // DeleteModal 애니메이션 함수들
+  const showDeleteModalAnimation = () => {
+    setShowDeleteModal(true);
+    // 애니메이션 시작 전 초기값 설정
+    deleteModalOpacity.setValue(0);
+    deleteModalScale.setValue(0.8);
+
+    Animated.parallel([
+      Animated.timing(deleteModalOpacity, {
+        toValue: 1,
+        duration: 250,
+        useNativeDriver: true,
+      }),
+      Animated.timing(deleteModalScale, {
+        toValue: 1,
+        duration: 250,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  const hideDeleteModalAnimation = () => {
+    Animated.parallel([
+      Animated.timing(deleteModalOpacity, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+      Animated.timing(deleteModalScale, {
+        toValue: 0.8,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      setShowDeleteModal(false);
+      // 애니메이션 완료 후 초기값으로 리셋
+      deleteModalOpacity.setValue(0);
+      deleteModalScale.setValue(0.8);
+    });
+  };
+
   const handleMorePress = () => {
     setShowActionSheet(true);
   };
 
   const handleEdit = () => {
-    setShowActionSheet(false);
     onEdit?.(recordId);
   };
 
   const handleDeletePress = () => {
-    setShowActionSheet(false);
     // ActionSheet가 닫힌 후 삭제 확인 모달 표시
     setTimeout(() => {
-      setShowDeleteModal(true);
+      showDeleteModalAnimation();
     }, 300);
   };
 
   const handleConfirmDelete = () => {
-    setShowDeleteModal(false);
+    hideDeleteModalAnimation();
     onDelete?.(recordId);
   };
 
   const handleCancelDelete = () => {
-    setShowDeleteModal(false);
+    hideDeleteModalAnimation();
   };
+
+  const handleCloseActionSheet = () => {
+    // 취소 버튼 클릭 시 별도 액션 없음
+  };
+
+  // ActionSheet 액션들 정의
+  const actionSheetActions = [
+    {
+      text: '삭제하기',
+      onPress: handleDeletePress,
+      isDanger: true,
+    },
+    {
+      text: '수정하기',
+      onPress: handleEdit,
+    },
+    {
+      text: '취소',
+      onPress: handleCloseActionSheet,
+      isCancel: true,
+    },
+  ];
 
   return (
     <>
-      <TouchableOpacity onPress={handleMorePress} style={styles.moreButton}>
+      <TouchableOpacity
+        onPress={handleMorePress}
+        style={styles.moreButton}
+        activeOpacity={0.7}>
         <FontAwesome6
           name="ellipsis"
           size={16}
@@ -64,78 +135,74 @@ function RecordActionMenu({recordId, onEdit, onDelete}: RecordActionMenuProps) {
         />
       </TouchableOpacity>
 
-      {/* ActionSheet 모달 */}
-      <Modal
-        visible={showActionSheet}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setShowActionSheet(false)}>
-        <Pressable
-          style={styles.modalOverlay}
-          onPress={() => setShowActionSheet(false)}>
-          <View style={styles.actionSheetContainer}>
-            <View style={styles.actionSheet}>
-              <TouchableOpacity
-                style={styles.actionButton}
-                onPress={handleDeletePress}>
-                <CustomText style={styles.deleteButtonText}>
-                  삭제하기
-                </CustomText>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={[styles.actionButton, styles.editButton]}
-                onPress={handleEdit}>
-                <CustomText style={styles.editButtonText}>수정하기</CustomText>
-              </TouchableOpacity>
-            </View>
-
-            <TouchableOpacity
-              style={styles.cancelButton}
-              onPress={() => setShowActionSheet(false)}>
-              <CustomText style={styles.cancelButtonText}>취소</CustomText>
-            </TouchableOpacity>
-          </View>
-        </Pressable>
-      </Modal>
+      {/* 공통 ActionSheet */}
+      <CommonActionSheet
+        isVisible={showActionSheet}
+        onClose={handleCloseActionSheet}
+        actions={actionSheetActions}
+      />
 
       {/* 삭제 확인 모달 */}
       <Modal
         visible={showDeleteModal}
         transparent
-        animationType="fade"
+        animationType="none"
         onRequestClose={handleCancelDelete}>
         <Pressable style={styles.modalOverlay} onPress={handleCancelDelete}>
-          <Pressable style={styles.deleteModalContainer}>
-            <View style={styles.deleteModal}>
-              <CustomText style={styles.deleteModalTitle}>
-                기록카드를 삭제할까요?
-              </CustomText>
-              <CustomText style={styles.deleteModalMessage}>
-                삭제된 기록카드는 다시 복구할 수 없어요.{'\n'}삭제를 진행할까요?
-              </CustomText>
+          {/* 배경 */}
+          <Animated.View
+            style={[
+              StyleSheet.absoluteFill,
+              {
+                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                opacity: deleteModalOpacity,
+              },
+            ]}
+          />
 
-              <View style={styles.deleteModalButtons}>
-                <TouchableOpacity
-                  style={[styles.deleteModalButton]}
-                  onPress={handleCancelDelete}>
-                  <CustomText style={styles.cancelDeleteButtonText}>
-                    취소하기
-                  </CustomText>
-                </TouchableOpacity>
+          {/* DeleteModal 컨테이너 */}
+          <View style={styles.deleteModalContainer}>
+            <Pressable onPress={e => e.stopPropagation()}>
+              <Animated.View
+                style={[
+                  styles.deleteModal,
+                  {
+                    transform: [{scale: deleteModalScale}],
+                    opacity: deleteModalOpacity,
+                  },
+                ]}>
+                <CustomText style={styles.deleteModalTitle}>
+                  기록카드를 삭제할까요?
+                </CustomText>
+                <CustomText style={styles.deleteModalMessage}>
+                  삭제된 기록카드는 다시 복구할 수 없어요.{'\n'}삭제를
+                  진행할까요?
+                </CustomText>
 
-                <View style={styles.buttonDivider} />
+                <View style={styles.deleteModalButtons}>
+                  <TouchableHighlight
+                    style={[styles.deleteModalButton]}
+                    underlayColor={colors[theme].GRAY_200}
+                    onPress={handleCancelDelete}>
+                    <CustomText style={styles.cancelDeleteButtonText}>
+                      취소하기
+                    </CustomText>
+                  </TouchableHighlight>
 
-                <TouchableOpacity
-                  style={[styles.deleteModalButton]}
-                  onPress={handleConfirmDelete}>
-                  <CustomText style={styles.confirmDeleteButtonText}>
-                    삭제하기
-                  </CustomText>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </Pressable>
+                  <View style={styles.buttonDivider} />
+
+                  <TouchableHighlight
+                    style={[styles.deleteModalButton]}
+                    underlayColor={colors[theme].GRAY_200}
+                    onPress={handleConfirmDelete}>
+                    <CustomText style={styles.confirmDeleteButtonText}>
+                      삭제하기
+                    </CustomText>
+                  </TouchableHighlight>
+                </View>
+              </Animated.View>
+            </Pressable>
+          </View>
         </Pressable>
       </Modal>
     </>
@@ -149,49 +216,7 @@ const styling = (theme: Theme) =>
     },
     modalOverlay: {
       flex: 1,
-      backgroundColor: 'rgba(0, 0, 0, 0.4)',
       justifyContent: 'flex-end',
-    },
-    actionSheetContainer: {
-      paddingHorizontal: 8,
-      paddingBottom: 8,
-    },
-    actionSheet: {
-      backgroundColor: colors[theme].GRAY_100,
-      borderRadius: 14,
-      overflow: 'hidden',
-      marginBottom: 8,
-    },
-    actionButton: {
-      backgroundColor: colors[theme].WHITE,
-      paddingVertical: 16,
-      alignItems: 'center',
-      borderBottomWidth: 0.5,
-      borderBottomColor: colors[theme].GRAY_200,
-    },
-    editButton: {
-      borderBottomWidth: 0,
-    },
-    deleteButtonText: {
-      fontSize: 20,
-      color: colors[theme].RED_500,
-      fontWeight: '400',
-    },
-    editButtonText: {
-      fontSize: 20,
-      color: colors[theme].BLUE_500,
-      fontWeight: '400',
-    },
-    cancelButton: {
-      backgroundColor: colors[theme].WHITE,
-      paddingVertical: 16,
-      alignItems: 'center',
-      borderRadius: 14,
-    },
-    cancelButtonText: {
-      fontSize: 20,
-      color: colors[theme].BLUE_500,
-      fontWeight: '600',
     },
     deleteModalContainer: {
       flex: 1,
