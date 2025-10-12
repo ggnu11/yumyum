@@ -7,7 +7,7 @@ interface StarIconProps {
   fill?: boolean;
 }
 
-function StarIcon({size = 16, color = '#000', fill = false}: StarIconProps) {
+function StarIcon({size = 16, color = '#000', fill = true}: StarIconProps) {
   return (
     <FontAwesome6
       name="star"

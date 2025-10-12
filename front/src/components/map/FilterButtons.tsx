@@ -25,31 +25,31 @@ const filterData = [
   {id: 'friends', label: '친구', icon: UsersIcon},
   {
     id: 'group1',
-    label: '그룹1',
+    label: '그룹이름',
     color: colorSystem.pin.red,
     icon: UserGroupIcon,
   },
   {
     id: 'group2',
-    label: '그룹2',
+    label: '그룹이름',
     color: colorSystem.pin.yellow,
     icon: UserGroupIcon,
   },
   {
     id: 'group3',
-    label: '그룹3',
+    label: '그룹이름',
     color: colorSystem.pin.yellowGreen,
     icon: UserGroupIcon,
   },
   {
     id: 'group4',
-    label: '그룹4',
+    label: '그룹이름',
     color: colorSystem.pin.teal,
     icon: UserGroupIcon,
   },
   {
     id: 'group5',
-    label: '그룹5',
+    label: '그룹이름',
     color: colorSystem.pin.blue,
     icon: UserGroupIcon,
   },
@@ -61,7 +61,7 @@ function FilterButtons({activeFilters, onFilterPress}: FilterButtonsProps) {
   const inset = useSafeAreaInsets();
 
   return (
-    <View style={[styles.container, {top: inset.top + 70}]}>
+    <View style={[styles.container, {top: inset.top + 65}]}>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -119,18 +119,18 @@ const styling = (theme: Theme) =>
       left: 0,
       right: 0,
       zIndex: 1,
-      paddingHorizontal: 20,
     },
     scrollContent: {
+      paddingLeft: 13,
       paddingRight: 20,
     },
     filterButton: {
       backgroundColor: colors[theme].WHITE,
-      width: 77,
       height: 29,
       borderRadius: 20,
       marginRight: 8,
       borderWidth: 1,
+      paddingHorizontal: 10,
       borderColor: colors[theme].GRAY_200,
       justifyContent: 'center',
       alignItems: 'center',
