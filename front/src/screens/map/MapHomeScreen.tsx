@@ -45,12 +45,8 @@ function MapHomeScreen() {
   const [activeFilters, setActiveFilters] = useState<string[]>(['all']);
   const searchBarTranslateY = useRef(new Animated.Value(0)).current; // 검색바 애니메이션
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const {
-    selectLocation,
-    setSelectLocation,
-    selectedPlaceFromSearch,
-    setSelectedPlaceFromSearch,
-  } = useLocationStore();
+  const {selectedPlaceFromSearch, setSelectedPlaceFromSearch} =
+    useLocationStore();
   const {filters} = useFilterStore();
   const {setIsVisible: setBottomSheetVisible} = useBottomSheetStore();
   const {userLocation, isUserLocationError} = useUserLocation();
@@ -194,21 +190,6 @@ function MapHomeScreen() {
     },
     [moveMapView],
   );
-
-  const handlePressAddPost = () => {
-    if (!selectLocation) {
-      Alert.alert(
-        '추가할 위치를 선택해주세요',
-        '지도를 길게 누르면 위치가 선택됩니다.',
-      );
-      return;
-    }
-
-    navigation.navigate('AddLocation', {
-      location: selectLocation,
-    });
-    setSelectLocation(null);
-  };
 
   // 바텀시트 상태 변경 감지
   const handleBottomSheetChange = useCallback(
@@ -367,9 +348,6 @@ function MapHomeScreen() {
         provider={PROVIDER_GOOGLE}
         onRegionChangeComplete={handleChangeDelta}
         onPress={handleCloseBottomSheet} // 지도 클릭 시 바텀시트 닫기
-        onLongPress={({nativeEvent}) =>
-          setSelectLocation(nativeEvent.coordinate)
-        }
         onPoiClick={handlePressMapPoi}
         showsPointsOfInterests={true}>
         {markers.map(({id, color, score, ...coordinate}) => (
@@ -381,8 +359,6 @@ function MapHomeScreen() {
             onPress={() => handlePressMarker(id, coordinate)}
           />
         ))}
-
-        {selectLocation && <Marker coordinate={selectLocation} />}
       </MapView>
       <View style={styles.buttonList}>
         <MapIconButton

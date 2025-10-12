@@ -24,8 +24,7 @@ function SearchRegionResult({regionInfo}: SearchRegionResultProps) {
   const {theme} = useThemeStore();
   const styles = styling(theme);
   const navigation = useNavigation();
-  const {setMoveLocation, setSelectLocation, setSelectedPlaceFromSearch} =
-    useLocationStore();
+  const {setMoveLocation, setSelectedPlaceFromSearch} = useLocationStore();
 
   const handlePressRegionInfo = (regionInfo: RegionInfo) => {
     const regionLocation = {
@@ -42,7 +41,6 @@ function SearchRegionResult({regionInfo}: SearchRegionResultProps) {
     navigation.goBack();
 
     setMoveLocation(location);
-    setSelectLocation(location);
   };
 
   return (
