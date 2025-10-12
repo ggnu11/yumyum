@@ -2,8 +2,9 @@ import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
 import React from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import LinearGradient from 'react-native-linear-gradient';
 
-import {colors} from '@/constants/colors';
+import {colors, colorSystem} from '@/constants/colors';
 import useThemeStore, {Theme} from '@/store/theme';
 import CustomText from '../common/CustomText';
 
@@ -17,22 +18,32 @@ function SearchBar({onPress}: SearchBarProps) {
   const inset = useSafeAreaInsets();
 
   return (
-    <TouchableOpacity
-      style={[styles.container, {top: inset.top + 10}]}
-      activeOpacity={0.8}
-      onPress={onPress}>
-      <View style={styles.searchBox}>
-        <FontAwesome6
-          name="magnifying-glass"
-          size={16}
-          color={colors[theme].GRAY_500}
-          iconStyle="solid"
-        />
-        <CustomText style={styles.placeholder}>
-          오늘 하루는 어떤 맛이었나요?
-        </CustomText>
+    <View style={[styles.container, {top: inset.top + 10}]}>
+      <View style={styles.searchWrapper}>
+        <View style={styles.searchInputContainer}>
+          <CustomText style={styles.placeholder}>
+            오늘 하루는 어떤 맛이었나요?
+          </CustomText>
+        </View>
+        <TouchableOpacity
+          style={styles.searchButtonTouchable}
+          activeOpacity={0.8}
+          onPress={onPress}>
+          <LinearGradient
+            colors={colorSystem.primary.gradient}
+            start={{x: 0, y: 0}}
+            end={{x: 1, y: 0}}
+            style={styles.searchButton}>
+            <FontAwesome6
+              name="magnifying-glass"
+              size={18}
+              color={colors[theme].WHITE}
+              iconStyle="solid"
+            />
+          </LinearGradient>
+        </TouchableOpacity>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 }
 
@@ -40,28 +51,41 @@ const styling = (theme: Theme) =>
   StyleSheet.create({
     container: {
       position: 'absolute',
-      left: 15,
-      right: 15,
+      left: 0,
+      right: 0,
       zIndex: 1,
+      alignItems: 'center',
     },
-    searchBox: {
+    searchWrapper: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 0,
+    },
+    searchInputContainer: {
       flexDirection: 'row',
       alignItems: 'center',
       backgroundColor: colors[theme].WHITE,
+      width: 335,
+      height: 42,
       paddingHorizontal: 15,
-      paddingVertical: 12,
-      borderRadius: 25,
-      shadowColor: colors[theme].BLACK,
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
-      elevation: 3,
+      borderWidth: 1,
+      borderColor: '#9A77FF',
+      borderTopLeftRadius: 10,
+      borderBottomLeftRadius: 10,
+      borderRightWidth: 0,
+    },
+    searchButtonTouchable: {
+      borderTopRightRadius: 10,
+      borderBottomRightRadius: 10,
+      overflow: 'hidden',
+    },
+    searchButton: {
+      width: 42,
+      height: 42,
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     placeholder: {
-      marginLeft: 10,
       fontSize: 14,
       color: colors[theme].GRAY_500,
       flex: 1,

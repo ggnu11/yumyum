@@ -107,7 +107,7 @@ const colorSystem = {
     light: '#C4C4E7', // Purple30
     normal: '#7E4EFF', // Purple80
     strong: '#6732FF', // Purple100
-    gradient: '#9A77FF', // Purple60
+    gradient: ['#6732FF', '#B59CFF'], // Purple100 to Purple40
   },
 
   // Secondary Colors
