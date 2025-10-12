@@ -3,10 +3,10 @@ import {View, StyleSheet} from 'react-native';
 
 import {colors} from '../../constants/colors';
 import useThemeStore, {Theme} from '../../store/theme';
+import CustomText from '../common/CustomText';
 import RecordAuthorInfo from './RecordAuthorInfo';
 import RecordActionMenu from './RecordActionMenu';
 import RecordImageView from './RecordImageView';
-import RecordContent from './RecordContent';
 
 interface RecordData {
   id: number;
@@ -23,11 +23,17 @@ interface RecordData {
 
 interface RecordCardProps {
   record: RecordData;
+  isExpanded?: boolean;
   onEdit?: (id: number) => void;
   onDelete?: (id: number) => void;
 }
 
-function RecordCard({record, onEdit, onDelete}: RecordCardProps) {
+function RecordCard({
+  record,
+  isExpanded = false,
+  onEdit,
+  onDelete,
+}: RecordCardProps) {
   const {theme} = useThemeStore();
   const styles = styling(theme);
 
@@ -35,8 +41,20 @@ function RecordCard({record, onEdit, onDelete}: RecordCardProps) {
     <View style={styles.container}>
       {/* 카드 헤더 */}
       <View style={styles.header}>
-        {!record.isOwner && record.author && (
+        {!record.isOwner && record.author ? (
           <RecordAuthorInfo author={record.author} />
+        ) : (
+          <View style={styles.titleRow}>
+            <CustomText style={styles.title}>{record.title}</CustomText>
+            <View style={styles.categoryBadge}>
+              <CustomText style={styles.categoryText}>내 카드</CustomText>
+              {record.isOwner && (
+                <View style={styles.lockIcon}>
+                  <CustomText style={styles.lockText}>🔒</CustomText>
+                </View>
+              )}
+            </View>
+          </View>
         )}
 
         {record.isOwner && (
@@ -48,15 +66,13 @@ function RecordCard({record, onEdit, onDelete}: RecordCardProps) {
         )}
       </View>
 
-      {/* 이미지 */}
-      <RecordImageView images={record.images || []} />
+      <CustomText style={styles.date}>{record.date}</CustomText>
 
-      {/* 카드 내용 */}
-      <RecordContent
-        title={record.title}
-        content={record.content}
-        date={record.date}
-      />
+      {/* 내용 */}
+      <CustomText style={styles.content}>{record.content}</CustomText>
+
+      {/* 이미지 */}
+      <RecordImageView images={record.images || []} isExpanded={isExpanded} />
     </View>
   );
 }
@@ -64,27 +80,55 @@ function RecordCard({record, onEdit, onDelete}: RecordCardProps) {
 const styling = (theme: Theme) =>
   StyleSheet.create({
     container: {
-      backgroundColor: colors[theme].WHITE,
-      borderRadius: 12,
-      borderWidth: 1,
-      borderColor: colors[theme].GRAY_200,
-      shadowColor: colors[theme].BLACK,
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.05,
-      shadowRadius: 4,
-      elevation: 2,
-      overflow: 'hidden',
+      paddingVertical: 20,
+      borderBottomWidth: 1,
+      borderBottomColor: colors[theme].GRAY_200,
     },
     header: {
       flexDirection: 'row',
       justifyContent: 'space-between',
+      alignItems: 'flex-start',
+      marginBottom: 8,
+    },
+    titleRow: {
+      flex: 1,
+      flexDirection: 'row',
       alignItems: 'center',
-      paddingHorizontal: 16,
-      paddingTop: 16,
-      paddingBottom: 8,
+      gap: 8,
+    },
+    title: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: colors[theme].BLACK,
+    },
+    categoryBadge: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
+    },
+    categoryText: {
+      fontSize: 12,
+      color: colors[theme].GRAY_500,
+    },
+    lockIcon: {
+      width: 16,
+      height: 16,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    lockText: {
+      fontSize: 10,
+    },
+    date: {
+      fontSize: 12,
+      color: colors[theme].GRAY_500,
+      marginBottom: 12,
+    },
+    content: {
+      fontSize: 14,
+      color: colors[theme].BLACK,
+      lineHeight: 20,
+      marginBottom: 12,
     },
   });
 

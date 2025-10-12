@@ -1,15 +1,15 @@
 import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
 import Ionicons from '@react-native-vector-icons/ionicons';
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 import {
   StyleSheet,
   TouchableOpacity,
   View,
   ScrollView,
-  Image,
   Dimensions,
   Clipboard,
   Alert,
+  Animated,
 } from 'react-native';
 
 import {colors} from '../../constants/colors';
@@ -21,15 +21,26 @@ interface PlaceSummaryViewProps {
   placeInfo: PlaceInfo | null;
   isBookmarked?: boolean;
   onBookmarkPress?: () => void;
+  isExpanded?: boolean;
 }
 
 function PlaceSummaryView({
   placeInfo,
   isBookmarked = false,
   onBookmarkPress,
+  isExpanded = false,
 }: PlaceSummaryViewProps) {
   const {theme} = useThemeStore();
   const styles = styling(theme);
+  const imageSize = useRef(new Animated.Value(100)).current;
+
+  useEffect(() => {
+    Animated.timing(imageSize, {
+      toValue: isExpanded ? 50 : 100,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+  }, [isExpanded, imageSize]);
 
   if (!placeInfo) {
     return null;
@@ -45,15 +56,17 @@ function PlaceSummaryView({
           </CustomText>
           <CustomText style={styles.categoryText}>칼국수, 만두</CustomText>
         </View>
-        <TouchableOpacity style={styles.wishButton} onPress={onBookmarkPress}>
-          <Ionicons
-            name={isBookmarked ? 'star' : 'star-outline'}
-            size={24}
-            color={
-              isBookmarked ? colors[theme].YELLOW_500 : colors[theme].GRAY_500
-            }
-          />
-        </TouchableOpacity>
+        {!isExpanded && (
+          <TouchableOpacity style={styles.wishButton} onPress={onBookmarkPress}>
+            <Ionicons
+              name={isBookmarked ? 'star' : 'star-outline'}
+              size={24}
+              color={
+                isBookmarked ? colors[theme].YELLOW_500 : colors[theme].GRAY_500
+              }
+            />
+          </TouchableOpacity>
+        )}
       </View>
 
       {/* 기록카드 갯수 */}
@@ -119,7 +132,16 @@ function PlaceSummaryView({
 
               return (
                 <View key={`place-${index}`} style={styles.imageContainer}>
-                  <Image source={{uri: imageUri}} style={styles.placeImage} />
+                  <Animated.Image
+                    source={{uri: imageUri}}
+                    style={[
+                      styles.placeImage,
+                      {
+                        width: imageSize,
+                        height: imageSize,
+                      },
+                    ]}
+                  />
                   {showMoreButton && (
                     <TouchableOpacity
                       style={styles.moreImagesOverlay}
@@ -225,8 +247,6 @@ const styling = (theme: Theme) =>
       marginRight: 8,
     },
     placeImage: {
-      width: 100,
-      height: 100,
       borderRadius: 12,
       backgroundColor: colors[theme].GRAY_200,
     },

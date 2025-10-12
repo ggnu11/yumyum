@@ -1,61 +1,66 @@
-import React from 'react';
-import {Image, StyleSheet, View} from 'react-native';
+import React, {useEffect, useRef} from 'react';
+import {StyleSheet, View, Animated, ScrollView} from 'react-native';
 
 import {colors} from '../../constants/colors';
 import useThemeStore, {Theme} from '../../store/theme';
-import CustomText from '../common/CustomText';
 
 interface RecordImageViewProps {
   images: string[];
+  isExpanded?: boolean;
 }
 
-function RecordImageView({images}: RecordImageViewProps) {
+function RecordImageView({images, isExpanded = false}: RecordImageViewProps) {
   const {theme} = useThemeStore();
   const styles = styling(theme);
+  const imageSize = useRef(new Animated.Value(100)).current;
+
+  useEffect(() => {
+    Animated.timing(imageSize, {
+      toValue: isExpanded ? 50 : 100,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+  }, [isExpanded, imageSize]);
 
   if (!images || images.length === 0) {
     return null;
   }
 
   return (
-    <View style={styles.imageContainer}>
-      <Image source={{uri: images[0]}} style={styles.recordImage} />
-      {images.length > 1 && (
-        <View style={styles.imageCountBadge}>
-          <CustomText style={styles.imageCountText}>
-            +{images.length - 1}
-          </CustomText>
-        </View>
-      )}
-    </View>
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      style={styles.scrollContainer}
+      contentContainerStyle={styles.imageContainer}>
+      {images.map((uri, index) => (
+        <Animated.Image
+          key={index}
+          source={{uri}}
+          style={[
+            styles.recordImage,
+            {
+              width: imageSize,
+              height: imageSize,
+            },
+          ]}
+        />
+      ))}
+    </ScrollView>
   );
 }
 
 const styling = (theme: Theme) =>
   StyleSheet.create({
+    scrollContainer: {
+      marginTop: 4,
+    },
     imageContainer: {
-      position: 'relative',
-      marginHorizontal: 16,
-      marginBottom: 8,
+      flexDirection: 'row',
+      gap: 8,
     },
     recordImage: {
-      width: '100%',
-      height: 200,
       borderRadius: 8,
-    },
-    imageCountBadge: {
-      position: 'absolute',
-      top: 8,
-      right: 8,
-      backgroundColor: 'rgba(0, 0, 0, 0.6)',
-      borderRadius: 12,
-      paddingHorizontal: 8,
-      paddingVertical: 4,
-    },
-    imageCountText: {
-      color: colors[theme].UNCHANGE_WHITE,
-      fontSize: 12,
-      fontWeight: '500',
+      backgroundColor: colors[theme].GRAY_200,
     },
   });
 

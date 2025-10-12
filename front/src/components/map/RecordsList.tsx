@@ -20,6 +20,7 @@ interface RecordData {
 interface RecordsListProps {
   records: RecordData[];
   activeFilter: FilterType;
+  isExpanded?: boolean;
   onEditRecord?: (recordId: number) => void;
   onDeleteRecord?: (recordId: number) => void;
 }
@@ -27,6 +28,7 @@ interface RecordsListProps {
 function RecordsList({
   records,
   activeFilter,
+  isExpanded = false,
   onEditRecord,
   onDeleteRecord,
 }: RecordsListProps) {
@@ -44,6 +46,7 @@ function RecordsList({
         <RecordCard
           key={record.id}
           record={record}
+          isExpanded={isExpanded}
           onEdit={onEditRecord}
           onDelete={onDeleteRecord}
         />
@@ -54,7 +57,6 @@ function RecordsList({
 
 const styles = StyleSheet.create({
   recordsList: {
-    gap: 16,
     paddingBottom: 100, // 하단 버튼 공간 확보
   },
 });

@@ -1,7 +1,13 @@
 import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
-import Ionicons from '@react-native-vector-icons/ionicons';
 import React, {useState} from 'react';
-import {Alert, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  Modal,
+  Pressable,
+  Dimensions,
+} from 'react-native';
 
 import {colors} from '../../constants/colors';
 import useThemeStore, {Theme} from '../../store/theme';
@@ -13,37 +19,42 @@ interface RecordActionMenuProps {
   onDelete?: (id: number) => void;
 }
 
+const {height: SCREEN_HEIGHT} = Dimensions.get('window');
+
 function RecordActionMenu({recordId, onEdit, onDelete}: RecordActionMenuProps) {
   const {theme} = useThemeStore();
   const styles = styling(theme);
-  const [showMenu, setShowMenu] = useState(false);
+  const [showActionSheet, setShowActionSheet] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const handleMorePress = () => {
-    setShowMenu(!showMenu);
+    setShowActionSheet(true);
   };
 
   const handleEdit = () => {
-    setShowMenu(false);
+    setShowActionSheet(false);
     onEdit?.(recordId);
   };
 
-  const handleDelete = () => {
-    setShowMenu(false);
-    Alert.alert('기록 삭제', '이 기록을 정말 삭제하시겠습니까?', [
-      {
-        text: '취소',
-        style: 'cancel',
-      },
-      {
-        text: '삭제',
-        style: 'destructive',
-        onPress: () => onDelete?.(recordId),
-      },
-    ]);
+  const handleDeletePress = () => {
+    setShowActionSheet(false);
+    // ActionSheet가 닫힌 후 삭제 확인 모달 표시
+    setTimeout(() => {
+      setShowDeleteModal(true);
+    }, 300);
+  };
+
+  const handleConfirmDelete = () => {
+    setShowDeleteModal(false);
+    onDelete?.(recordId);
+  };
+
+  const handleCancelDelete = () => {
+    setShowDeleteModal(false);
   };
 
   return (
-    <View style={styles.menuContainer}>
+    <>
       <TouchableOpacity onPress={handleMorePress} style={styles.moreButton}>
         <FontAwesome6
           name="ellipsis"
@@ -53,72 +64,188 @@ function RecordActionMenu({recordId, onEdit, onDelete}: RecordActionMenuProps) {
         />
       </TouchableOpacity>
 
-      {showMenu && (
-        <View style={styles.dropdown}>
-          <TouchableOpacity onPress={handleEdit} style={styles.menuItem}>
-            <Ionicons
-              name="create-outline"
-              size={16}
-              color={colors[theme].GRAY_700}
-            />
-            <CustomText style={styles.menuText}>수정하기</CustomText>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleDelete} style={styles.menuItem}>
-            <Ionicons
-              name="trash-outline"
-              size={16}
-              color={colors[theme].RED_500}
-            />
-            <CustomText style={[styles.menuText, styles.deleteText]}>
-              삭제하기
-            </CustomText>
-          </TouchableOpacity>
-        </View>
-      )}
-    </View>
+      {/* ActionSheet 모달 */}
+      <Modal
+        visible={showActionSheet}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowActionSheet(false)}>
+        <Pressable
+          style={styles.modalOverlay}
+          onPress={() => setShowActionSheet(false)}>
+          <View style={styles.actionSheetContainer}>
+            <View style={styles.actionSheet}>
+              <TouchableOpacity
+                style={styles.actionButton}
+                onPress={handleDeletePress}>
+                <CustomText style={styles.deleteButtonText}>
+                  삭제하기
+                </CustomText>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.actionButton, styles.editButton]}
+                onPress={handleEdit}>
+                <CustomText style={styles.editButtonText}>수정하기</CustomText>
+              </TouchableOpacity>
+            </View>
+
+            <TouchableOpacity
+              style={styles.cancelButton}
+              onPress={() => setShowActionSheet(false)}>
+              <CustomText style={styles.cancelButtonText}>취소</CustomText>
+            </TouchableOpacity>
+          </View>
+        </Pressable>
+      </Modal>
+
+      {/* 삭제 확인 모달 */}
+      <Modal
+        visible={showDeleteModal}
+        transparent
+        animationType="fade"
+        onRequestClose={handleCancelDelete}>
+        <Pressable style={styles.modalOverlay} onPress={handleCancelDelete}>
+          <Pressable style={styles.deleteModalContainer}>
+            <View style={styles.deleteModal}>
+              <CustomText style={styles.deleteModalTitle}>
+                기록카드를 삭제할까요?
+              </CustomText>
+              <CustomText style={styles.deleteModalMessage}>
+                삭제된 기록카드는 다시 복구할 수 없어요.{'\n'}삭제를 진행할까요?
+              </CustomText>
+
+              <View style={styles.deleteModalButtons}>
+                <TouchableOpacity
+                  style={[styles.deleteModalButton]}
+                  onPress={handleCancelDelete}>
+                  <CustomText style={styles.cancelDeleteButtonText}>
+                    취소하기
+                  </CustomText>
+                </TouchableOpacity>
+
+                <View style={styles.buttonDivider} />
+
+                <TouchableOpacity
+                  style={[styles.deleteModalButton]}
+                  onPress={handleConfirmDelete}>
+                  <CustomText style={styles.confirmDeleteButtonText}>
+                    삭제하기
+                  </CustomText>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Pressable>
+        </Pressable>
+      </Modal>
+    </>
   );
 }
 
 const styling = (theme: Theme) =>
   StyleSheet.create({
-    menuContainer: {
-      position: 'relative',
-    },
     moreButton: {
       padding: 8,
     },
-    dropdown: {
-      position: 'absolute',
-      top: 32,
-      left: 5,
+    modalOverlay: {
+      flex: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.4)',
+      justifyContent: 'flex-end',
+    },
+    actionSheetContainer: {
+      paddingHorizontal: 8,
+      paddingBottom: 8,
+    },
+    actionSheet: {
+      backgroundColor: colors[theme].GRAY_100,
+      borderRadius: 14,
+      overflow: 'hidden',
+      marginBottom: 8,
+    },
+    actionButton: {
       backgroundColor: colors[theme].WHITE,
-      borderRadius: 8,
-      borderWidth: 1,
-      borderColor: colors[theme].GRAY_200,
-      shadowColor: colors[theme].BLACK,
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.1,
-      shadowRadius: 8,
-      elevation: 8,
-      zIndex: 10,
-      minWidth: 120,
-    },
-    menuItem: {
-      flexDirection: 'row',
+      paddingVertical: 16,
       alignItems: 'center',
-      paddingHorizontal: 16,
-      paddingVertical: 12,
-      gap: 8,
+      borderBottomWidth: 0.5,
+      borderBottomColor: colors[theme].GRAY_200,
     },
-    menuText: {
-      fontSize: 14,
-      color: colors[theme].GRAY_700,
+    editButton: {
+      borderBottomWidth: 0,
     },
-    deleteText: {
+    deleteButtonText: {
+      fontSize: 20,
       color: colors[theme].RED_500,
+      fontWeight: '400',
+    },
+    editButtonText: {
+      fontSize: 20,
+      color: colors[theme].BLUE_500,
+      fontWeight: '400',
+    },
+    cancelButton: {
+      backgroundColor: colors[theme].WHITE,
+      paddingVertical: 16,
+      alignItems: 'center',
+      borderRadius: 14,
+    },
+    cancelButtonText: {
+      fontSize: 20,
+      color: colors[theme].BLUE_500,
+      fontWeight: '600',
+    },
+    deleteModalContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: 40,
+    },
+    deleteModal: {
+      backgroundColor: colors[theme].WHITE,
+      borderRadius: 14,
+      paddingTop: 24,
+      paddingBottom: 12,
+      width: '100%',
+      maxWidth: 320,
+    },
+    deleteModalTitle: {
+      fontSize: 17,
+      fontWeight: '600',
+      color: colors[theme].BLACK,
+      textAlign: 'center',
+      marginBottom: 8,
+    },
+    deleteModalMessage: {
+      fontSize: 13,
+      color: colors[theme].GRAY_700,
+      textAlign: 'center',
+      lineHeight: 18,
+      paddingHorizontal: 16,
+      marginBottom: 20,
+    },
+    deleteModalButtons: {
+      flexDirection: 'row',
+      borderTopWidth: 0.5,
+      borderTopColor: colors[theme].GRAY_300,
+    },
+    deleteModalButton: {
+      flex: 1,
+      paddingVertical: 12,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    buttonDivider: {
+      width: 0.5,
+      backgroundColor: colors[theme].GRAY_300,
+    },
+    cancelDeleteButtonText: {
+      fontSize: 17,
+      color: colors[theme].GRAY_700,
+      fontWeight: '400',
+    },
+    confirmDeleteButtonText: {
+      fontSize: 17,
+      color: colors[theme].BLACK,
+      fontWeight: '600',
     },
   });
 
