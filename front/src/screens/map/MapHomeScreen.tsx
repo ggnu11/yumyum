@@ -362,7 +362,6 @@ function MapHomeScreen() {
       </MapView>
       <View style={styles.buttonList}>
         <MapIconButton
-          name="location-crosshairs"
           onPress={handlePressUserLocation}
         />
       </View>

@@ -1,31 +1,22 @@
-import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
-import React, {ComponentProps} from 'react';
-import {Pressable, StyleSheet} from 'react-native';
+import React from 'react';
+import {Pressable, StyleSheet, Image} from 'react-native';
 
 import {colors} from '@/constants/colors';
 import useThemeStore, {Theme} from '@/store/theme';
 
-type SolidIconName = Extract<
-  ComponentProps<typeof FontAwesome6>,
-  {iconStyle: 'solid'}
->['name'];
-
 interface MapIconButtonProps {
-  name: SolidIconName;
   onPress: () => void;
 }
 
-function MapIconButton({name, onPress}: MapIconButtonProps) {
+function MapIconButton({onPress}: MapIconButtonProps) {
   const {theme} = useThemeStore();
   const styles = styling(theme);
 
   return (
     <Pressable style={styles.mapButton} onPress={onPress}>
-      <FontAwesome6
-        name={name}
-        iconStyle="solid"
-        size={25}
-        color={colors[theme].WHITE}
+      <Image 
+        source={require('@/assets/location.png')}
+        style={styles.iconImage}
       />
     </Pressable>
   );
@@ -34,11 +25,11 @@ function MapIconButton({name, onPress}: MapIconButtonProps) {
 const styling = (theme: Theme) =>
   StyleSheet.create({
     mapButton: {
-      backgroundColor: colors[theme].BLUE_500,
+      backgroundColor: colors[theme].WHITE,
       marginVertical: 5,
-      height: 45,
-      width: 45,
-      borderRadius: 45,
+      height: 50,
+      width: 50,
+      borderRadius: 25,
       alignItems: 'center',
       justifyContent: 'center',
       shadowColor: colors[theme].BLACK,
@@ -49,6 +40,11 @@ const styling = (theme: Theme) =>
       shadowOpacity: 0.25,
       shadowRadius: 3.84,
       elevation: 5,
+    },
+    iconImage: {
+      width: 24,
+      height: 24,
+      tintColor: colors[theme].BLACK,
     },
   });
 
