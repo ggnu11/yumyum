@@ -14,7 +14,7 @@ function MapIconButton({onPress}: MapIconButtonProps) {
 
   return (
     <Pressable style={styles.mapButton} onPress={onPress}>
-      <Image 
+      <Image
         source={require('@/assets/location.png')}
         style={styles.iconImage}
       />

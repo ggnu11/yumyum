@@ -361,9 +361,7 @@ function MapHomeScreen() {
         ))}
       </MapView>
       <View style={styles.buttonList}>
-        <MapIconButton
-          onPress={handlePressUserLocation}
-        />
+        <MapIconButton onPress={handlePressUserLocation} />
       </View>
 
       <PlaceBottomSheet
