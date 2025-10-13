@@ -399,7 +399,7 @@ const styling = (theme: Theme) =>
       position: 'absolute',
       bottom: 30,
       right: 20,
-      zIndex: 1,
+      zIndex: 0,
     },
   });
 

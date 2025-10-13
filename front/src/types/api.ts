@@ -31,6 +31,7 @@ export interface PlaceInfo {
   phone_number: string;
   total_pin_count: number;
   place_images?: string[]; // Google Places API에서 가져온 장소 이미지들
+  types?: string[]; // Google Places API의 types 배열 (카테고리 정보)
 }
 
 export interface PinObject {

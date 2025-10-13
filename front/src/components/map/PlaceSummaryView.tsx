@@ -1,6 +1,6 @@
 import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
 import Ionicons from '@react-native-vector-icons/ionicons';
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   StyleSheet,
   TouchableOpacity,
@@ -10,12 +10,16 @@ import {
   Clipboard,
   Alert,
   Animated,
+  Modal,
 } from 'react-native';
 
 import {colors} from '../../constants/colors';
 import useThemeStore, {Theme} from '../../store/theme';
 import {PlaceInfo} from '../../types/api';
 import CustomText from '../common/CustomText';
+import PhotoListView from './PhotoListView';
+import PhotoExpandView from './PhotoExpandView';
+import {formatPlaceTypes} from '../../utils/placeUtils';
 
 interface PlaceSummaryViewProps {
   placeInfo: PlaceInfo | null;
@@ -33,6 +37,9 @@ function PlaceSummaryView({
   const {theme} = useThemeStore();
   const styles = styling(theme);
   const imageSize = useRef(new Animated.Value(100)).current;
+  const [showPhotoList, setShowPhotoList] = useState(false);
+  const [showPhotoExpand, setShowPhotoExpand] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   useEffect(() => {
     Animated.timing(imageSize, {
@@ -41,6 +48,15 @@ function PlaceSummaryView({
       useNativeDriver: false,
     }).start();
   }, [isExpanded, imageSize]);
+
+  const handleImagePress = (index: number) => {
+    setSelectedImageIndex(index);
+    setShowPhotoExpand(true);
+  };
+
+  const handleMorePress = () => {
+    setShowPhotoList(true);
+  };
 
   if (!placeInfo) {
     return null;
@@ -54,7 +70,11 @@ function PlaceSummaryView({
           <CustomText style={styles.placeName}>
             {placeInfo.place_name}
           </CustomText>
-          <CustomText style={styles.categoryText}>칼국수, 만두</CustomText>
+          {placeInfo.types && formatPlaceTypes(placeInfo.types) && (
+            <CustomText style={styles.categoryText}>
+              {formatPlaceTypes(placeInfo.types)}
+            </CustomText>
+          )}
         </View>
         {!isExpanded && (
           <TouchableOpacity style={styles.wishButton} onPress={onBookmarkPress}>
@@ -132,23 +152,22 @@ function PlaceSummaryView({
 
               return (
                 <View key={`place-${index}`} style={styles.imageContainer}>
-                  <Animated.Image
-                    source={{uri: imageUri}}
-                    style={[
-                      styles.placeImage,
-                      {
-                        width: imageSize,
-                        height: imageSize,
-                      },
-                    ]}
-                  />
+                  <TouchableOpacity onPress={() => handleImagePress(index)}>
+                    <Animated.Image
+                      source={{uri: imageUri}}
+                      style={[
+                        styles.placeImage,
+                        {
+                          width: imageSize,
+                          height: imageSize,
+                        },
+                      ]}
+                    />
+                  </TouchableOpacity>
                   {showMoreButton && (
                     <TouchableOpacity
                       style={styles.moreImagesOverlay}
-                      onPress={() => {
-                        // TODO: 더보기 기능 구현
-                        console.log('더보기 클릭');
-                      }}>
+                      onPress={handleMorePress}>
                       <CustomText style={styles.moreImagesText}>
                         +{placeInfo.place_images!.length - 5}
                       </CustomText>
@@ -160,6 +179,31 @@ function PlaceSummaryView({
           </ScrollView>
         </View>
       )}
+
+      {/* 사진 목록 모달 */}
+      <Modal
+        visible={showPhotoList}
+        animationType="slide"
+        presentationStyle="fullScreen">
+        <PhotoListView
+          images={placeInfo.place_images || []}
+          placeName={placeInfo.place_name}
+          category={formatPlaceTypes(placeInfo.types)}
+          onClose={() => setShowPhotoList(false)}
+        />
+      </Modal>
+
+      {/* 사진 확대 모달 */}
+      <Modal
+        visible={showPhotoExpand}
+        animationType="fade"
+        presentationStyle="fullScreen">
+        <PhotoExpandView
+          images={placeInfo.place_images || []}
+          initialIndex={selectedImageIndex}
+          onClose={() => setShowPhotoExpand(false)}
+        />
+      </Modal>
     </View>
   );
 }
