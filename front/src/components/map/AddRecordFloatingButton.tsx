@@ -69,7 +69,7 @@ const styling = (theme: Theme) =>
   StyleSheet.create({
     container: {
       position: 'absolute',
-      bottom: 20, // 바텀시트 위에 위치하도록 조정
+      bottom: 40, // 바텀시트 위에 위치하도록 조정
       left: 20,
       right: 20,
       zIndex: 11, // 바텀시트보다 위에 표시

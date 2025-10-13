@@ -50,7 +50,8 @@ function MapHomeScreen() {
   const {filters} = useFilterStore();
   const {setIsVisible: setBottomSheetVisible} = useBottomSheetStore();
   const {userLocation, isUserLocationError} = useUserLocation();
-  const {mapRef, moveMapView, handleChangeDelta} = useMoveMapView();
+  const {mapRef, moveMapView, moveMapViewWithOffset, handleChangeDelta} =
+    useMoveMapView();
   const {data: markers = []} = useGetMarkers({
     select: data => {
       let filteredData = data.filter(
@@ -98,13 +99,17 @@ function MapHomeScreen() {
       setSelectedPlaceInfo(convertedPlaceInfo);
       setIsButtonVisible(true); // 버튼 즉시 표시
       setBottomSheetVisible(true); // 탭바 즉시 숨김
-      moveMapView(coordinate);
+      moveMapViewWithOffset(coordinate);
       bottomSheetRef.current?.snapToIndex(0);
 
       // 사용 후 초기화
       setSelectedPlaceFromSearch(null);
     }
-  }, [selectedPlaceFromSearch, moveMapView, setSelectedPlaceFromSearch]);
+  }, [
+    selectedPlaceFromSearch,
+    moveMapViewWithOffset,
+    setSelectedPlaceFromSearch,
+  ]);
 
   const handlePressUserLocation = () => {
     if (isUserLocationError) {
@@ -144,7 +149,7 @@ function MapHomeScreen() {
 
       setSelectedPlaceId(placeId);
       setSelectedPlaceInfo(mockPlaceInfo);
-      moveMapView(coordinate);
+      moveMapViewWithOffset(coordinate);
       bottomSheetRef.current?.snapToIndex(0);
     },
     [moveMapView],
@@ -167,11 +172,9 @@ function MapHomeScreen() {
         setSelectedPlaceInfo(placeInfo);
         setIsButtonVisible(true); // 버튼 즉시 표시
         setBottomSheetVisible(true); // 탭바 즉시 숨김
-        moveMapView(coordinate);
+        moveMapViewWithOffset(coordinate);
         bottomSheetRef.current?.snapToIndex(0);
       } catch (error) {
-        console.error('장소 정보 조회 실패:', error);
-
         const fallbackPlaceInfo = {
           place_id: placeId || `google_${Date.now()}`,
           place_name: name || '알 수 없는 장소',
@@ -184,11 +187,11 @@ function MapHomeScreen() {
         setSelectedPlaceInfo(fallbackPlaceInfo);
         setIsButtonVisible(true); // 버튼 즉시 표시
         setBottomSheetVisible(true); // 탭바 즉시 숨김
-        moveMapView(coordinate);
+        moveMapViewWithOffset(coordinate);
         bottomSheetRef.current?.snapToIndex(0);
       }
     },
-    [moveMapView],
+    [moveMapViewWithOffset],
   );
 
   // 바텀시트 상태 변경 감지

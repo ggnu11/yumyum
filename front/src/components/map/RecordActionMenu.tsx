@@ -80,10 +80,12 @@ function RecordActionMenu({recordId, onEdit, onDelete}: RecordActionMenuProps) {
   };
 
   const handleEdit = () => {
+    setShowActionSheet(false);
     onEdit?.(recordId);
   };
 
   const handleDeletePress = () => {
+    setShowActionSheet(false);
     // ActionSheet가 닫힌 후 삭제 확인 모달 표시
     setTimeout(() => {
       showDeleteModalAnimation();
@@ -100,7 +102,7 @@ function RecordActionMenu({recordId, onEdit, onDelete}: RecordActionMenuProps) {
   };
 
   const handleCloseActionSheet = () => {
-    // 취소 버튼 클릭 시 별도 액션 없음
+    setShowActionSheet(false);
   };
 
   // ActionSheet 액션들 정의
@@ -181,19 +183,23 @@ function RecordActionMenu({recordId, onEdit, onDelete}: RecordActionMenuProps) {
 
                 <View style={styles.deleteModalButtons}>
                   <TouchableHighlight
-                    style={[styles.deleteModalButton]}
-                    underlayColor={colors[theme].GRAY_200}
+                    style={[
+                      styles.deleteModalButton,
+                      styles.cancelDeleteButton,
+                    ]}
+                    underlayColor={colors[theme].GRAY_300}
                     onPress={handleCancelDelete}>
                     <CustomText style={styles.cancelDeleteButtonText}>
                       취소하기
                     </CustomText>
                   </TouchableHighlight>
 
-                  <View style={styles.buttonDivider} />
-
                   <TouchableHighlight
-                    style={[styles.deleteModalButton]}
-                    underlayColor={colors[theme].GRAY_200}
+                    style={[
+                      styles.deleteModalButton,
+                      styles.confirmDeleteButton,
+                    ]}
+                    underlayColor={colors[theme].GRAY_700}
                     onPress={handleConfirmDelete}>
                     <CustomText style={styles.confirmDeleteButtonText}>
                       삭제하기
@@ -227,17 +233,17 @@ const styling = (theme: Theme) =>
     deleteModal: {
       backgroundColor: colors[theme].WHITE,
       borderRadius: 14,
-      paddingTop: 24,
-      paddingBottom: 12,
-      width: '100%',
-      maxWidth: 320,
+      width: 335,
+      height: 218,
     },
     deleteModalTitle: {
       fontSize: 17,
       fontWeight: '600',
       color: colors[theme].BLACK,
       textAlign: 'center',
-      marginBottom: 8,
+      marginTop: 40,
+      marginBottom: 20,
+      paddingHorizontal: 16,
     },
     deleteModalMessage: {
       fontSize: 13,
@@ -245,31 +251,36 @@ const styling = (theme: Theme) =>
       textAlign: 'center',
       lineHeight: 18,
       paddingHorizontal: 16,
-      marginBottom: 20,
+      marginBottom: 30,
     },
     deleteModalButtons: {
       flexDirection: 'row',
-      borderTopWidth: 0.5,
-      borderTopColor: colors[theme].GRAY_300,
+      justifyContent: 'center',
+      alignItems: 'center',
+      gap: 10,
+      paddingHorizontal: 16,
     },
     deleteModalButton: {
-      flex: 1,
-      paddingVertical: 12,
+      width: 140,
+      height: 50,
       alignItems: 'center',
       justifyContent: 'center',
+      borderRadius: 8,
     },
-    buttonDivider: {
-      width: 0.5,
-      backgroundColor: colors[theme].GRAY_300,
+    cancelDeleteButton: {
+      backgroundColor: colors[theme].GRAY_200,
+    },
+    confirmDeleteButton: {
+      backgroundColor: colors[theme].BLACK,
     },
     cancelDeleteButtonText: {
-      fontSize: 17,
+      fontSize: 16,
       color: colors[theme].GRAY_700,
-      fontWeight: '400',
+      fontWeight: '600',
     },
     confirmDeleteButtonText: {
-      fontSize: 17,
-      color: colors[theme].BLACK,
+      fontSize: 16,
+      color: colors[theme].WHITE,
       fontWeight: '600',
     },
   });

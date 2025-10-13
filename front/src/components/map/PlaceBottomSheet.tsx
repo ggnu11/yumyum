@@ -314,53 +314,58 @@ const PlaceBottomSheet = forwardRef<BottomSheet, PlaceBottomSheetProps>(
               />
             </View>
 
-            {/* 구분선 */}
-            <View style={styles.divider} />
+            {/* 구분선 - 확장 상태에서만 표시 */}
+            {currentSheetIndex === 1 && <View style={styles.divider} />}
 
-            {/* 기록카드 헤더 (Sticky) */}
-            <View style={styles.stickyHeaderContainer}>
-              <View style={styles.recordsHeader}>
-                <View style={{flex: 1}}>
-                  <CustomText style={styles.recordsTitle}>
-                    이 장소에 등록된 기록카드
-                  </CustomText>
-                  <CustomText style={styles.recordsSubtitle}>
-                    {placeInfo.place_name}에 대해 이야기 해 주세요!
-                  </CustomText>
+            {/* 기록카드 헤더 및 리스트 - 확장 상태에서만 표시 */}
+            {currentSheetIndex === 1 && (
+              <>
+                {/* 기록카드 헤더 (Sticky) */}
+                <View style={styles.stickyHeaderContainer}>
+                  <View style={styles.recordsHeader}>
+                    <View style={{flex: 1}}>
+                      <CustomText style={styles.recordsTitle}>
+                        이 장소에 등록된 기록카드
+                      </CustomText>
+                      <CustomText style={styles.recordsSubtitle}>
+                        {placeInfo.place_name}에 대해 이야기 해 주세요!
+                      </CustomText>
+                    </View>
+                    <TouchableOpacity
+                      style={styles.filterButton}
+                      onPress={handleOpenFilterSheet}>
+                      <CustomText style={styles.filterButtonText}>
+                        {getFilterLabel()}
+                      </CustomText>
+                      <Ionicons
+                        name="chevron-down"
+                        size={16}
+                        color={colors.light.GRAY_700}
+                      />
+                    </TouchableOpacity>
+                  </View>
                 </View>
-                <TouchableOpacity
-                  style={styles.filterButton}
-                  onPress={handleOpenFilterSheet}>
-                  <CustomText style={styles.filterButtonText}>
-                    {getFilterLabel()}
-                  </CustomText>
-                  <Ionicons
-                    name="chevron-down"
-                    size={16}
-                    color={colors.light.GRAY_700}
-                  />
-                </TouchableOpacity>
-              </View>
-            </View>
 
-            {/* 기록 리스트 */}
-            <View style={styles.recordsListContainer}>
-              {isPinsLoading ? (
-                <View style={{padding: 20, alignItems: 'center'}}>
-                  <CustomText style={{color: colors.light.GRAY_500}}>
-                    기록을 불러오는 중...
-                  </CustomText>
+                {/* 기록 리스트 */}
+                <View style={styles.recordsListContainer}>
+                  {isPinsLoading ? (
+                    <View style={{padding: 20, alignItems: 'center'}}>
+                      <CustomText style={{color: colors.light.GRAY_500}}>
+                        기록을 불러오는 중...
+                      </CustomText>
+                    </View>
+                  ) : (
+                    <RecordsList
+                      records={filteredRecords}
+                      activeFilter="all"
+                      isExpanded={currentSheetIndex === 1}
+                      onEditRecord={onEditRecord}
+                      onDeleteRecord={onDeleteRecord}
+                    />
+                  )}
                 </View>
-              ) : (
-                <RecordsList
-                  records={filteredRecords}
-                  activeFilter="all"
-                  isExpanded={currentSheetIndex === 1}
-                  onEditRecord={onEditRecord}
-                  onDeleteRecord={onDeleteRecord}
-                />
-              )}
-            </View>
+              </>
+            )}
           </BottomSheetScrollView>
         </BottomSheet>
 
