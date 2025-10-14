@@ -94,20 +94,23 @@ const PLACE_TYPE_MAPPING: Record<string, string> = {
  * @param maxCount 최대 표시할 카테고리 개수 (기본값: 2)
  * @returns 변환된 카테고리 문자열 (예: "음식점, 카페")
  */
-export const formatPlaceTypes = (types?: string[], maxCount: number = 2): string => {
+export const formatPlaceTypes = (
+  types?: string[],
+  maxCount: number = 2,
+): string => {
   if (!types || types.length === 0) {
     return '';
   }
 
   // 우선순위가 높은 타입들 (음식점 관련)
   const priorityTypes = ['restaurant', 'food', 'cafe', 'bakery', 'bar'];
-  
+
   // 일반적이지 않은 타입들 제외
   const excludeTypes = ['establishment', 'point_of_interest', 'premise'];
-  
+
   // 필터링된 타입들
-  const filteredTypes = types.filter(type => 
-    !excludeTypes.includes(type) && PLACE_TYPE_MAPPING[type]
+  const filteredTypes = types.filter(
+    type => !excludeTypes.includes(type) && PLACE_TYPE_MAPPING[type],
   );
 
   if (filteredTypes.length === 0) {
@@ -118,7 +121,7 @@ export const formatPlaceTypes = (types?: string[], maxCount: number = 2): string
   const sortedTypes = filteredTypes.sort((a, b) => {
     const aPriority = priorityTypes.indexOf(a);
     const bPriority = priorityTypes.indexOf(b);
-    
+
     if (aPriority !== -1 && bPriority !== -1) {
       return aPriority - bPriority;
     }

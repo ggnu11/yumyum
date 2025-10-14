@@ -1,33 +1,34 @@
-import React, {useState, useRef, useCallback, useEffect} from 'react';
-import {Alert, StyleSheet, View, Animated} from 'react-native';
-import {LatLng, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
+import BottomSheet from '@gorhom/bottom-sheet';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {Animated, StyleSheet, View} from 'react-native';
+import MapView from 'react-native-map-clustering';
+import {LatLng, PROVIDER_GOOGLE} from 'react-native-maps';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
-import BottomSheet from '@gorhom/bottom-sheet';
-import MapView from 'react-native-map-clustering';
 
+import {getCombinedPlaceInfo} from '@/api/kakao';
 import CustomMarker from '@/components/common/CustomMarker';
 import FilterButtons from '@/components/map/FilterButtons';
 import MapIconButton from '@/components/map/MapIconButton';
 import MarkerFilterAction from '@/components/map/MarkerFilterAction';
-import PlaceBottomSheet from '../../components/map/PlaceBottomSheet';
-import AddRecordFloatingButton from '../../components/map/AddRecordFloatingButton';
 import SearchBar from '@/components/map/SearchBar';
-import {getCombinedPlaceInfo} from '@/api/kakao';
 import {numbers} from '@/constants/numbers';
 import useGetMarkers from '@/hooks/queries/useGetMarkers';
 import useModal from '@/hooks/useModal';
 import useMoveMapView from '@/hooks/useMoveMapView';
 import usePermission from '@/hooks/usePermission';
 import useUserLocation from '@/hooks/useUserLocation';
+import useBottomSheetStore from '@/store/bottomSheet';
 import useFilterStore from '@/store/filter';
 import useLocationStore from '@/store/location';
 import useThemeStore, {Theme} from '@/store/theme';
-import useBottomSheetStore from '@/store/bottomSheet';
+import {PlaceInfo as ApiPlaceInfo} from '@/types/api';
 import {MapStackParamList} from '@/types/navigation';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {PlaceInfo as ApiPlaceInfo} from '@/types/api';
+import AddRecordFloatingButton from '../../components/map/AddRecordFloatingButton';
+import PlaceBottomSheet from '../../components/map/PlaceBottomSheet';
+import RecordFilterBottomSheet from '../../components/map/RecordFilterBottomSheet';
 
 type Navigation = StackNavigationProp<MapStackParamList>;
 
@@ -43,8 +44,10 @@ function MapHomeScreen() {
   const [isBottomSheetExpanded, setIsBottomSheetExpanded] =
     useState<boolean>(false); // 바텀시트 100% 확장 상태
   const [activeFilters, setActiveFilters] = useState<string[]>(['all']);
+  const [selectedFilters, setSelectedFilters] = useState<string[]>(['all']);
   const searchBarTranslateY = useRef(new Animated.Value(0)).current; // 검색바 애니메이션
   const bottomSheetRef = useRef<BottomSheet>(null);
+  const filterBottomSheetRef = useRef<BottomSheet>(null);
   const {selectedPlaceFromSearch, setSelectedPlaceFromSearch} =
     useLocationStore();
   const {filters} = useFilterStore();
@@ -303,6 +306,16 @@ function MapHomeScreen() {
     console.log('기록 삭제:', recordId);
   }, []);
 
+  // 필터 바텀시트 열기
+  const handleOpenFilterSheet = useCallback(() => {
+    filterBottomSheetRef.current?.snapToIndex(0);
+  }, []);
+
+  // 필터 적용
+  const handleApplyFilter = useCallback((filters: string[]) => {
+    setSelectedFilters(filters);
+  }, []);
+
   const handleFilterPress = useCallback((filter: string) => {
     setActiveFilters(prevFilters => {
       if (filter === 'all') {
@@ -376,10 +389,16 @@ function MapHomeScreen() {
         onAddRecord={handleAddRecord}
         onEditRecord={handleEditRecord}
         onDeleteRecord={handleDeleteRecord}
+        onOpenFilterSheet={handleOpenFilterSheet}
+        selectedFilters={selectedFilters}
       />
       <AddRecordFloatingButton
         onPress={handleAddRecord}
         isVisible={isButtonVisible} // 별도 상태로 즉시 제어
+      />
+      <RecordFilterBottomSheet
+        ref={filterBottomSheetRef}
+        onApply={handleApplyFilter}
       />
       <MarkerFilterAction
         isVisible={filterAction.isVisible}

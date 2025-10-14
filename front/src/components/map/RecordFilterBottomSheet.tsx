@@ -22,9 +22,9 @@ const FILTER_OPTIONS = [
   {id: 'all', label: '모두 보기'},
   {id: 'mine', label: '나만 보기'},
   {id: 'friend', label: '친구'},
-  {id: 'group10', label: '그룹10들'},
-  {id: 'group20', label: '그룹20들'},
-  {id: 'group30', label: '그룹30들'},
+  {id: 'group1', label: '그룹1이름'},
+  {id: 'group2', label: '그룹2이름'},
+  {id: 'group3', label: '그룹3이름'},
 ];
 
 const RecordFilterBottomSheet = forwardRef<
@@ -71,6 +71,7 @@ const RecordFilterBottomSheet = forwardRef<
         disappearsOnIndex={-1}
         appearsOnIndex={0}
         opacity={0.5}
+        pressBehavior="close"
       />
     ),
     [],
@@ -83,6 +84,10 @@ const RecordFilterBottomSheet = forwardRef<
       snapPoints={snapPoints}
       enablePanDownToClose={true}
       backdropComponent={renderBackdrop}
+      style={{
+        zIndex: 99999,
+        elevation: 99999,
+      }}
       backgroundStyle={{
         backgroundColor: colors.light.WHITE,
         borderTopLeftRadius: 20,

@@ -72,7 +72,8 @@ const styling = (theme: Theme) =>
       bottom: 40, // 바텀시트 위에 위치하도록 조정
       left: 20,
       right: 20,
-      zIndex: 11, // 바텀시트보다 위에 표시
+      zIndex: 0,
+      elevation: 0,
     },
     button: {
       backgroundColor: colors[theme].BLACK,
@@ -89,7 +90,7 @@ const styling = (theme: Theme) =>
       },
       shadowOpacity: 0.15,
       shadowRadius: 8,
-      elevation: 8,
+      elevation: 10, // RecordFilterBottomSheet보다 낮게 설정
     },
     icon: {
       marginRight: 8,

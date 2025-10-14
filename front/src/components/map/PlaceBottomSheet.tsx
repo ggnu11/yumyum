@@ -1,17 +1,13 @@
-import BottomSheet, {
-  BottomSheetScrollView,
-  BottomSheetView,
-} from '@gorhom/bottom-sheet';
-import React, {forwardRef, useCallback, useMemo, useState, useRef} from 'react';
-import {View, TouchableOpacity, StyleSheet} from 'react-native';
+import BottomSheet, {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import Ionicons from '@react-native-vector-icons/ionicons';
+import React, {forwardRef, useCallback, useMemo, useState} from 'react';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {colors} from '../../constants/colors';
 import {usePlacePins} from '../../hooks/usePin';
 import {PlaceInfo as ApiPlaceInfo} from '../../types/api';
 import CustomText from '../common/CustomText';
 import PlaceSummaryView from './PlaceSummaryView';
 import RecordsList from './RecordsList';
-import RecordFilterBottomSheet from './RecordFilterBottomSheet';
 
 // 목업 데이터
 const MOCK_RECORDS = [
@@ -73,6 +69,8 @@ interface PlaceBottomSheetProps {
   onAddRecord?: (placeId: string) => void;
   onEditRecord?: (recordId: number) => void;
   onDeleteRecord?: (recordId: number) => void;
+  onOpenFilterSheet?: () => void;
+  selectedFilters?: string[];
 }
 
 const styles = StyleSheet.create({
@@ -156,12 +154,12 @@ const PlaceBottomSheet = forwardRef<BottomSheet, PlaceBottomSheetProps>(
       onAddRecord,
       onEditRecord,
       onDeleteRecord,
+      onOpenFilterSheet,
+      selectedFilters = ['all'],
     },
     ref,
   ) => {
     const [currentSheetIndex, setCurrentSheetIndex] = useState(0);
-    const [selectedFilters, setSelectedFilters] = useState<string[]>(['all']);
-    const filterBottomSheetRef = useRef<BottomSheet>(null);
 
     // API 호출 - 장소의 핀 목록 조회
     const {
@@ -222,11 +220,13 @@ const PlaceBottomSheet = forwardRef<BottomSheet, PlaceBottomSheetProps>(
     );
 
     const handleOpenFilterSheet = useCallback(() => {
-      filterBottomSheetRef.current?.snapToIndex(0);
-    }, []);
+      if (onOpenFilterSheet) {
+        onOpenFilterSheet();
+      }
+    }, [onOpenFilterSheet]);
 
     const handleApplyFilter = useCallback((filters: string[]) => {
-      setSelectedFilters(filters);
+      // 필터 적용은 이제 부모 컴포넌트에서 처리
     }, []);
 
     const getFilterLabel = useCallback(() => {
@@ -237,9 +237,9 @@ const PlaceBottomSheet = forwardRef<BottomSheet, PlaceBottomSheetProps>(
         const filterOption = [
           {id: 'mine', label: '나만 보기'},
           {id: 'friend', label: '친구'},
-          {id: 'group10', label: '그룹10들'},
-          {id: 'group20', label: '그룹20들'},
-          {id: 'group30', label: '그룹30들'},
+          {id: 'group1', label: '그룹1이름'},
+          {id: 'group2', label: '그룹2이름'},
+          {id: 'group3', label: '그룹3이름'},
         ].find(f => f.id === selectedFilters[0]);
         return filterOption?.label || '모두 보기';
       }
@@ -368,12 +368,6 @@ const PlaceBottomSheet = forwardRef<BottomSheet, PlaceBottomSheetProps>(
             )}
           </BottomSheetScrollView>
         </BottomSheet>
-
-        {/* 필터 바텀시트 */}
-        <RecordFilterBottomSheet
-          ref={filterBottomSheetRef}
-          onApply={handleApplyFilter}
-        />
       </>
     );
   },
