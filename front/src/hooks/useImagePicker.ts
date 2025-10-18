@@ -57,7 +57,6 @@ function useImagePicker({
       })
       .catch(error => {
         if (error.code !== 'E_PICKER_CANCELLED') {
-          console.log('[error]', error);
           Toast.show({
             type: 'error',
             text1: '권한을 허용했는지 확인해주세요.',

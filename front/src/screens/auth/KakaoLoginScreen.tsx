@@ -31,7 +31,6 @@ function KakaoLoginScreen() {
       },
       onError: (error: any) => {
         setIsLoading(false);
-        console.error('카카오 로그인 실패:', error);
       },
     });
   };

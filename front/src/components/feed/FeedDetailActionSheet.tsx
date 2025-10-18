@@ -5,7 +5,7 @@ import {Alert, StyleSheet} from 'react-native';
 import useMutateDeletePost from '@/hooks/queries/useMutateDeletePost';
 import {FeedStackParamList} from '@/types/navigation';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {ActionSheet} from '../common/ActionSheet';
+import CommonActionSheet from '../common/CommonActionSheet';
 
 interface FeedDetailActionSheetProps {
   id: number;
@@ -48,23 +48,30 @@ function FeedDetailActionSheet({
     hideAction();
   };
 
+  // ActionSheet 액션들 정의
+  const actionSheetActions = [
+    {
+      text: '삭제하기',
+      onPress: handleDeletePost,
+      isDanger: true,
+    },
+    {
+      text: '수정하기',
+      onPress: handleEditPost,
+    },
+    {
+      text: '취소',
+      onPress: hideAction,
+      isCancel: true,
+    },
+  ];
+
   return (
-    <ActionSheet isVisible={isVisible} hideAction={hideAction}>
-      <ActionSheet.Background>
-        <ActionSheet.Container>
-          <ActionSheet.Button isDanger onPress={handleDeletePost}>
-            삭제하기
-          </ActionSheet.Button>
-          <ActionSheet.Divider />
-          <ActionSheet.Button onPress={handleEditPost}>
-            수정하기
-          </ActionSheet.Button>
-        </ActionSheet.Container>
-        <ActionSheet.Container>
-          <ActionSheet.Button onPress={hideAction}>취소</ActionSheet.Button>
-        </ActionSheet.Container>
-      </ActionSheet.Background>
-    </ActionSheet>
+    <CommonActionSheet
+      isVisible={isVisible}
+      onClose={hideAction}
+      actions={actionSheetActions}
+    />
   );
 }
 

@@ -1,9 +1,10 @@
 import Slider from '@react-native-community/slider';
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 
 import {colors} from '@/constants/colors';
 import useThemeStore, {Theme} from '@/store/theme';
+import CustomText from '../common/CustomText';
 
 interface ScoreInputProps {
   score: number;
@@ -17,8 +18,8 @@ function ScoreInput({score, onChangeScore}: ScoreInputProps) {
   return (
     <View style={styles.container}>
       <View style={styles.labelContainer}>
-        <Text style={styles.labelText}>평점</Text>
-        <Text style={styles.labelText}>{score}점</Text>
+        <CustomText style={styles.labelText}>평점</CustomText>
+        <CustomText style={styles.labelText}>{score}점</CustomText>
       </View>
       <Slider
         value={score}

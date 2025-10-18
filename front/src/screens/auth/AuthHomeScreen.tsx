@@ -3,20 +3,14 @@ import appleAuth, {
 } from '@invertase/react-native-apple-authentication';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {
-  Dimensions,
-  Image,
-  Platform,
-  Pressable,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import {Image, Platform, SafeAreaView, StyleSheet, View} from 'react-native';
 
 import CustomButton from '@/components/common/CustomButton';
+import CustomText from '@/components/common/CustomText';
 import {colors} from '@/constants/colors';
+import {useNaverLogin} from '@/hooks/auth/naver';
 import useAuth from '@/hooks/queries/useAuth';
+import useAppleSignInState from '@/hooks/useAppleSignInState';
 import useThemeStore, {Theme} from '@/store/theme';
 import {AuthStackParamList} from '@/types/navigation';
 import Toast from 'react-native-toast-message';
@@ -26,12 +20,17 @@ type Navigation = StackNavigationProp<AuthStackParamList>;
 function AuthHomeScreen() {
   const {theme} = useThemeStore();
   const styles = styling(theme);
+
   const navigation = useNavigation<Navigation>();
-  const {appleLoginMutation} = useAuth();
+
+  const {appleLoginMutation, naverLoginMutation} = useAuth();
+  const {isAvailable: isAppleSignInAvailable} = useAppleSignInState();
+
+  const naverLogin = useNaverLogin();
 
   const handleAppleLogin = async () => {
     try {
-      const {identityToken, fullName} = await appleAuth.performRequest({
+      const {identityToken, fullName, email} = await appleAuth.performRequest({
         requestedOperation: appleAuth.Operation.LOGIN,
         requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
       });
@@ -41,20 +40,26 @@ function AuthHomeScreen() {
           {
             identityToken,
             appId: 'com.matzip.app',
-            nickname: fullName?.givenName ?? '',
+            email: email || undefined, // 이메일 가리기 포함하여 Apple에서 제공하는 이메일
+            name: fullName
+              ? {
+                  givenName: fullName.givenName,
+                  familyName: fullName.familyName,
+                }
+              : undefined, // 최초 로그인 시에만 제공되는 이름 정보
           },
           {
             onSuccess: () => {
               Toast.show({
                 type: 'success',
-                text1: '애플 로그인 성공',
+                text1: 'Apple 로그인 성공',
                 text2: '환영합니다!',
               });
             },
             onError: (error: any) => {
               Toast.show({
                 type: 'error',
-                text1: '애플 로그인이 실패했습니다.',
+                text1: 'Apple 로그인이 실패했습니다.',
                 text2:
                   error.response?.data?.message || '나중에 다시 시도해주세요',
               });
@@ -63,12 +68,46 @@ function AuthHomeScreen() {
         );
       }
     } catch (error: any) {
-      if (error.code !== appleAuth.Error.CANCELED) {
-        Toast.show({
-          type: 'error',
-          text1: '애플 로그인이 실패했습니다.',
-          text2: '나중에 다시 시도해주세요',
+      if (error.code === appleAuth.Error.CANCELED) {
+        // 사용자가 로그인을 취소한 경우 - 별도 에러 표시 안함
+        return;
+      }
+
+      Toast.show({
+        type: 'error',
+        text1: 'Apple 로그인이 실패했습니다.',
+        text2: '나중에 다시 시도해주세요',
+      });
+    }
+  };
+
+  const handleNaverLogin = async () => {
+    try {
+      const result = await naverLogin.performLogin();
+
+      if (result) {
+        naverLoginMutation.mutate(result.token, {
+          onSuccess: () => {
+            Toast.show({
+              type: 'success',
+              text1: '네이버 로그인 성공',
+              text2: '환영합니다!',
+            });
+          },
+          onError: (error: any) => {
+            Toast.show({
+              type: 'error',
+              text1: '네이버 로그인이 실패했습니다.',
+              text2:
+                error.response?.data?.message || '나중에 다시 시도해주세요',
+            });
+          },
         });
+      }
+    } catch (error: any) {
+      if (error.message === 'CANCELBYUSER') {
+        // 사용자가 로그인을 취소한 경우 - 별도 에러 표시 안함
+        return;
       }
     }
   };
@@ -76,14 +115,14 @@ function AuthHomeScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.imageContainer}>
-        <Image
-          source={require('@/assets/matzip.png')}
-          style={styles.image}
-          resizeMode="contain"
-        />
+        <Image source={require('@/assets/yumyum.png')} resizeMode="contain" />
+        <CustomText style={styles.titleText}>YUMYUM</CustomText>
+        <CustomText style={styles.subtitleText}>
+          우리만의 맛집 지도, 얌얌
+        </CustomText>
       </View>
       <View style={styles.buttonContainer}>
-        {Platform.OS === 'ios' && (
+        {Platform.OS === 'ios' && isAppleSignInAvailable && (
           <AppleButton
             buttonStyle={AppleButton.Style.BLACK}
             buttonType={AppleButton.Type.SIGN_IN}
@@ -101,19 +140,15 @@ function AuthHomeScreen() {
           textStyle={styles.kakaoButtonText}
           onPress={() => navigation.navigate('KakaoLogin')}
         />
-        <CustomButton
-          label="네이버 로그인"
-          style={styles.naverButtonContainer}
-          textStyle={styles.naverButtonText}
-          onPress={() => navigation.navigate('NaverLogin')}
-        />
-        <CustomButton
-          label="이메일 로그인"
-          onPress={() => navigation.navigate('Login')}
-        />
-        <Pressable onPress={() => navigation.navigate('Signup')}>
-          <Text style={styles.emailText}>이메일로 가입하기</Text>
-        </Pressable>
+        {naverLogin.isInitialized && (
+          <CustomButton
+            label="네이버 로그인"
+            disabled={naverLoginMutation.isPending}
+            style={styles.naverButtonContainer}
+            textStyle={styles.naverButtonText}
+            onPress={appleLoginMutation.isPending ? () => {} : handleNaverLogin}
+          />
+        )}
       </View>
     </SafeAreaView>
   );
@@ -127,39 +162,45 @@ const styling = (theme: Theme) =>
     imageContainer: {
       flex: 1.5,
       alignItems: 'center',
+      justifyContent: 'center',
     },
-    image: {
-      width: 300,
-      height: '100%',
+    titleText: {
+      fontSize: 48,
+      fontWeight: 'bold',
+      color: '#ED6029',
+      marginTop: 20,
+    },
+    subtitleText: {
+      fontSize: 24,
+      color: colors[theme].BLACK,
+      marginTop: 10,
+      textAlign: 'center',
     },
     buttonContainer: {
       flex: 1,
       alignItems: 'center',
       paddingHorizontal: 30,
-      gap: 5,
-    },
-    emailText: {
-      textDecorationLine: 'underline',
-      fontWeight: '500',
-      padding: 10,
-      color: colors[theme].BLACK,
+      gap: 15,
     },
     kakaoButtonContainer: {
       backgroundColor: '#fee503',
     },
     kakaoButtonText: {
-      color: '#181600',
+      color: '#000000',
     },
     naverButtonContainer: {
       backgroundColor: '#03c75a',
     },
     naverButtonText: {
-      color: '#ffffff',
+      color: '#000000',
     },
     appleButton: {
-      width: Dimensions.get('screen').width,
+      width: '100%',
       height: 45,
-      paddingHorizontal: 30,
+    },
+    googleButton: {
+      width: '100%',
+      height: 45,
     },
     disabledButton: {
       opacity: 0.6,

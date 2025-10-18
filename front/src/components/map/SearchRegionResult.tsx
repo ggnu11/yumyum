@@ -5,7 +5,6 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
-  Text,
   View,
 } from 'react-native';
 
@@ -15,6 +14,7 @@ import useLocationStore from '@/store/location';
 import useThemeStore, {Theme} from '@/store/theme';
 import {useNavigation} from '@react-navigation/native';
 import {LatLng} from 'react-native-maps';
+import CustomText from '../common/CustomText';
 
 interface SearchRegionResultProps {
   regionInfo: RegionInfo[];
@@ -24,14 +24,16 @@ function SearchRegionResult({regionInfo}: SearchRegionResultProps) {
   const {theme} = useThemeStore();
   const styles = styling(theme);
   const navigation = useNavigation();
-  const {setMoveLocation, setSelectLocation} = useLocationStore();
+  const {setMoveLocation, setSelectedPlaceFromSearch} = useLocationStore();
 
-  const handlePressRegionInfo = (latitude: string, longitude: string) => {
+  const handlePressRegionInfo = (regionInfo: RegionInfo) => {
     const regionLocation = {
-      latitude: Number(latitude),
-      longitude: Number(longitude),
+      latitude: Number(regionInfo.y),
+      longitude: Number(regionInfo.x),
     };
 
+    // 선택된 장소 정보를 저장
+    setSelectedPlaceFromSearch(regionInfo);
     moveToMapScreen(regionLocation);
   };
 
@@ -39,7 +41,6 @@ function SearchRegionResult({regionInfo}: SearchRegionResultProps) {
     navigation.goBack();
 
     setMoveLocation(location);
-    setSelectLocation(location);
   };
 
   return (
@@ -52,33 +53,39 @@ function SearchRegionResult({regionInfo}: SearchRegionResultProps) {
               styles.itemBorder,
               index === regionInfo.length - 1 && styles.noItemBorder,
             ]}
-            onPress={() => handlePressRegionInfo(info.y, info.x)}>
+            onPress={() => handlePressRegionInfo(info)}>
             <View style={styles.placeNameContainer}>
               <Ionicons
                 name="location"
                 size={10}
                 color={colors[theme].PINK_700}
               />
-              <Text
+              <CustomText
                 style={styles.placeText}
                 ellipsizeMode="tail"
                 numberOfLines={1}>
                 {info.place_name}
-              </Text>
+              </CustomText>
             </View>
             <View style={styles.categoryContainer}>
-              <Text style={styles.distanceText}>
+              <CustomText style={styles.distanceText}>
                 {(Number(info.distance) / 1000).toFixed(2)}km
-              </Text>
-              <Text style={styles.subInfoText}>{info.category_name}</Text>
+              </CustomText>
+              <CustomText style={styles.subInfoText}>
+                {info.category_name}
+              </CustomText>
             </View>
-            <Text style={styles.subInfoText}>{info.road_address_name}</Text>
+            <CustomText style={styles.subInfoText}>
+              {info.road_address_name}
+            </CustomText>
           </Pressable>
         ))}
 
         {regionInfo.length === 0 && (
           <View style={styles.noResultContainer}>
-            <Text style={styles.noResultText}>검색 결과가 없습니다.</Text>
+            <CustomText style={styles.noResultText}>
+              검색 결과가 없습니다.
+            </CustomText>
           </View>
         )}
       </ScrollView>

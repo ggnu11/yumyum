@@ -8,26 +8,24 @@ import {useNavigation} from '@react-navigation/native';
 
 import Indicator from '@/components/common/Indicator';
 import useAuth from '@/hooks/queries/useAuth';
-
-const naverLoginConfig = {
-  consumerKey: Config.NAVER_CLIENT_ID as string,
-  consumerSecret: Config.NAVER_CLIENT_SECRET as string,
-  appName: 'yumyum',
-  serviceUrlScheme: 'com.yumyum-app.naver',
-  serviceAppUrlScheme: 'com.yumyum-app.naver',
-};
+import {getNaverLoginConfig} from '@/hooks/auth/naver/config';
 
 function NaverLoginScreen() {
-  const {naverLoginMutation} = useAuth();
   const navigation = useNavigation();
+  const {naverLoginMutation} = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+
+  const config = getNaverLoginConfig();
+  const naverLoginConfig = {
+    ...config,
+    disableNaverAppAuthIOS: true,
+    serviceUrlSchemeIOS: config.serviceUrlSchemeIOS,
+  };
 
   React.useEffect(() => {
     // 네이버 로그인 초기화
     NaverLogin.initialize({
       ...naverLoginConfig,
-      disableNaverAppAuthIOS: true,
-      serviceUrlSchemeIOS: 'com.yumyum-app.naver',
     });
 
     // 자동으로 네이버 로그인 시작
@@ -75,7 +73,6 @@ function NaverLoginScreen() {
       }
     } catch (error: any) {
       setIsLoading(false);
-      console.error('네이버 로그인 오류:', error);
       Toast.show({
         type: 'error',
         text1: '네이버 로그인이 실패했습니다.',

@@ -3,8 +3,8 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {colors} from '@/constants/colors';
 import AuthHomeScreen from '@/screens/auth/AuthHomeScreen';
 import KakaoLoginScreen from '@/screens/auth/KakaoLoginScreen';
-import LoginScreen from '@/screens/auth/LoginScreen';
-import SignupScreen from '@/screens/auth/SignupScreen';
+import TermsAgreementScreen from '@/screens/auth/TermsAgreementScreen';
+import TermsDetailScreen from '@/screens/auth/TermsDetailScreen';
 import useThemeStore from '@/store/theme';
 import NaverLoginScreen from '@/screens/auth/NaverLoginScreen';
 
@@ -38,14 +38,14 @@ function AuthNavigation() {
         options={{headerShown: false}}
       />
       <Stack.Screen
-        name="Login"
-        component={LoginScreen}
-        options={{title: '로그인'}}
+        name="TermsAgreement"
+        component={TermsAgreementScreen}
+        options={{headerShown: false}}
       />
       <Stack.Screen
-        name="Signup"
-        component={SignupScreen}
-        options={{title: '회원가입'}}
+        name="TermsDetail"
+        component={TermsDetailScreen}
+        options={{headerShown: false}}
       />
       <Stack.Screen
         name="KakaoLogin"

@@ -18,6 +18,20 @@ function useMoveMapView() {
     });
   };
 
+  // 핀 클릭 시 살짝 위로 이동하도록 오프셋 적용
+  const moveMapViewWithOffset = (coordinate: LatLng, delta?: Delta) => {
+    const latitudeOffset = regionDelta.latitudeDelta * -0.15;
+    const adjustedCoordinate = {
+      latitude: coordinate.latitude + latitudeOffset,
+      longitude: coordinate.longitude,
+    };
+
+    mapRef.current?.animateToRegion({
+      ...adjustedCoordinate,
+      ...(delta ?? regionDelta),
+    });
+  };
+
   const handleChangeDelta = (region: Region) => {
     const {latitudeDelta, longitudeDelta} = region;
     setRegionDelta({latitudeDelta, longitudeDelta});
@@ -27,7 +41,7 @@ function useMoveMapView() {
     moveLocation && moveMapView(moveLocation);
   }, [moveLocation]);
 
-  return {mapRef, moveMapView, handleChangeDelta};
+  return {mapRef, moveMapView, moveMapViewWithOffset, handleChangeDelta};
 }
 
 export default useMoveMapView;

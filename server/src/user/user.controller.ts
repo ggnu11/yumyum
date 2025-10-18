@@ -35,24 +35,6 @@ export class UserController {
     return this.userService.getUser(user);
   }
 
-<<<<<<< HEAD
-    @Get('/me')
-      @UseGuards(AuthGuard())
-      @ApiOperation({ summary: 'Get current user profile' })
-      @ApiResponse({ status: 200, description: 'Returns current user profile.' })
-      getProfile(@GetUser() user: User) {
-        console.log('Current user from JWT:', user.user_id, user.nickname);
-        return this.userService.getUser(user);
-      }
-    
-    @Patch('/me')
-      @UseGuards(AuthGuard())
-      @ApiOperation({ summary: 'Edit user profile' })
-      @ApiResponse({ status: 200, description: 'Profile updated successfully.' })
-      editProfile(@Body() editUserDto: EditUserDto, @GetUser() user: User) {
-        return this.userService.editUser(editUserDto, user);
-      }
-=======
   @Patch('/me')
   @UseGuards(AuthGuard())
   @ApiOperation({ summary: 'Edit user profile' })
@@ -66,7 +48,6 @@ export class UserController {
   ) {
     return this.userService.editUser(editUserDto, user);
   }
->>>>>>> feat/backend
 
   @Delete('/withdraw')
   @UseGuards(AuthGuard())

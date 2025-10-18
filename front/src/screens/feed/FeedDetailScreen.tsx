@@ -2,19 +2,11 @@ import Ionicons from '@react-native-vector-icons/ionicons';
 import {useNavigation} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
 import React from 'react';
-import {
-  Dimensions,
-  Image,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import {Dimensions, Image, ScrollView, StyleSheet, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
-import {BASE_URL} from '@/api/axios';
 import CustomButton from '@/components/common/CustomButton';
+import CustomText from '@/components/common/CustomText';
 import PreviewImageList from '@/components/common/PreviewImageList';
 import FeedDetailActionSheet from '@/components/feed/FeedDetailActionSheet';
 import {colors} from '@/constants/colors';
@@ -47,7 +39,7 @@ function FeedDetailScreen({route}: Props) {
     const {latitude, longitude} = post;
     setMoveLocation({latitude, longitude});
 
-    navigation.navigate('Map', {
+    navigation.navigate('MapTab', {
       screen: 'MapHome',
     });
   };
@@ -81,7 +73,7 @@ function FeedDetailScreen({route}: Props) {
           )}
           {post.imageUris.length === 0 && (
             <View style={styles.emptyImageContainer}>
-              <Text>No Image</Text>
+              <CustomText>No Image</CustomText>
             </View>
           )}
         </View>
@@ -93,37 +85,45 @@ function FeedDetailScreen({route}: Props) {
               size={10}
               color={colors[theme].GRAY_500}
             />
-            <Text
+            <CustomText
               style={styles.addressText}
               ellipsizeMode="tail"
               numberOfLines={1}>
               {post.address}
-            </Text>
+            </CustomText>
           </View>
-          <Text style={styles.titleText}>{post.title}</Text>
+          <CustomText style={styles.titleText}>{post.title}</CustomText>
           <View style={styles.infoContainer}>
             <View style={styles.infoRow}>
               <View style={styles.infoColumn}>
-                <Text style={styles.infoColumnKeyText}>방문날짜</Text>
-                <Text style={styles.infoColumnValueText}>
+                <CustomText style={styles.infoColumnKeyText}>
+                  방문날짜
+                </CustomText>
+                <CustomText style={styles.infoColumnValueText}>
                   {getDateWithSeparator(post.date, '.')}
-                </Text>
+                </CustomText>
               </View>
               <View style={styles.infoColumn}>
-                <Text style={styles.infoColumnKeyText}>평점</Text>
-                <Text style={styles.infoColumnValueText}>{post.score}</Text>
+                <CustomText style={styles.infoColumnKeyText}>평점</CustomText>
+                <CustomText style={styles.infoColumnValueText}>
+                  {post.score}
+                </CustomText>
               </View>
             </View>
             <View style={styles.infoRow}>
               <View style={styles.infoColumn}>
-                <Text style={styles.infoColumnKeyText}>마커색상</Text>
+                <CustomText style={styles.infoColumnKeyText}>
+                  마커색상
+                </CustomText>
                 <View
                   style={[styles.markerColor, {backgroundColor: post.color}]}
                 />
               </View>
             </View>
           </View>
-          <Text style={styles.descriptionText}>{post.description}</Text>
+          <CustomText style={styles.descriptionText}>
+            {post.description}
+          </CustomText>
         </View>
         <View style={{height: 10, backgroundColor: colors[theme].GRAY_100}} />
         {post.imageUris.length > 0 && (

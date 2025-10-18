@@ -4,19 +4,17 @@ import React from 'react';
 import {
   Image,
   Modal,
-  Platform,
   Pressable,
   SafeAreaView,
   StyleSheet,
-  Text,
   View,
 } from 'react-native';
 
-import {BASE_URL} from '@/api/axios';
 import {colors} from '@/constants/colors';
 import useGetPost from '@/hooks/queries/useGetPost';
 import useThemeStore, {Theme} from '@/store/theme';
 import {getDateWithSeparator} from '@/utils/date';
+import CustomText from '../common/CustomText';
 
 interface MarkerModalProps {
   markerId: number;
@@ -35,7 +33,7 @@ function MarkerModal({markerId, isVisible, hide}: MarkerModalProps) {
   }
 
   const handlePressModal = () => {
-    navigation.navigate('Feed', {
+    navigation.navigate('FeedTab', {
       screen: 'FeedDetail',
       params: {
         id: post.id,
@@ -66,7 +64,7 @@ function MarkerModal({markerId, isVisible, hide}: MarkerModalProps) {
               {post.imageUris.length === 0 && (
                 <View
                   style={[styles.imageContainer, styles.emptyImageContainer]}>
-                  <Text style={styles.emptyText}>No Image</Text>
+                  <CustomText style={styles.emptyText}>No Image</CustomText>
                 </View>
               )}
               <View style={styles.infoContainer}>
@@ -76,22 +74,22 @@ function MarkerModal({markerId, isVisible, hide}: MarkerModalProps) {
                     size={10}
                     color={colors[theme].GRAY_500}
                   />
-                  <Text
+                  <CustomText
                     style={styles.addressText}
                     numberOfLines={1}
                     ellipsizeMode="tail">
                     {post.address}
-                  </Text>
+                  </CustomText>
                 </View>
-                <Text
+                <CustomText
                   style={styles.titleText}
                   numberOfLines={1}
                   ellipsizeMode="tail">
                   {post.title}
-                </Text>
-                <Text style={styles.dateText}>
+                </CustomText>
+                <CustomText style={styles.dateText}>
                   {getDateWithSeparator(post.date, '.')}
-                </Text>
+                </CustomText>
               </View>
             </View>
 
