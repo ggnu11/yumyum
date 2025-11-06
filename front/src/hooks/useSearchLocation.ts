@@ -56,7 +56,7 @@ const getCacheKey = (keyword: string, location: LatLng): string => {
 const cleanCache = () => {
   const now = Date.now();
   const entries = Array.from(searchCache.entries());
-  
+
   // 만료된 항목 제거
   entries.forEach(([key, entry]) => {
     if (now - entry.timestamp > CACHE_EXPIRY_TIME) {
@@ -132,7 +132,9 @@ function useSearchLocation(keyword: string, location: LatLng) {
     (async () => {
       try {
         const {data} = await axios.get<RegionResponse>(
-          `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURIComponent(keyword.trim())}&y=${location.latitude}&x=${location.longitude}&page=${pageParam}`,
+          `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURIComponent(
+            keyword.trim(),
+          )}&y=${location.latitude}&x=${location.longitude}&page=${pageParam}`,
           {
             headers: {
               Authorization: `KakaoAK ${Config.KAKAO_REST_API_KEY}`,
@@ -161,7 +163,7 @@ function useSearchLocation(keyword: string, location: LatLng) {
         if (error.name === 'AbortError' || error.name === 'CanceledError') {
           return;
         }
-        
+
         if (!abortController.signal.aborted) {
           console.error('검색 API 호출 실패:', error);
           setRegionInfo([]);
