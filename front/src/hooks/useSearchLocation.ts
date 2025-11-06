@@ -42,7 +42,7 @@ interface CacheEntry {
 
 // 캐시 저장소 (모듈 레벨에서 공유)
 const searchCache = new Map<string, CacheEntry>();
-const CACHE_EXPIRY_TIME = 5 * 60 * 1000; // 5분
+const CACHE_EXPIRY_TIME = 30 * 60 * 1000; // 30분
 const MAX_CACHE_SIZE = 50; // 최대 캐시 항목 수
 
 // 캐시 키 생성

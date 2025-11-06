@@ -44,6 +44,7 @@ function SearchResultItem({
             name="magnifying-glass"
             size={18}
             color={colors[theme].GRAY_500}
+            iconStyle="solid"
           />
         </View>
         <CustomText style={styles.keyword}>{keyword}</CustomText>
@@ -63,6 +64,7 @@ function SearchResultItem({
             name="location-dot"
             size={14}
             color={colors[theme].WHITE}
+            iconStyle="solid"
           />
         </View>
         <View style={styles.placeInfo}>
