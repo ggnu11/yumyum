@@ -1,5 +1,6 @@
 import Ionicons from '@react-native-vector-icons/ionicons';
 import React, {useState} from 'react';
+import useDebounce from '@/hooks/useDebounce';
 import {
   FlatList,
   Keyboard,
@@ -45,12 +46,15 @@ function SearchScreen({onClose}: SearchScreenProps) {
   const {setSelectedPlaceFromSearch} = useLocationStore();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  // 실시간 검색 (최대 10개) - keyword가 있을 때만 검색
+  // debounce 적용 (300ms 지연) - 사용자가 입력을 멈춘 후에만 검색
+  const debouncedKeyword = useDebounce(keyword.trim(), 300);
+
+  // 실시간 검색 (최대 10개) - debouncedKeyword가 있을 때만 검색
   const {regionInfo} = useSearchLocation(
-    keyword.trim() || '',
+    debouncedKeyword || '',
     userLocation,
   );
-  const searchResults = keyword.trim() ? regionInfo.slice(0, 10) : [];
+  const searchResults = debouncedKeyword ? regionInfo.slice(0, 10) : [];
 
   const handleBackPress = () => {
     if (onClose) {
@@ -93,10 +97,11 @@ function SearchScreen({onClose}: SearchScreenProps) {
     }
   };
 
+  // 표시 조건: keyword가 비어있으면 최근 검색어, debouncedKeyword가 있으면 검색 결과
   const showRecentSearches = keyword === '' && recentSearches.length > 0;
   const showEmptyState = keyword === '' && recentSearches.length === 0;
-  const showSearchResults = keyword !== '' && searchResults.length > 0;
-  const showSearchEmpty = keyword !== '' && searchResults.length === 0;
+  const showSearchResults = debouncedKeyword !== '' && searchResults.length > 0;
+  const showSearchEmpty = debouncedKeyword !== '' && searchResults.length === 0;
 
   return (
     <>

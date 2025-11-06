@@ -42,6 +42,8 @@ function MapHomeScreen() {
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
   const [selectedPlaceInfo, setSelectedPlaceInfo] =
     useState<ApiPlaceInfo | null>(null);
+  const [selectedPlaceCoordinate, setSelectedPlaceCoordinate] =
+    useState<LatLng | null>(null); // 검색으로 선택한 장소의 좌표
   const [isButtonVisible, setIsButtonVisible] = useState<boolean>(false); // 버튼 표시 상태 추가
   const [isBottomSheetExpanded, setIsBottomSheetExpanded] =
     useState<boolean>(false); // 바텀시트 100% 확장 상태
@@ -103,6 +105,7 @@ function MapHomeScreen() {
 
       setSelectedPlaceId(selectedPlaceFromSearch.id);
       setSelectedPlaceInfo(convertedPlaceInfo);
+      setSelectedPlaceCoordinate(coordinate); // 좌표 저장
       setIsButtonVisible(true); // 버튼 즉시 표시
       setBottomSheetVisible(true); // 탭바 즉시 숨김
       moveMapViewWithOffset(coordinate);
@@ -277,12 +280,15 @@ function MapHomeScreen() {
     setBottomSheetVisible(false); // 탭바 표시
     // 바텀시트를 부드럽게 닫기 (애니메이션 포함)
     bottomSheetRef.current?.close();
+    // 검색으로 선택한 장소 정보 초기화
+    setSelectedPlaceCoordinate(null);
   }, [setBottomSheetVisible]);
 
   // 바텀시트가 완전히 닫힌 후 상태 초기화
   const handleBottomSheetClosed = useCallback(() => {
     setSelectedPlaceId(null);
     setSelectedPlaceInfo(null);
+    setSelectedPlaceCoordinate(null);
   }, []);
 
   const handleAddRecord = useCallback(() => {
@@ -386,6 +392,19 @@ function MapHomeScreen() {
             onPress={() => handlePressMarker(id, coordinate)}
           />
         ))}
+        {/* 검색으로 선택한 장소의 마커 */}
+        {selectedPlaceCoordinate && selectedPlaceInfo && (
+          <CustomMarker
+            key={`search-${selectedPlaceInfo.place_id}`}
+            color={colors[theme].PINK_500}
+            score={5}
+            coordinate={selectedPlaceCoordinate}
+            onPress={() => {
+              moveMapViewWithOffset(selectedPlaceCoordinate);
+              bottomSheetRef.current?.snapToIndex(0);
+            }}
+          />
+        )}
       </MapView>
       <View style={styles.buttonList}>
         <MapIconButton onPress={handlePressUserLocation} />
