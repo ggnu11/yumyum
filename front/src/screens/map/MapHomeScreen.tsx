@@ -31,6 +31,7 @@ import AddRecordFloatingButton from '../../components/map/AddRecordFloatingButto
 import PlaceBottomSheet from '../../components/map/PlaceBottomSheet';
 import RecordFilterBottomSheet from '../../components/map/RecordFilterBottomSheet';
 import SearchScreen from './SearchScreen';
+import CustomClusterMarker from '../../components/map/CustomClusterMarker';
 
 type Navigation = StackNavigationProp<MapStackParamList>;
 
@@ -371,7 +372,6 @@ function MapHomeScreen() {
       <MapView
         userInterfaceStyle={theme}
         googleMapId="f727da01391db33238e04009"
-        clusterColor="#ED6029"
         style={styles.container}
         ref={mapRef}
         region={{
@@ -382,7 +382,19 @@ function MapHomeScreen() {
         onRegionChangeComplete={handleChangeDelta}
         onPress={handleCloseBottomSheet} // 지도 클릭 시 바텀시트 닫기
         onPoiClick={handlePressMapPoi}
-        showsPointsOfInterests={true}>
+        renderCluster={cluster => (
+          <CustomClusterMarker
+            key={`cluster-${
+              cluster.properties.cluster_id || cluster.geometry.coordinates[0]
+            }-${cluster.geometry.coordinates[1]}`}
+            coordinate={{
+              latitude: cluster.geometry.coordinates[1],
+              longitude: cluster.geometry.coordinates[0],
+            }}
+            pointCount={cluster.properties.point_count}
+            onPress={cluster.onPress}
+          />
+        )}>
         {markers.map(({id, color, score, ...coordinate}) => (
           <CustomMarker
             key={id}
