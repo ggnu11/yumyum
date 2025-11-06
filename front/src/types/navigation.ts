@@ -4,7 +4,8 @@ import {LatLng} from 'react-native-maps';
 export type MapStackParamList = {
   MapHome: undefined;
   AddLocation: {location: LatLng};
-  SearchLocation: undefined;
+  SearchLocation: {initialKeyword?: string};
+  Search: undefined;
 };
 
 export type AuthStackParamList = {

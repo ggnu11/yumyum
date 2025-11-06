@@ -1,5 +1,6 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Keyboard, StyleSheet, View} from 'react-native';
+import {RouteProp, useRoute} from '@react-navigation/native';
 
 import Pagination from '@/components/map/Pagination';
 import SearchInput from '@/components/map/SearchInput';
@@ -7,10 +8,19 @@ import SearchRegionResult from '@/components/map/SearchRegionResult';
 import useSearchLocation from '@/hooks/useSearchLocation';
 import useUserLocation from '@/hooks/useUserLocation';
 import useLocationStore from '@/store/location';
+import {MapStackParamList} from '@/types/navigation';
+
+type SearchLocationScreenRouteProp = RouteProp<
+  MapStackParamList,
+  'SearchLocation'
+>;
 
 function SearchLocationScreen() {
-  const [keyword, setKeyword] = useState('');
-  const [searchKeyword, setSearchKeyword] = useState('');
+  const route = useRoute<SearchLocationScreenRouteProp>();
+  const [keyword, setKeyword] = useState(route.params?.initialKeyword || '');
+  const [searchKeyword, setSearchKeyword] = useState(
+    route.params?.initialKeyword || '',
+  );
   const {userLocation} = useUserLocation();
   const {setSelectedPlaceFromSearch} = useLocationStore();
   const {regionInfo, pageParam, fetchNextPage, fetchPrevPage, hasNextPage} =

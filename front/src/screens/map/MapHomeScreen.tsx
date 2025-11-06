@@ -12,6 +12,7 @@ import FilterButtons from '@/components/map/FilterButtons';
 import MapIconButton from '@/components/map/MapIconButton';
 import MarkerFilterAction from '@/components/map/MarkerFilterAction';
 import SearchBar from '@/components/map/SearchBar';
+import {colors} from '@/constants/colors';
 import {numbers} from '@/constants/numbers';
 import useGetMarkers from '@/hooks/queries/useGetMarkers';
 import useModal from '@/hooks/useModal';
@@ -29,6 +30,7 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import AddRecordFloatingButton from '../../components/map/AddRecordFloatingButton';
 import PlaceBottomSheet from '../../components/map/PlaceBottomSheet';
 import RecordFilterBottomSheet from '../../components/map/RecordFilterBottomSheet';
+import SearchScreen from './SearchScreen';
 
 type Navigation = StackNavigationProp<MapStackParamList>;
 
@@ -45,6 +47,7 @@ function MapHomeScreen() {
     useState<boolean>(false); // 바텀시트 100% 확장 상태
   const [activeFilters, setActiveFilters] = useState<string[]>(['all']);
   const [selectedFilters, setSelectedFilters] = useState<string[]>(['all']);
+  const [isSearchMode, setIsSearchMode] = useState(false); // 검색 모드 상태
   const searchBarTranslateY = useRef(new Animated.Value(0)).current; // 검색바 애니메이션
   const bottomSheetRef = useRef<BottomSheet>(null);
   const filterBottomSheetRef = useRef<BottomSheet>(null);
@@ -336,21 +339,29 @@ function MapHomeScreen() {
 
   return (
     <>
-      <Animated.View
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          zIndex: 10,
-          transform: [{translateY: searchBarTranslateY}],
-        }}>
-        <SearchBar onPress={() => navigation.navigate('SearchLocation')} />
-        <FilterButtons
-          activeFilters={activeFilters}
-          onFilterPress={handleFilterPress}
-        />
-      </Animated.View>
+      {!isSearchMode && (
+        <Animated.View
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            zIndex: 10,
+            transform: [{translateY: searchBarTranslateY}],
+          }}>
+          <SearchBar
+            onSubmit={keyword => {
+              setSelectedPlaceFromSearch(null);
+              navigation.navigate('SearchLocation', {initialKeyword: keyword});
+            }}
+            onFocus={() => setIsSearchMode(true)}
+          />
+          <FilterButtons
+            activeFilters={activeFilters}
+            onFilterPress={handleFilterPress}
+          />
+        </Animated.View>
+      )}
       <MapView
         userInterfaceStyle={theme}
         googleMapId="f727da01391db33238e04009"
@@ -404,6 +415,12 @@ function MapHomeScreen() {
         isVisible={filterAction.isVisible}
         hideAction={filterAction.hide}
       />
+      {/* 검색 화면 오버레이 */}
+      {isSearchMode && (
+        <View style={styles.searchOverlay}>
+          <SearchScreen onClose={() => setIsSearchMode(false)} />
+        </View>
+      )}
     </>
   );
 }
@@ -419,6 +436,15 @@ const styling = (theme: Theme) =>
       bottom: 30,
       right: 20,
       zIndex: 0,
+    },
+    searchOverlay: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: colors[theme].WHITE,
+      zIndex: 100,
     },
   });
 
