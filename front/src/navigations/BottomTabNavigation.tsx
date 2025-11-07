@@ -1,9 +1,9 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
+import {Image} from 'react-native';
 import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 
-import {colors} from '@/constants/colors';
+import {colors, colorSystem} from '@/constants/colors';
 import CalendarScreen from '@/screens/calendar/CalendarScreen';
 import useThemeStore, {Theme} from '@/store/theme';
 import useBottomSheetStore from '@/store/bottomSheet';
@@ -14,36 +14,42 @@ import {SettingStack} from './SettingNavigation';
 
 const Tab = createBottomTabNavigator<MainBottomTabParamList>();
 
-type TabIconName = 'house' | 'book' | 'calendar' | 'user';
-
 function TabIcons(
   routeName: keyof MainBottomTabParamList,
   focused: boolean,
-  theme: Theme,
 ) {
-  let iconName: TabIconName = 'house';
+  let iconSource;
 
   switch (routeName) {
     case 'MapTab':
-      iconName = 'house';
+      iconSource = focused
+        ? require('@/assets/bottom/active/pin_active.png')
+        : require('@/assets/bottom/inactive/pin_inactive.png');
       break;
     case 'FeedTab':
-      iconName = 'book';
+      iconSource = focused
+        ? require('@/assets/bottom/active/feed_active.png')
+        : require('@/assets/bottom/inactive/feed_inactive.png');
       break;
     case 'CalendarTab':
-      iconName = 'calendar';
+      iconSource = focused
+        ? require('@/assets/bottom/active/calendar_active.png')
+        : require('@/assets/bottom/inactive/calendar_inactive.png');
       break;
     case 'MyTab':
-      iconName = 'user';
+      iconSource = focused
+        ? require('@/assets/bottom/active/person_active.png')
+        : require('@/assets/bottom/inactive/person_inactive.png');
       break;
+    default:
+      iconSource = require('@/assets/bottom/inactive/pin_inactive.png');
   }
 
   return (
-    <FontAwesome6
-      name={iconName}
-      iconStyle="solid"
-      size={20}
-      color={focused ? colors[theme].BLUE_500 : colors[theme].GRAY_500}
+    <Image
+      source={iconSource}
+      style={{width: 24, height: 24}}
+      resizeMode="contain"
     />
   );
 }
@@ -60,8 +66,8 @@ export default function BottomTabNavigation() {
         route: BottomTabScreenProps<MainBottomTabParamList>['route'];
       }) => ({
         tabBarIcon: ({focused}: {focused: boolean}) =>
-          TabIcons(route.name as keyof MainBottomTabParamList, focused, theme),
-        tabBarActiveTintColor: colors[theme].BLUE_500,
+          TabIcons(route.name as keyof MainBottomTabParamList, focused),
+        tabBarActiveTintColor: colorSystem.label.normal,
         tabBarInactiveTintColor: colors[theme].GRAY_500,
         tabBarStyle: isBottomSheetVisible
           ? {display: 'none'}
