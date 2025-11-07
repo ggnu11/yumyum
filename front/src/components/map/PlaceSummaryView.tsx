@@ -2,6 +2,7 @@ import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import React, {useEffect, useRef, useState} from 'react';
 import {
+  Image,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -20,12 +21,17 @@ import CustomText from '../common/CustomText';
 import PhotoListView from './PhotoListView';
 import PhotoExpandView from './PhotoExpandView';
 import {formatPlaceTypes} from '../../utils/placeUtils';
+import {
+  getPinImageFromParams,
+  PinTypeParams,
+} from '../../utils/pinImage';
 
 interface PlaceSummaryViewProps {
   placeInfo: PlaceInfo | null;
   isBookmarked?: boolean;
   onBookmarkPress?: () => void;
   isExpanded?: boolean;
+  pinInfo?: PinTypeParams; // 핀 정보 (있으면 large 핀 이미지 표시)
 }
 
 function PlaceSummaryView({
@@ -33,6 +39,7 @@ function PlaceSummaryView({
   isBookmarked = false,
   onBookmarkPress,
   isExpanded = false,
+  pinInfo,
 }: PlaceSummaryViewProps) {
   const {theme} = useThemeStore();
   const styles = styling(theme);
@@ -89,8 +96,15 @@ function PlaceSummaryView({
         )}
       </View>
 
-      {/* 기록카드 갯수 */}
+      {/* 기록카드 갯수 및 핀 이미지 */}
       <View style={styles.recordCountRow}>
+        {pinInfo && (
+          <Image
+            source={getPinImageFromParams(pinInfo, 'large')}
+            style={styles.pinImage}
+            resizeMode="contain"
+          />
+        )}
         <Ionicons
           name="reader-outline"
           size={16}
@@ -243,6 +257,11 @@ const styling = (theme: Theme) =>
       alignItems: 'center',
       gap: 4,
       marginBottom: 16,
+    },
+    pinImage: {
+      width: 24,
+      height: 24,
+      marginRight: 4,
     },
     recordCount: {
       fontSize: 14,

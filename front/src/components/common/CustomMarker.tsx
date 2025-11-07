@@ -1,26 +1,44 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {Image, StyleSheet, View} from 'react-native';
 import {LatLng, Marker, MyMapMarkerProps} from 'react-native-maps';
 
 import {colors} from '@/constants/colors';
 import useThemeStore, {Theme} from '@/store/theme';
+import {
+  getPinImageFromParams,
+  PinTypeParams,
+} from '@/utils/pinImage';
 
 interface CustomMarkerProps extends MyMapMarkerProps {
   coordinate?: LatLng;
   color: string;
   score?: number;
+  pinInfo?: PinTypeParams; // 핀 정보 (있으면 핀 이미지 사용)
+  usePinImage?: boolean; // 핀 이미지 사용 여부 (기본값: false, 기존 스타일 유지)
 }
 
 function CustomMarker({
   coordinate,
   color,
   score = 5,
+  pinInfo,
+  usePinImage = false,
   ...props
 }: CustomMarkerProps) {
   const {theme} = useThemeStore();
   const styles = styling(theme);
 
-  const markerView = (
+  // 핀 이미지 사용 여부 결정
+  const shouldUsePinImage = usePinImage && pinInfo;
+  const pinImage = shouldUsePinImage
+    ? getPinImageFromParams(pinInfo, 'mini')
+    : null;
+
+  const markerView = shouldUsePinImage && pinImage ? (
+    <View style={styles.pinImageContainer}>
+      <Image source={pinImage} style={styles.pinImage} resizeMode="contain" />
+    </View>
+  ) : (
     <View style={styles.container}>
       <View style={[styles.marker, {backgroundColor: color}]}>
         <View style={[styles.eye, styles.leftEye]} />
@@ -47,6 +65,16 @@ const styling = (theme: Theme) =>
       height: 35,
       width: 32,
       alignItems: 'center',
+    },
+    pinImageContainer: {
+      width: 40,
+      height: 40,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    pinImage: {
+      width: 40,
+      height: 40,
     },
     marker: {
       transform: [{rotate: '45deg'}],

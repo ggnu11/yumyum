@@ -402,6 +402,15 @@ function MapHomeScreen() {
             score={score}
             coordinate={coordinate}
             onPress={() => handlePressMarker(id, coordinate)}
+            usePinImage={true}
+            pinInfo={
+              // TODO: 실제 핀 정보를 마커 데이터에서 가져와서 전달
+              // 현재는 내 핀만 있으므로 기본값으로 MY 핀 사용
+              {
+                visibility: 'PRIVATE',
+                is_mine: true,
+              }
+            }
           />
         ))}
         {/* 검색으로 선택한 장소의 마커 */}

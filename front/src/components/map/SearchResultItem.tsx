@@ -1,11 +1,12 @@
 import React from 'react';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
 
 import {colors} from '@/constants/colors';
 import useThemeStore, {Theme} from '@/store/theme';
 import CustomText from '../common/CustomText';
 import {RegionInfo} from '@/hooks/useSearchLocation';
+import {getPinImageFromParams, PinTypeParams} from '@/utils/pinImage';
 
 // 거리 포맷팅 함수 (m 단위 1~999, km 단위 1~999, 소수점 한자리)
 const formatDistance = (distance: string): string => {
@@ -24,6 +25,7 @@ interface SearchResultItemProps {
   type: 'recent' | 'place';
   keyword?: string;
   placeInfo?: RegionInfo & {distance?: string; pinCount?: number};
+  pinInfo?: PinTypeParams; // 핀 정보 (있으면 핀 이미지 표시)
   onPress: () => void;
 }
 
@@ -31,6 +33,7 @@ function SearchResultItem({
   type,
   keyword,
   placeInfo,
+  pinInfo,
   onPress,
 }: SearchResultItemProps) {
   const {theme} = useThemeStore();
@@ -53,20 +56,33 @@ function SearchResultItem({
   }
 
   if (type === 'place' && placeInfo) {
+    // 핀 정보가 있으면 핀 이미지 사용, 없으면 기본 아이콘 사용
+    const hasPin = !!pinInfo;
+    const pinImage = pinInfo ? getPinImageFromParams(pinInfo, 'small') : null;
     const pinColor = placeInfo.category_group_code
       ? colors[theme].PINK_500
       : colors[theme].GRAY_500;
 
     return (
       <TouchableOpacity style={styles.container} onPress={onPress}>
-        <View style={[styles.pinIcon, {backgroundColor: pinColor}]}>
-          <FontAwesome6
-            name="location-dot"
-            size={14}
-            color={colors[theme].WHITE}
-            iconStyle="solid"
-          />
-        </View>
+        {hasPin && pinImage ? (
+          <View style={styles.pinImageContainer}>
+            <Image
+              source={pinImage}
+              style={styles.pinImage}
+              resizeMode="contain"
+            />
+          </View>
+        ) : (
+          <View style={[styles.pinIcon, {backgroundColor: pinColor}]}>
+            <FontAwesome6
+              name="location-dot"
+              size={14}
+              color={colors[theme].WHITE}
+              iconStyle="solid"
+            />
+          </View>
+        )}
         <View style={styles.placeInfo}>
           <View style={styles.placeHeader}>
             <CustomText style={styles.placeName}>
@@ -121,6 +137,17 @@ const styling = (theme: Theme) =>
       justifyContent: 'center',
       alignItems: 'center',
       marginRight: 12,
+    },
+    pinImageContainer: {
+      width: 40,
+      height: 40,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginRight: 12,
+    },
+    pinImage: {
+      width: 40,
+      height: 40,
     },
     keyword: {
       fontSize: 15,
