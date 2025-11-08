@@ -50,7 +50,7 @@ function PreviewImageList({
               <Pressable
                 style={styles.deleteButton}
                 onPress={() => onDelete?.(uri)}>
-                <Ionicons name="close" size={16} color={colors[theme].WHITE} />
+                <Ionicons name="close" size={16} color={colors[theme][0]} />
               </Pressable>
             )}
           </Pressable>
@@ -78,7 +78,7 @@ const styling = (theme: Theme) =>
       position: 'absolute',
       top: 0,
       right: 0,
-      backgroundColor: colors[theme].BLACK,
+      backgroundColor: colors[theme][100],
     },
   });
 

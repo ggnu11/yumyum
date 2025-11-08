@@ -1,6 +1,12 @@
 import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
 import React, {useRef} from 'react';
-import {Keyboard, StyleSheet, TextInput, TouchableOpacity, View} from 'react-native';
+import {
+  Keyboard,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -49,9 +55,7 @@ function SearchBar({onSubmit, onFocus}: SearchBarProps) {
             maxLength={40}
           />
         </View>
-        <TouchableOpacity
-          onPress={handleSearchButtonPress}
-          activeOpacity={0.8}>
+        <TouchableOpacity onPress={handleSearchButtonPress} activeOpacity={0.8}>
           <LinearGradient
             colors={colorSystem.primary.gradient}
             start={{x: 0, y: 0}}
@@ -60,7 +64,7 @@ function SearchBar({onSubmit, onFocus}: SearchBarProps) {
             <FontAwesome6
               name="magnifying-glass"
               size={18}
-              color={colors[theme].WHITE}
+              color={colors[theme][0]}
               iconStyle="solid"
             />
           </LinearGradient>
@@ -89,7 +93,7 @@ const styling = (theme: Theme) =>
     searchInputContainer: {
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: colors[theme].WHITE,
+      backgroundColor: colors[theme][0],
       flex: 1,
       height: 42,
       paddingHorizontal: 15,
@@ -102,7 +106,7 @@ const styling = (theme: Theme) =>
     input: {
       flex: 1,
       fontSize: 14,
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
       padding: 0,
     },
     searchButton: {

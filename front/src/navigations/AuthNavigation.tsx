@@ -19,9 +19,9 @@ function AuthNavigation() {
         headerTitleAlign: 'center',
         headerBackButtonDisplayMode: 'minimal',
 
-        headerTintColor: colors[theme].BLACK,
+        headerTintColor: colors[theme][100],
         headerStyle: {
-          backgroundColor: colors[theme].WHITE,
+          backgroundColor: colors[theme][0],
 
           shadowColor: colors[theme].GRAY_500,
         },
@@ -29,7 +29,7 @@ function AuthNavigation() {
           fontSize: 16,
         },
         cardStyle: {
-          backgroundColor: colors[theme].WHITE,
+          backgroundColor: colors[theme][0],
         },
       }}>
       <Stack.Screen

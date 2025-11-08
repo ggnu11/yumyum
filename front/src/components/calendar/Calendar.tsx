@@ -41,7 +41,7 @@ function Calendar({
     <>
       <View style={styles.headerContainer}>
         <Pressable style={styles.monthButton} onPress={() => onChangeMonth(-1)}>
-          <Ionicons name="arrow-back" size={25} color={colors[theme].BLACK} />
+          <Ionicons name="arrow-back" size={25} color={colors[theme][100]} />
         </Pressable>
         <Pressable
           style={styles.monthYearContainer}
@@ -56,11 +56,7 @@ function Calendar({
           />
         </Pressable>
         <Pressable style={styles.monthButton} onPress={() => onChangeMonth(1)}>
-          <Ionicons
-            name="arrow-forward"
-            size={25}
-            color={colors[theme].BLACK}
-          />
+          <Ionicons name="arrow-forward" size={25} color={colors[theme][100]} />
         </Pressable>
       </View>
 
@@ -114,7 +110,7 @@ const styling = (theme: Theme) =>
     monthYearText: {
       fontSize: 18,
       fontWeight: '500',
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
     },
     bodyContainer: {
       backgroundColor: colors[theme].GRAY_100,

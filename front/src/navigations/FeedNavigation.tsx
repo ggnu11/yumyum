@@ -22,16 +22,16 @@ export function FeedStack() {
       screenOptions={{
         headerTitleAlign: 'center',
         headerBackButtonDisplayMode: 'minimal',
-        headerTintColor: colors[theme].BLACK,
+        headerTintColor: colors[theme][100],
         headerStyle: {
-          backgroundColor: colors[theme].WHITE,
+          backgroundColor: colors[theme][0],
           shadowColor: colors[theme].GRAY_500,
         },
         headerTitleStyle: {
           fontSize: 16,
         },
         cardStyle: {
-          backgroundColor: colors[theme].WHITE,
+          backgroundColor: colors[theme][0],
         },
       }}>
       <Stack.Screen
@@ -62,7 +62,7 @@ export function FeedStack() {
             <Ionicons
               name="chevron-back"
               size={30}
-              color={colors[theme].BLACK}
+              color={colors[theme][100]}
               onPress={() => navigation.navigate('FeedList')}
             />
           ),

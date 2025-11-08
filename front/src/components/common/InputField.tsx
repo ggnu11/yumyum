@@ -54,7 +54,7 @@ const styling = (theme: Theme) =>
       height: 50,
       paddingHorizontal: 10,
       fontSize: 16,
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
     },
     multiLine: {
       height: 150,

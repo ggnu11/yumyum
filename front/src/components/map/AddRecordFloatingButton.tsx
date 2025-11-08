@@ -56,7 +56,7 @@ function AddRecordFloatingButton({
         <Ionicons
           name="add"
           size={20}
-          color={colors[theme].WHITE}
+          color={colors[theme][0]}
           style={styles.icon}
         />
         <CustomText style={styles.buttonText}>기록 추가하기</CustomText>
@@ -76,14 +76,14 @@ const styling = (theme: Theme) =>
       elevation: 0,
     },
     button: {
-      backgroundColor: colors[theme].BLACK,
+      backgroundColor: colors[theme][100],
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
       paddingVertical: 16,
       paddingHorizontal: 20,
       borderRadius: 12,
-      shadowColor: colors[theme].BLACK,
+      shadowColor: colors[theme][100],
       shadowOffset: {
         width: 0,
         height: 4,
@@ -96,7 +96,7 @@ const styling = (theme: Theme) =>
       marginRight: 8,
     },
     buttonText: {
-      color: colors[theme].WHITE,
+      color: colors[theme][0],
       fontSize: 16,
       fontWeight: '600',
     },

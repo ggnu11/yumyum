@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
-import {colors} from '@/constants/colors';
+import {colors, colorSystem} from '@/constants/colors';
 import useThemeStore, {Theme} from '@/store/theme';
 import useSearchStore from '@/store/search';
 import CustomText from '../common/CustomText';
@@ -109,7 +109,7 @@ const styling = (theme: Theme) =>
       left: 0,
       right: 0,
       bottom: 0,
-      backgroundColor: colors[theme].WHITE,
+      backgroundColor: colors[theme][0],
     },
     header: {
       flexDirection: 'row',
@@ -120,7 +120,7 @@ const styling = (theme: Theme) =>
     },
     title: {
       fontSize: 14,
-      color: colors[theme].GRAY_900,
+      color: colorSystem.label.neutral,
     },
     clearText: {
       fontSize: 14,

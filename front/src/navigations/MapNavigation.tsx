@@ -19,9 +19,9 @@ export function MapStack() {
       screenOptions={{
         headerTitleAlign: 'center',
         headerBackButtonDisplayMode: 'minimal',
-        headerTintColor: colors[theme].BLACK,
+        headerTintColor: colors[theme][100],
         headerStyle: {
-          backgroundColor: colors[theme].WHITE,
+          backgroundColor: colors[theme][0],
           shadowColor: colors[theme].GRAY_500,
         },
         headerTitleStyle: {
@@ -41,7 +41,7 @@ export function MapStack() {
         options={{
           title: '장소 추가',
           cardStyle: {
-            backgroundColor: colors[theme].WHITE,
+            backgroundColor: colors[theme][0],
           },
         }}
       />
@@ -52,7 +52,7 @@ export function MapStack() {
           title: '장소 검색',
           presentation: 'modal',
           cardStyle: {
-            backgroundColor: colors[theme].WHITE,
+            backgroundColor: colors[theme][0],
           },
         }}
       />
@@ -62,7 +62,7 @@ export function MapStack() {
         options={{
           headerShown: false,
           cardStyle: {
-            backgroundColor: colors[theme].WHITE,
+            backgroundColor: colors[theme][0],
           },
         }}
       />

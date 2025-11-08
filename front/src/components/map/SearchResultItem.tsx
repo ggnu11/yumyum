@@ -78,7 +78,7 @@ function SearchResultItem({
             <FontAwesome6
               name="location-dot"
               size={14}
-              color={colors[theme].WHITE}
+              color={colors[theme][0]}
               iconStyle="solid"
             />
           </View>
@@ -151,7 +151,7 @@ const styling = (theme: Theme) =>
     },
     keyword: {
       fontSize: 15,
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
       flex: 1,
     },
     placeInfo: {
@@ -166,7 +166,7 @@ const styling = (theme: Theme) =>
     placeName: {
       fontSize: 15,
       fontWeight: '600',
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
       flex: 1,
       marginRight: 8,
     },

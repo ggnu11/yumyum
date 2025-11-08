@@ -27,7 +27,7 @@ function SearchInput({onSubmit, ...props}: SearchInputProps) {
         name="magnifying-glass"
         iconStyle="solid"
         size={20}
-        color={colors[theme].BLACK}
+        color={colors[theme][100]}
         onPress={onSubmit}
       />
     </View>
@@ -49,7 +49,7 @@ const styling = (theme: Theme) =>
       fontSize: 16,
       paddingVertical: 0,
       paddingLeft: 0,
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
     },
   });
 

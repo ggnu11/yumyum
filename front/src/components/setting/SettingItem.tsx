@@ -21,7 +21,7 @@ function SettingItem({title, color, ...props}: SettingItemProps) {
         pressed && styles.pressedContainer,
       ]}>
       <CustomText
-        style={[styles.titleText, {color: color ?? colors[theme].BLACK}]}>
+        style={[styles.titleText, {color: color ?? colors[theme][100]}]}>
         {title}
       </CustomText>
     </Pressable>
@@ -37,7 +37,7 @@ const styling = (theme: Theme) =>
       alignItems: 'center',
       gap: 10,
       padding: 15,
-      backgroundColor: colors[theme].WHITE,
+      backgroundColor: colors[theme][0],
       borderColor: colors[theme].GRAY_200,
       borderBottomWidth: StyleSheet.hairlineWidth,
       borderTopWidth: StyleSheet.hairlineWidth,
@@ -48,7 +48,7 @@ const styling = (theme: Theme) =>
     titleText: {
       fontSize: 16,
       fontWeight: '500',
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
     },
   });
 

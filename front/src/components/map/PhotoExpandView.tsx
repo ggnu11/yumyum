@@ -93,7 +93,7 @@ const styling = (theme: Theme) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: colors[theme].BLACK,
+      backgroundColor: colors[theme][100],
     },
     header: {
       flexDirection: 'row',
@@ -108,11 +108,11 @@ const styling = (theme: Theme) =>
     },
     closeText: {
       fontSize: 18,
-      color: colors[theme].WHITE,
+      color: colors[theme][0],
     },
     counter: {
       fontSize: 16,
-      color: colors[theme].WHITE,
+      color: colors[theme][0],
     },
     placeholder: {
       width: 34,
@@ -143,7 +143,7 @@ const styling = (theme: Theme) =>
       borderRadius: 4,
     },
     activeDot: {
-      backgroundColor: colors[theme].WHITE,
+      backgroundColor: colors[theme][0],
     },
     inactiveDot: {
       backgroundColor: colors[theme].GRAY_500,

@@ -50,10 +50,7 @@ function SearchScreen({onClose}: SearchScreenProps) {
   const debouncedKeyword = useDebounce(keyword.trim(), 300);
 
   // 실시간 검색 (최대 10개) - debouncedKeyword가 있을 때만 검색
-  const {regionInfo} = useSearchLocation(
-    debouncedKeyword || '',
-    userLocation,
-  );
+  const {regionInfo} = useSearchLocation(debouncedKeyword || '', userLocation);
   const searchResults = debouncedKeyword ? regionInfo.slice(0, 10) : [];
 
   const handleBackPress = () => {
@@ -115,7 +112,7 @@ function SearchScreen({onClose}: SearchScreenProps) {
               <Ionicons
                 name="chevron-back"
                 size={24}
-                color={colors[theme].BLACK}
+                color={colors[theme][100]}
               />
             </TouchableOpacity>
             <View style={styles.searchInputContainer}>
@@ -131,9 +128,7 @@ function SearchScreen({onClose}: SearchScreenProps) {
                 maxLength={40}
               />
             </View>
-            <TouchableOpacity
-              onPress={handleSubmit}
-              activeOpacity={0.8}>
+            <TouchableOpacity onPress={handleSubmit} activeOpacity={0.8}>
               <LinearGradient
                 colors={colorSystem.primary.gradient}
                 start={{x: 0, y: 0}}
@@ -142,7 +137,7 @@ function SearchScreen({onClose}: SearchScreenProps) {
                 <FontAwesome6
                   name="magnifying-glass"
                   size={18}
-                  color={colors[theme].WHITE}
+                  color={colors[theme][0]}
                   iconStyle="solid"
                 />
               </LinearGradient>
@@ -157,7 +152,9 @@ function SearchScreen({onClose}: SearchScreenProps) {
               <View style={styles.header}>
                 <CustomText style={styles.title}>최근 검색</CustomText>
                 <TouchableOpacity onPress={() => setShowDeleteModal(true)}>
-                  <CustomText style={styles.clearText}>검색 기록 삭제</CustomText>
+                  <CustomText style={styles.clearText}>
+                    검색 기록 삭제
+                  </CustomText>
                 </TouchableOpacity>
               </View>
               <ScrollView style={styles.scrollView}>
@@ -218,7 +215,7 @@ const styling = (theme: Theme) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: colors[theme].WHITE,
+      backgroundColor: colors[theme][0],
     },
     searchBarContainer: {
       position: 'absolute',
@@ -244,7 +241,7 @@ const styling = (theme: Theme) =>
     searchInputContainer: {
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: colors[theme].WHITE,
+      backgroundColor: colors[theme][0],
       flex: 1,
       height: 42,
       paddingHorizontal: 15,
@@ -257,7 +254,7 @@ const styling = (theme: Theme) =>
     input: {
       flex: 1,
       fontSize: 14,
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
       padding: 0,
     },
     searchButton: {
@@ -280,11 +277,11 @@ const styling = (theme: Theme) =>
     },
     title: {
       fontSize: 14,
-      color: colors[theme].GRAY_900,
+      color: colorSystem.label.neutral,
     },
     clearText: {
       fontSize: 14,
-      color: colors[theme].GRAY_500,
+      color: colorSystem.label.assistive,
     },
     scrollView: {
       flex: 1,
@@ -296,9 +293,8 @@ const styling = (theme: Theme) =>
     },
     emptyText: {
       fontSize: 14,
-      color: colors[theme].GRAY_500,
+      color: colorSystem.label.assistive,
     },
   });
 
 export default SearchScreen;
-

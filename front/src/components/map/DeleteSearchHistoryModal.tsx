@@ -61,7 +61,7 @@ const styling = (theme: Theme) =>
       paddingHorizontal: 30,
     },
     modalContainer: {
-      backgroundColor: colors[theme].WHITE,
+      backgroundColor: colors[theme][0],
       borderRadius: 20,
       padding: 30,
       width: '100%',
@@ -70,7 +70,7 @@ const styling = (theme: Theme) =>
     title: {
       fontSize: 18,
       fontWeight: '700',
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
       textAlign: 'center',
       marginBottom: 12,
     },
@@ -96,7 +96,7 @@ const styling = (theme: Theme) =>
       backgroundColor: colors[theme].GRAY_200,
     },
     confirmButton: {
-      backgroundColor: colors[theme].BLACK,
+      backgroundColor: colors[theme][100],
     },
     cancelButtonText: {
       fontSize: 16,
@@ -106,9 +106,8 @@ const styling = (theme: Theme) =>
     confirmButtonText: {
       fontSize: 16,
       fontWeight: '600',
-      color: colors[theme].WHITE,
+      color: colors[theme][0],
     },
   });
 
 export default DeleteSearchHistoryModal;
-

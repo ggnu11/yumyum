@@ -21,10 +21,7 @@ import CustomText from '../common/CustomText';
 import PhotoListView from './PhotoListView';
 import PhotoExpandView from './PhotoExpandView';
 import {formatPlaceTypes} from '../../utils/placeUtils';
-import {
-  getPinImageFromParams,
-  PinTypeParams,
-} from '../../utils/pinImage';
+import {getPinImageFromParams, PinTypeParams} from '../../utils/pinImage';
 
 interface PlaceSummaryViewProps {
   placeInfo: PlaceInfo | null;
@@ -242,7 +239,7 @@ const styling = (theme: Theme) =>
     placeName: {
       fontSize: 20,
       fontWeight: 'bold',
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
     },
     categoryText: {
       fontSize: 14,
@@ -325,7 +322,7 @@ const styling = (theme: Theme) =>
       alignItems: 'center',
     },
     moreImagesText: {
-      color: colors[theme].WHITE,
+      color: colors[theme][0],
       fontSize: 12,
       fontWeight: 'bold',
     },

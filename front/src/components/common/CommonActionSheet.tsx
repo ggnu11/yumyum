@@ -191,7 +191,7 @@ const styling = (theme: Theme) =>
       marginBottom: 10,
     },
     actionButton: {
-      backgroundColor: colors[theme].WHITE,
+      backgroundColor: colors[theme][0],
       height: 50,
       alignItems: 'center',
       justifyContent: 'center',

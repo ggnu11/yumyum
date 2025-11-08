@@ -50,13 +50,13 @@ function FeedDetailScreen({route}: Props) {
         <Ionicons
           name="chevron-back"
           size={30}
-          color={colors[theme].WHITE}
+          color={colors[theme][0]}
           onPress={() => navigation.goBack()}
         />
         <Ionicons
           name="ellipsis-vertical"
           size={30}
-          color={colors[theme].WHITE}
+          color={colors[theme][0]}
           onPress={detailAction.show}
         />
       </View>
@@ -141,7 +141,7 @@ function FeedDetailScreen({route}: Props) {
               name="star"
               size={25}
               color={
-                post.isFavorite ? colors[theme].YELLOW_500 : colors[theme].WHITE
+                post.isFavorite ? colors[theme].YELLOW_500 : colors[theme][0]
               }
             />
           }
@@ -187,7 +187,7 @@ const styling = (theme: Theme) =>
     },
     imageContentsContainer: {
       paddingVertical: 15,
-      backgroundColor: colors[theme].WHITE,
+      backgroundColor: colors[theme][0],
       marginBottom: 10,
     },
     emptyImageContainer: {
@@ -200,7 +200,7 @@ const styling = (theme: Theme) =>
     },
     contentsContainer: {
       padding: 20,
-      backgroundColor: colors[theme].WHITE,
+      backgroundColor: colors[theme][0],
       marginBottom: 10,
     },
     addressContainer: {
@@ -216,7 +216,7 @@ const styling = (theme: Theme) =>
     titleText: {
       fontSize: 22,
       fontWeight: 'bold',
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
     },
     infoContainer: {
       marginVertical: 20,
@@ -232,7 +232,7 @@ const styling = (theme: Theme) =>
       gap: 5,
     },
     infoColumnKeyText: {
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
     },
     infoColumnValueText: {
       color: colors[theme].PINK_700,
@@ -243,7 +243,7 @@ const styling = (theme: Theme) =>
       borderRadius: 10,
     },
     descriptionText: {
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
       lineHeight: 25,
       fontSize: 16,
     },
@@ -256,7 +256,7 @@ const styling = (theme: Theme) =>
       justifyContent: 'flex-end',
       paddingTop: 10,
       paddingHorizontal: 20,
-      backgroundColor: colors[theme].WHITE,
+      backgroundColor: colors[theme][0],
       borderTopWidth: StyleSheet.hairlineWidth,
       borderColor: colors[theme].GRAY_200,
       gap: 5,

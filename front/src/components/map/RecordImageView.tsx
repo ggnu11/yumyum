@@ -144,7 +144,7 @@ const styling = (theme: Theme) =>
       alignItems: 'center',
     },
     moreText: {
-      color: colors[theme].WHITE,
+      color: colors[theme][0],
       fontSize: 16,
       fontWeight: 'bold',
     },

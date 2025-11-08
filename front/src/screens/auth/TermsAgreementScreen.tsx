@@ -70,7 +70,7 @@ const styling = (theme: Theme) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: colors[theme].WHITE,
+      backgroundColor: colors[theme][0],
     },
     content: {
       flex: 1,

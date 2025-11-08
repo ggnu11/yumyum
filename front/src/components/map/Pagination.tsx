@@ -32,7 +32,7 @@ function Pagination({
         <Ionicons
           name="chevron-back"
           size={15}
-          color={pageParam > 1 ? colors[theme].BLACK : colors[theme].GRAY_300}
+          color={pageParam > 1 ? colors[theme][100] : colors[theme].GRAY_300}
         />
         <CustomText
           style={pageParam > 1 ? styles.pageText : styles.disabledText}>
@@ -48,7 +48,7 @@ function Pagination({
           size={15}
           color={
             totalLength > 0 && hasNextPage
-              ? colors[theme].BLACK
+              ? colors[theme][100]
               : colors[theme].GRAY_300
           }
         />
@@ -80,7 +80,7 @@ const styling = (theme: Theme) =>
     },
     pageText: {
       fontSize: 15,
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
     },
     disabledText: {
       fontSize: 15,

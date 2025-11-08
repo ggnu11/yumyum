@@ -63,14 +63,14 @@ const styling = (theme: Theme) =>
       backgroundColor: colors[theme].PINK_700,
     },
     outlined: {
-      backgroundColor: colors[theme].WHITE,
+      backgroundColor: colors[theme][0],
       borderWidth: 1,
       borderColor: colors[theme].PINK_700,
     },
     filledText: {
       fontSize: 14,
       fontWeight: 'bold',
-      color: colors[theme].WHITE,
+      color: colors[theme][0],
     },
     outlinedText: {
       fontSize: 14,

@@ -42,7 +42,7 @@ const styling = (theme: Theme) =>
     },
     text: {
       fontSize: 12,
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
     },
     saturdayText: {
       color: colors[theme].BLUE_500,

@@ -96,7 +96,7 @@ const styling = (theme: Theme) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: colors[theme].WHITE,
+      backgroundColor: colors[theme][0],
     },
     scrollView: {
       flex: 1,
@@ -112,7 +112,7 @@ const styling = (theme: Theme) =>
       bottom: 0,
       left: 0,
       right: 0,
-      backgroundColor: colors[theme].WHITE,
+      backgroundColor: colors[theme][0],
       paddingHorizontal: 20,
       paddingVertical: 30,
     },

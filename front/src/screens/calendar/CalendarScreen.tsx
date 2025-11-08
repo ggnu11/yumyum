@@ -79,11 +79,11 @@ const styling = (theme: Theme) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: colors[theme].WHITE,
+      backgroundColor: colors[theme][0],
     },
     scheduleContainer: {
       padding: 20,
-      backgroundColor: colors[theme].WHITE,
+      backgroundColor: colors[theme][0],
     },
   });
 

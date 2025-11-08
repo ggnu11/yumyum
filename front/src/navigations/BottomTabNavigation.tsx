@@ -14,10 +14,7 @@ import {SettingStack} from './SettingNavigation';
 
 const Tab = createBottomTabNavigator<MainBottomTabParamList>();
 
-function TabIcons(
-  routeName: keyof MainBottomTabParamList,
-  focused: boolean,
-) {
+function TabIcons(routeName: keyof MainBottomTabParamList, focused: boolean) {
   let iconSource;
 
   switch (routeName) {
@@ -72,7 +69,7 @@ export default function BottomTabNavigation() {
         tabBarStyle: isBottomSheetVisible
           ? {display: 'none'}
           : {
-              backgroundColor: colors[theme].WHITE,
+              backgroundColor: colors[theme][0],
               borderTopColor: colors[theme].GRAY_200,
               paddingTop: 8,
               paddingBottom: 8,

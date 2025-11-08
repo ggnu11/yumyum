@@ -99,7 +99,7 @@ const styling = (theme: Theme) =>
     title: {
       fontSize: 16,
       fontWeight: '600',
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
     },
     categoryBadge: {
       flexDirection: 'row',
@@ -126,7 +126,7 @@ const styling = (theme: Theme) =>
     },
     content: {
       fontSize: 14,
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
       lineHeight: 20,
       marginBottom: 12,
     },

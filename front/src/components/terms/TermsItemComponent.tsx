@@ -123,7 +123,7 @@ const styling = (theme: Theme) =>
       borderRadius: 12,
       borderWidth: 2,
       borderColor: colors[theme].GRAY_300,
-      backgroundColor: colors[theme].WHITE,
+      backgroundColor: colors[theme][0],
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -132,13 +132,13 @@ const styling = (theme: Theme) =>
       borderColor: colors[theme].GRAY_500,
     },
     checkmark: {
-      color: colors[theme].WHITE,
+      color: colors[theme][0],
       fontSize: 14,
       fontWeight: 'bold',
     },
     termText: {
       fontSize: 16,
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
       fontWeight: '400',
     },
     underlineText: {

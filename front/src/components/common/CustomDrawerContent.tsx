@@ -49,7 +49,7 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
           <Ionicons
             name="settings-outline"
             size={20}
-            color={colors[theme].BLACK}
+            color={colors[theme][100]}
           />
           <CustomText style={styles.menuText}>설정</CustomText>
         </Pressable>
@@ -84,7 +84,7 @@ const styling = (theme: Theme) =>
     },
     nickname: {
       fontSize: 14,
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
     },
     bottomContainer: {
       flexDirection: 'row',
@@ -95,7 +95,7 @@ const styling = (theme: Theme) =>
     },
     menuText: {
       fontSize: 15,
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
     },
     bottomMenu: {
       flexDirection: 'row',
