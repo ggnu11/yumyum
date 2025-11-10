@@ -1,8 +1,8 @@
 import BottomSheet, {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import React, {forwardRef, useCallback, useMemo, useState} from 'react';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
-import {colors} from '../../constants/colors';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {colorSystem, colors} from '../../constants/colors';
 import {layout} from '../../constants/layout';
 import {usePlacePins} from '../../hooks/usePin';
 import {PlaceInfo as ApiPlaceInfo} from '../../types/api';
@@ -121,7 +121,6 @@ const styles = StyleSheet.create({
   },
   recordsSubtitle: {
     fontSize: 14,
-    color: colors.light.BLUE_100,
   },
   filterButton: {
     flexDirection: 'row',
@@ -341,7 +340,10 @@ const PlaceBottomSheet = forwardRef<BottomSheet, PlaceBottomSheetProps>(
                         이 장소에 등록된 기록카드
                       </CustomText>
                       <CustomText style={styles.recordsSubtitle}>
-                        {placeInfo.place_name}에 대해 이야기 해 주세요!
+                        <Text style={{color: colorSystem.system.info}}>
+                          {placeInfo.place_name}
+                        </Text>
+                        에 대해 이야기 해 주세요!
                       </CustomText>
                     </View>
                     <TouchableOpacity
