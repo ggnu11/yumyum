@@ -10,6 +10,13 @@ export const layout = {
       margin: 20,
       gutter: 16,
     },
+    bottomsheet: {
+      rounding: 20,
+      columns: 4,
+      type: 'stretch' as const,
+      margin: 24,
+      gutter: 16,
+    },
   },
 };
 

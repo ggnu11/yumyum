@@ -3,6 +3,7 @@ import Ionicons from '@react-native-vector-icons/ionicons';
 import React, {forwardRef, useCallback, useMemo, useState} from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {colors} from '../../constants/colors';
+import {layout} from '../../constants/layout';
 import {usePlacePins} from '../../hooks/usePin';
 import {PlaceInfo as ApiPlaceInfo} from '../../types/api';
 import CustomText from '../common/CustomText';
@@ -89,7 +90,7 @@ const styles = StyleSheet.create({
   fullViewHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: layout.ios.bottomsheet.margin,
     paddingTop: 8,
     paddingBottom: 12,
   },
@@ -101,7 +102,7 @@ const styles = StyleSheet.create({
   },
   stickyHeaderContainer: {
     backgroundColor: colors.light.WHITE,
-    paddingHorizontal: 20,
+    paddingHorizontal: layout.ios.bottomsheet.margin,
     paddingTop: 20,
     paddingBottom: 12,
     borderBottomWidth: 1,
@@ -134,13 +135,13 @@ const styles = StyleSheet.create({
     color: colors.light.GRAY_700,
   },
   recordsListContainer: {
-    paddingHorizontal: 20,
+    paddingHorizontal: layout.ios.bottomsheet.margin,
     paddingTop: 12,
   },
   divider: {
     height: 8,
     backgroundColor: colors.light.GRAY_100,
-    marginHorizontal: -20,
+    marginHorizontal: -layout.ios.bottomsheet.margin,
   },
 });
 
@@ -262,8 +263,8 @@ const PlaceBottomSheet = forwardRef<BottomSheet, PlaceBottomSheetProps>(
           enableDynamicSizing={false}
           backgroundStyle={{
             backgroundColor: colors.light.WHITE,
-            borderTopLeftRadius: 20,
-            borderTopRightRadius: 20,
+            borderTopLeftRadius: layout.ios.bottomsheet.rounding,
+            borderTopRightRadius: layout.ios.bottomsheet.rounding,
           }}
           handleIndicatorStyle={{
             backgroundColor: colors.light.GRAY_300,
@@ -307,7 +308,11 @@ const PlaceBottomSheet = forwardRef<BottomSheet, PlaceBottomSheetProps>(
 
             {/* 식당 정보 영역 */}
             <View
-              style={{paddingHorizontal: 20, paddingBottom: 20, paddingTop: 8}}>
+              style={{
+                paddingHorizontal: layout.ios.bottomsheet.margin,
+                paddingBottom: 20,
+                paddingTop: 8,
+              }}>
               <PlaceSummaryView
                 placeInfo={placeInfo}
                 isExpanded={currentSheetIndex === 1}

@@ -12,6 +12,7 @@ import React, {
 import {View, TouchableOpacity, StyleSheet} from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import {colors} from '../../constants/colors';
+import {layout} from '../../constants/layout';
 import CustomText from '../common/CustomText';
 
 interface RecordFilterBottomSheetProps {
@@ -90,8 +91,8 @@ const RecordFilterBottomSheet = forwardRef<
       }}
       backgroundStyle={{
         backgroundColor: colors.light.WHITE,
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
+        borderTopLeftRadius: layout.ios.bottomsheet.rounding,
+        borderTopRightRadius: layout.ios.bottomsheet.rounding,
       }}
       handleIndicatorStyle={{
         backgroundColor: colors.light.GRAY_300,
@@ -143,7 +144,7 @@ const RecordFilterBottomSheet = forwardRef<
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
+    paddingHorizontal: layout.ios.bottomsheet.margin,
     paddingBottom: 20,
   },
   header: {
