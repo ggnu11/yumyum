@@ -1,7 +1,7 @@
 // 디자인 가이드 기반 색상 팔레트
 const common = {
   // Common
-  0: '#000000',
+  0: '#FFFFFF',
   100: '#121212',
 
   // Grayscale
@@ -61,7 +61,6 @@ const common = {
   SOCIAL_NAVER_BRAND: '#03C75A',
 
   // Legacy colors (호환성을 위해 유지)
-  PINK_200: '#FAE2E9',
   PINK_400: '#EC87A5',
   PINK_500: '#BF5C79',
   PINK_700: '#C63B64',
@@ -73,8 +72,6 @@ const common = {
   YELLOW_400: '#FFE594',
   YELLOW_500: '#FACC15',
   PURPLE_400: '#C4C4E7',
-  UNCHANGE_WHITE: '#fff',
-  UNCHANGE_BLACK: '#000',
 };
 
 const colors = {
