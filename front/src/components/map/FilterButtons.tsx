@@ -82,7 +82,7 @@ function FilterButtons({activeFilters, onFilterPress}: FilterButtonsProps) {
               activeOpacity={0.7}>
               <View style={styles.buttonContent}>
                 {isGroupFilter ? (
-                  <ColorDot size={12} color={filter.color || '#000'} />
+                  <ColorDot size={8} color={filter.color || '#000'} />
                 ) : (
                   IconComponent && (
                     <IconComponent
