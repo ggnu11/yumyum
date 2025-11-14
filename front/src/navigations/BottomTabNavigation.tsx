@@ -45,7 +45,7 @@ function TabIcons(routeName: keyof MainBottomTabParamList, focused: boolean) {
   return (
     <Image
       source={iconSource}
-      style={{width: 24, height: 24}}
+      style={{width: 20, height: 20}}
       resizeMode="contain"
     />
   );
@@ -73,12 +73,16 @@ export default function BottomTabNavigation() {
               borderTopColor: colors[theme].GRAY_200,
               paddingTop: 8,
               paddingBottom: 8,
-              height: 60,
+              height: 100,
             },
         tabBarLabelStyle: {
           fontSize: 12,
           fontWeight: '600',
           marginTop: 4,
+        },
+        tabBarItemStyle: {
+          width: 72,
+          height: 56,
         },
         headerShown: false,
       })}>
