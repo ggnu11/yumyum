@@ -103,17 +103,10 @@ function PlaceSummaryView({
 
       {/* 기록카드 갯수 및 핀 이미지 */}
       <View style={styles.recordCountRow}>
-        {pinInfo && (
-          <Image
-            source={getPinImageFromParams(pinInfo, 'large')}
-            style={styles.pinImage}
-            resizeMode="contain"
-          />
-        )}
-        <Ionicons
-          name="reader-outline"
-          size={16}
-          color={colors[theme].GRAY_500}
+        <Image
+          source={require('@/assets/common/feed.png')}
+          style={{width: 16, height: 16}}
+          resizeMode="contain"
         />
         <CustomText style={styles.recordCount}>
           기록카드 {placeInfo.total_pin_count}개
@@ -123,10 +116,10 @@ function PlaceSummaryView({
       {/* 장소 기본 정보 */}
       <View style={styles.placeInfoSection}>
         <View style={styles.infoRow}>
-          <Ionicons
-            name="location-outline"
-            size={16}
-            color={colors[theme].GRAY_500}
+          <Image
+            source={require('@/assets/common/pin.png')}
+            style={{width: 16, height: 16}}
+            resizeMode="contain"
           />
           <CustomText style={styles.infoText}>
             {placeInfo.address || '주소 정보 없음'}
@@ -136,10 +129,10 @@ function PlaceSummaryView({
         {placeInfo.phone_number && (
           <View style={styles.phoneRow}>
             <View style={styles.phoneNumberRow}>
-              <Ionicons
-                name="call-outline"
-                size={16}
-                color={colors[theme].GRAY_500}
+              <Image
+                source={require('@/assets/common/phone.png')}
+                style={{width: 16, height: 16}}
+                resizeMode="contain"
               />
               <CustomText style={styles.infoText}>
                 {placeInfo.phone_number}
@@ -266,8 +259,9 @@ const styling = (theme: Theme) =>
     recordCountRow: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: 4,
+      gap: 6,
       marginBottom: 16,
+      color: colorSystem.label.normal,
     },
     pinImage: {
       width: 24,
@@ -276,7 +270,7 @@ const styling = (theme: Theme) =>
     },
     recordCount: {
       fontSize: 14,
-      color: colors[theme].GRAY_500,
+      color: colorSystem.label.normal,
     },
     placeInfoSection: {
       gap: 8,
@@ -285,7 +279,7 @@ const styling = (theme: Theme) =>
     infoRow: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: 8,
+      gap: 6,
     },
     phoneRow: {
       flexDirection: 'row',
@@ -295,7 +289,7 @@ const styling = (theme: Theme) =>
     phoneNumberRow: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: 8,
+      gap: 6,
     },
     infoText: {
       fontSize: 14,

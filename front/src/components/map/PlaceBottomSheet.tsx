@@ -187,7 +187,7 @@ const PlaceBottomSheet = forwardRef<BottomSheet, PlaceBottomSheetProps>(
       return allRecords;
     }, [allRecords, selectedFilters]);
 
-    const snapPoints = useMemo(() => [397, '100%'], []);
+    const snapPoints = useMemo(() => [300, '100%'], []);
 
     const handleSheetChanges = useCallback(
       (index: number) => {
