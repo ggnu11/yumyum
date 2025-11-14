@@ -14,7 +14,7 @@ import {
   Modal,
 } from 'react-native';
 
-import {colors} from '../../constants/colors';
+import {colorSystem, colors} from '../../constants/colors';
 import useThemeStore, {Theme} from '../../store/theme';
 import {PlaceInfo} from '../../types/api';
 import CustomText from '../common/CustomText';
@@ -71,26 +71,34 @@ function PlaceSummaryView({
       {/* 장소 이름, 카테고리, 위시(즐겨찾기) */}
       <View style={styles.placeHeader}>
         <View style={styles.placeNameRow}>
-          <CustomText style={styles.placeName}>
-            {placeInfo.place_name}
-          </CustomText>
-          {placeInfo.types && formatPlaceTypes(placeInfo.types) && (
-            <CustomText style={styles.categoryText}>
-              {formatPlaceTypes(placeInfo.types)}
+          <View style={styles.placeNameContainer}>
+            <CustomText style={styles.placeName}>
+              {placeInfo.place_name}
             </CustomText>
+            {placeInfo.types && formatPlaceTypes(placeInfo.types) && (
+              <CustomText style={styles.categoryText}>
+                {formatPlaceTypes(placeInfo.types)}
+              </CustomText>
+            )}
+          </View>
+          {!isExpanded && (
+            <TouchableOpacity
+              style={styles.wishButton}
+              onPress={onBookmarkPress}>
+              <Image
+                source={require('@/assets/common/star.png')}
+                style={[
+                  {
+                    tintColor: isBookmarked
+                      ? colorSystem.system.warning
+                      : colorSystem.label.disable,
+                  },
+                ]}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
           )}
         </View>
-        {!isExpanded && (
-          <TouchableOpacity style={styles.wishButton} onPress={onBookmarkPress}>
-            <Ionicons
-              name={isBookmarked ? 'star' : 'star-outline'}
-              size={24}
-              color={
-                isBookmarked ? colors[theme].YELLOW_500 : colors[theme].GRAY_500
-              }
-            />
-          </TouchableOpacity>
-        )}
       </View>
 
       {/* 기록카드 갯수 및 핀 이미지 */}
@@ -231,6 +239,12 @@ const styling = (theme: Theme) =>
       marginBottom: 16,
     },
     placeNameRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      flex: 1,
+    },
+    placeNameContainer: {
       flexDirection: 'row',
       alignItems: 'baseline',
       gap: 8,

@@ -1,7 +1,7 @@
 import BottomSheet, {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import React, {forwardRef, useCallback, useMemo, useState} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
 import {colorSystem, colors} from '../../constants/colors';
 import {layout} from '../../constants/layout';
 import {usePlacePins} from '../../hooks/usePin';
@@ -160,6 +160,7 @@ const PlaceBottomSheet = forwardRef<BottomSheet, PlaceBottomSheetProps>(
     ref,
   ) => {
     const [currentSheetIndex, setCurrentSheetIndex] = useState(0);
+    const [isBookmarked, setIsBookmarked] = useState(false);
 
     // API 호출 - 장소의 핀 목록 조회
     const {
@@ -294,11 +295,19 @@ const PlaceBottomSheet = forwardRef<BottomSheet, PlaceBottomSheetProps>(
                       color={colors.light.BLACK}
                     />
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.bookmarkButton}>
-                    <Ionicons
-                      name="star-outline"
-                      size={24}
-                      color={colors.light.GRAY_500}
+                  <TouchableOpacity
+                    style={styles.bookmarkButton}
+                    onPress={() => setIsBookmarked(!isBookmarked)}>
+                    <Image
+                      source={require('@/assets/common/star.png')}
+                      style={[
+                        {
+                          tintColor: isBookmarked
+                            ? colorSystem.system.warning
+                            : colorSystem.label.disable,
+                        },
+                      ]}
+                      resizeMode="contain"
                     />
                   </TouchableOpacity>
                 </View>
@@ -314,6 +323,8 @@ const PlaceBottomSheet = forwardRef<BottomSheet, PlaceBottomSheetProps>(
               }}>
               <PlaceSummaryView
                 placeInfo={placeInfo}
+                isBookmarked={isBookmarked}
+                onBookmarkPress={() => setIsBookmarked(!isBookmarked)}
                 isExpanded={currentSheetIndex === 1}
                 pinInfo={
                   // TODO: 실제 핀 정보를 API에서 가져와서 전달
