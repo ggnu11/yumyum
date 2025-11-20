@@ -111,3 +111,4 @@ const styling = (theme: Theme) =>
   });
 
 export default DeleteSearchHistoryModal;
+

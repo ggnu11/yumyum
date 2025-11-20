@@ -14,7 +14,7 @@ import MarkerFilterAction from '@/components/map/MarkerFilterAction';
 import SearchBar from '@/components/map/SearchBar';
 import {colors} from '@/constants/colors';
 import {numbers} from '@/constants/numbers';
-import useGetMarkers from '@/hooks/queries/useGetMarkers';
+import useGetMapPins from '@/hooks/queries/useGetMapPins';
 import useModal from '@/hooks/useModal';
 import useMoveMapView from '@/hooks/useMoveMapView';
 import usePermission from '@/hooks/usePermission';
@@ -23,8 +23,10 @@ import useBottomSheetStore from '@/store/bottomSheet';
 import useFilterStore from '@/store/filter';
 import useLocationStore from '@/store/location';
 import useThemeStore, {Theme} from '@/store/theme';
-import {PlaceInfo as ApiPlaceInfo} from '@/types/api';
+import {PlaceInfo as ApiPlaceInfo, SearchResultItem} from '@/types/api';
 import {MapStackParamList} from '@/types/navigation';
+import {convertPinDetailsToParams} from '@/utils/pinVisibility';
+import {PinTypeParams} from '@/utils/pinImage';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import AddRecordFloatingButton from '../../components/map/AddRecordFloatingButton';
@@ -59,32 +61,65 @@ function MapHomeScreen() {
   const {filters} = useFilterStore();
   const {setIsVisible: setBottomSheetVisible} = useBottomSheetStore();
   const {userLocation, isUserLocationError} = useUserLocation();
-  const {mapRef, moveMapView, moveMapViewWithOffset, handleChangeDelta} =
-    useMoveMapView();
-  const {data: markers = []} = useGetMarkers({
-    select: data => {
-      let filteredData = data.filter(
-        marker =>
-          filters[marker.color] === true &&
-          filters[String(marker.score)] === true,
-      );
+  const {
+    mapRef,
+    moveMapView,
+    moveMapViewWithOffset,
+    handleChangeDelta,
+    currentRegion,
+  } = useMoveMapView();
 
-      // 추가 필터링 로직 (임시 구현)
-      if (!activeFilters.includes('all')) {
-        // 실제 구현에서는 백엔드에서 필터링된 데이터를 받아야 함
-        // 현재는 모든 마커를 표시하는 임시 로직
-        filteredData = data.filter(
-          marker =>
-            filters[marker.color] === true &&
-            filters[String(marker.score)] === true,
-        );
-      }
+  // 필터를 API 파라미터로 변환
+  const apiFilters = React.useMemo(() => {
+    if (activeFilters.includes('all')) {
+      return undefined; // 모든 필터 표시
+    }
+    return activeFilters;
+  }, [activeFilters]);
 
-      return filteredData;
+  // 지도 핀 데이터 조회
+  const {data: mapPins = []} = useGetMapPins(
+    {
+      region: currentRegion,
+      filters: apiFilters,
     },
-  });
+    {
+      select: (data: SearchResultItem[]) => {
+        // 명세서: 핀이 있으면 핀 우선, 핀이 없고 위시만 있으면 위시 표시
+        // 위시리스트는 본인에게만 보임
+        return data.filter(item => {
+          const {pin_details, wish_details} = item.yumyum_info;
+
+          // 핀이 있으면 항상 표시
+          if (pin_details) {
+            return true;
+          }
+
+          // 핀이 없고 위시만 있으면 본인 위시만 표시 (wish_details는 본인 것만 포함)
+          if (wish_details) {
+            return true;
+          }
+
+          // 둘 다 없으면 표시하지 않음
+          return false;
+        });
+      },
+    },
+  );
+
   const filterAction = useModal();
   usePermission('LOCATION');
+
+  // 초기 region 설정
+  useEffect(() => {
+    if (!currentRegion && userLocation) {
+      const initialRegion = {
+        ...userLocation,
+        ...numbers.INITIAL_DELTA,
+      };
+      handleChangeDelta(initialRegion);
+    }
+  }, [userLocation, currentRegion]);
 
   // 검색에서 선택된 장소가 있을 때 바텀시트 표시
   useEffect(() => {
@@ -135,34 +170,27 @@ function MapHomeScreen() {
   };
 
   const handlePressMarker = useCallback(
-    async (id: number, coordinate: LatLng) => {
-      const placeId = `place_${id}`;
-
-      // 카카오 API로 장소 정보 조회 (백엔드 연동 후 활성화)
-      // try {
-      //   const placeInfo = await getPlaceInfo(placeId);
-      //   setSelectedPlaceInfo(placeInfo);
-      // } catch (error) {
-      //   console.error('장소 정보 조회 실패:', error);
-      //   Alert.alert('오류', '장소 정보를 불러올 수 없습니다.');
-      //   return;
-      // }
-
-      // 임시 데이터 - 카카오 API로만 구성
-      const mockPlaceInfo = {
-        place_id: placeId,
-        place_name: '엄마손칼국수', // 카카오 API에서 가져온 상호명
-        address: '대전 서구 문정로 64', // 카카오 API 주소
-        phone_number: '042-489-4900', // 카카오 API 전화번호 (복사 기능)
-        total_pin_count: 2, // 백엔드에서 계산된 기록 카드 수
+    (
+      placeId: string,
+      coordinate: LatLng,
+      searchResultItem: SearchResultItem,
+    ) => {
+      // SearchResultItem을 PlaceInfo로 변환
+      const placeInfo: ApiPlaceInfo = {
+        place_id: searchResultItem.place_id,
+        place_name: searchResultItem.place_name,
+        address: searchResultItem.address_name,
+        phone_number: '', // API에서 제공되지 않으면 빈 문자열
+        total_pin_count:
+          searchResultItem.yumyum_info.pin_details?.pin_count || 0,
       };
 
       setSelectedPlaceId(placeId);
-      setSelectedPlaceInfo(mockPlaceInfo);
+      setSelectedPlaceInfo(placeInfo);
       moveMapViewWithOffset(coordinate);
       bottomSheetRef.current?.snapToIndex(0);
     },
-    [moveMapView],
+    [moveMapViewWithOffset],
   );
 
   // 구글맵 POI(장소) 클릭 처리 - 구글과 카카오 API 조합으로 정확한 장소 정보 조회
@@ -296,14 +324,17 @@ function MapHomeScreen() {
     if (selectedPlaceInfo) {
       // 장소 정보를 기반으로 AddLocation 화면으로 이동
       navigation.navigate('AddLocation', {
-        location: {
-          latitude: 37.5665, // 임시 좌표
-          longitude: 126.978,
-        },
+        placeInfo: selectedPlaceInfo,
+        location: selectedPlaceCoordinate
+          ? {
+              latitude: selectedPlaceCoordinate.latitude,
+              longitude: selectedPlaceCoordinate.longitude,
+            }
+          : undefined,
       });
       bottomSheetRef.current?.close();
     }
-  }, [selectedPlaceInfo, navigation]);
+  }, [selectedPlaceInfo, selectedPlaceCoordinate, navigation]);
 
   const handleEditRecord = useCallback((recordId: number) => {
     // 기록 수정 화면으로 이동
@@ -374,7 +405,7 @@ function MapHomeScreen() {
         googleMapId="f727da01391db33238e04009"
         style={styles.container}
         ref={mapRef}
-        region={{
+        initialRegion={{
           ...userLocation,
           ...numbers.INITIAL_DELTA,
         }}
@@ -382,37 +413,97 @@ function MapHomeScreen() {
         onRegionChangeComplete={handleChangeDelta}
         onPress={handleCloseBottomSheet} // 지도 클릭 시 바텀시트 닫기
         onPoiClick={handlePressMapPoi}
-        renderCluster={cluster => (
-          <CustomClusterMarker
-            key={`cluster-${
-              cluster.properties.cluster_id || cluster.geometry.coordinates[0]
-            }-${cluster.geometry.coordinates[1]}`}
-            coordinate={{
+        renderCluster={cluster => {
+          // 클러스터 클릭 시 줌 인 (명세서 요구사항)
+          const handleClusterPress = () => {
+            const clusterCoordinate = {
               latitude: cluster.geometry.coordinates[1],
               longitude: cluster.geometry.coordinates[0],
-            }}
-            pointCount={cluster.properties.point_count}
-            onPress={cluster.onPress}
-          />
-        )}>
-        {markers.map(({id, color, score, ...coordinate}) => (
-          <CustomMarker
-            key={id}
-            color={color}
-            score={score}
-            coordinate={coordinate}
-            onPress={() => handlePressMarker(id, coordinate)}
-            usePinImage={true}
-            pinInfo={
-              // TODO: 실제 핀 정보를 마커 데이터에서 가져와서 전달
-              // 현재는 내 핀만 있으므로 기본값으로 MY 핀 사용
-              {
-                visibility: 'PRIVATE',
-                is_mine: true,
-              }
-            }
-          />
-        ))}
+            };
+            // 현재 줌 레벨의 절반으로 줌 인
+            const newDelta = {
+              latitudeDelta:
+                (currentRegion?.latitudeDelta ||
+                  numbers.INITIAL_DELTA.latitudeDelta) / 2,
+              longitudeDelta:
+                (currentRegion?.longitudeDelta ||
+                  numbers.INITIAL_DELTA.longitudeDelta) / 2,
+            };
+            moveMapView(clusterCoordinate, newDelta);
+          };
+
+          // 클러스터의 point_count는 클러스터 라이브러리가 제공
+          // 명세서: 클러스터 범위 내에 있는 고유한 장소들의 개수
+          const pointCount = cluster.properties.point_count || 0;
+
+          return (
+            <CustomClusterMarker
+              key={`cluster-${
+                cluster.properties.cluster_id || cluster.geometry.coordinates[0]
+              }-${cluster.geometry.coordinates[1]}`}
+              coordinate={{
+                latitude: cluster.geometry.coordinates[1],
+                longitude: cluster.geometry.coordinates[0],
+              }}
+              pointCount={pointCount}
+              onPress={handleClusterPress}
+            />
+          );
+        }}>
+        {mapPins.map(item => {
+          const {yumyum_info, place_id, latitude, longitude} = item;
+          const {pin_details, wish_details} = yumyum_info;
+
+          // 명세서: 핀이 있으면 핀 우선, 핀이 없고 위시만 있으면 위시 표시
+          const shouldShowPin = !!pin_details;
+          const shouldShowWish = !pin_details && !!wish_details;
+
+          if (!shouldShowPin && !shouldShowWish) {
+            return null;
+          }
+
+          const coordinate: LatLng = {
+            latitude,
+            longitude,
+          };
+
+          // 핀 정보 구성
+          let pinInfo: PinTypeParams | undefined;
+          let color = colors[theme].PINK_500; // 기본 색상
+          let score = 5; // 기본 점수
+
+          if (shouldShowPin && pin_details) {
+            // 핀 정보 사용
+            const isMine = false; // TODO: 실제 사용자 ID와 비교
+            pinInfo = convertPinDetailsToParams(pin_details, isMine);
+            color = pin_details.color;
+            // score는 pin_details에 없으므로 기본값 사용
+          } else if (shouldShowWish && wish_details) {
+            // 위시리스트 아이콘 사용
+            pinInfo = {
+              visibility: 'PRIVATE' as const,
+              is_mine: true,
+              is_wish: true,
+            };
+          }
+
+          // pinInfo가 없으면 렌더링하지 않음
+          if (!pinInfo) {
+            return null;
+          }
+
+          return (
+            <CustomMarker
+              key={place_id}
+              color={color}
+              score={score}
+              coordinate={coordinate}
+              onPress={() => handlePressMarker(place_id, coordinate, item)}
+              usePinImage={true}
+              pinInfo={pinInfo}
+            />
+          );
+        })}
         {/* 검색으로 선택한 장소의 마커 */}
         {selectedPlaceCoordinate && selectedPlaceInfo && (
           <CustomMarker
@@ -441,11 +532,14 @@ function MapHomeScreen() {
         onEditRecord={handleEditRecord}
         onDeleteRecord={handleDeleteRecord}
         onOpenFilterSheet={handleOpenFilterSheet}
-        selectedFilters={selectedFilters}
+        selectedFilters={
+          selectedFilters.length > 0 ? selectedFilters : ['mine']
+        }
       />
+      {/* PlaceBottomSheet가 열려있을 때 플로팅 버튼 표시 */}
       <AddRecordFloatingButton
         onPress={handleAddRecord}
-        isVisible={isButtonVisible} // 별도 상태로 즉시 제어
+        isVisible={isButtonVisible} // 바텀시트가 열려있을 때 표시
       />
       <RecordFilterBottomSheet
         ref={filterBottomSheetRef}

@@ -1,64 +1,36 @@
 import BottomSheet, {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import Ionicons from '@react-native-vector-icons/ionicons';
-import React, {forwardRef, useCallback, useMemo, useState} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
+import React, {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Image,
+  Pressable,
+} from 'react-native';
 import {colorSystem, colors} from '../../constants/colors';
 import {layout} from '../../constants/layout';
-import {usePlacePins} from '../../hooks/usePin';
-import {PlaceInfo as ApiPlaceInfo} from '../../types/api';
+import {usePlaceInfo, usePlacePins} from '../../hooks/usePin';
+import {
+  useCreateWishlist,
+  useDeleteWishlist,
+  useWishlistByPlaceId,
+} from '../../hooks/queries/useWishlist';
+import {PlaceInfo as ApiPlaceInfo, RecordData} from '../../types/api';
 import CustomText from '../common/CustomText';
 import PlaceSummaryView from './PlaceSummaryView';
 import RecordsList from './RecordsList';
+import Toast from 'react-native-toast-message';
 
-// 목업 데이터
-const MOCK_RECORDS = [
-  {
-    id: 1,
-    title: '행복한불고기321',
-    content:
-      '민주랑 함께 간단하게 점심 먹으러 갔는데 생각보다 너무 마음에 들었던 집! 겨울마다 와야지~',
-    date: '2025.09.25',
-    images: [
-      'https://picsum.photos/400/300?random=1',
-      'https://picsum.photos/400/300?random=2',
-      'https://picsum.photos/400/300?random=3',
-    ],
-    isOwner: true,
-    categories: ['내 카드'],
-  },
-  {
-    id: 2,
-    title: '다정한코알라175',
-    content:
-      '원래 데이스 코스로 알아둔 가게들이 모두 영업을 안 해서 급하게 유겨찾던 곳. 의외로 맛집이라 오히려 좋았다!',
-    date: '2025.09.20',
-    images: [
-      'https://picsum.photos/400/300?random=4',
-      'https://picsum.photos/400/300?random=5',
-      'https://picsum.photos/400/300?random=6',
-      'https://picsum.photos/400/300?random=7',
-    ],
-    isOwner: false,
-    author: {
-      name: '다정한코알라175',
-      profileImage: 'https://picsum.photos/100/100?random=10',
-    },
-    categories: ['외 +1'],
-  },
-  {
-    id: 3,
-    title: '행복한불고기321',
-    content:
-      '원래 데이스 코스로 알아둔 가게들이 모두 영업을 안 해서 급하게 유겨찾던 곳. 의외로 맛집이라 오히려 좋았다!',
-    date: '2025.09.20',
-    images: [
-      'https://picsum.photos/400/300?random=8',
-      'https://picsum.photos/400/300?random=9',
-    ],
-    isOwner: true,
-    categories: ['외 +2'],
-  },
-];
+// 목업 데이터 (더미 데이터 사용 시 필요 없음)
+const MOCK_RECORDS: RecordData[] = [];
 
 export type FilterType = 'mine' | 'all';
 
@@ -155,12 +127,20 @@ const PlaceBottomSheet = forwardRef<BottomSheet, PlaceBottomSheetProps>(
       onEditRecord,
       onDeleteRecord,
       onOpenFilterSheet,
-      selectedFilters = ['all'],
+      selectedFilters = ['mine'], // 기본값: 나만 보기
     },
     ref,
   ) => {
     const [currentSheetIndex, setCurrentSheetIndex] = useState(0);
-    const [isBookmarked, setIsBookmarked] = useState(false);
+    const [wishId, setWishId] = useState<number | null>(null);
+
+    // API 호출 - 장소 정보 조회 (my_wish_exists 포함)
+    const {data: placeInfoData, isLoading: isPlaceInfoLoading} = usePlaceInfo(
+      placeInfo?.place_id || '',
+      {
+        enabled: !!placeInfo?.place_id,
+      },
+    );
 
     // API 호출 - 장소의 핀 목록 조회
     const {
@@ -171,21 +151,112 @@ const PlaceBottomSheet = forwardRef<BottomSheet, PlaceBottomSheetProps>(
       enabled: !!placeInfo?.place_id,
     });
 
+    // 위시리스트 조회 (wish_id를 얻기 위해)
+    const {data: wishlistData} = useWishlistByPlaceId(
+      placeInfo?.place_id || '',
+      {
+        enabled:
+          !!placeInfo?.place_id && (placeInfoData?.my_wish_exists ?? false),
+      },
+    );
+
+    // 위시리스트 추가/삭제
+    const createWishlist = useCreateWishlist();
+    const deleteWishlist = useDeleteWishlist();
+
+    // 위시리스트 상태 동기화
+    useEffect(() => {
+      if (wishlistData?.wish_id) {
+        setWishId(wishlistData.wish_id);
+      } else if (wishlistData === null) {
+        // 명시적으로 null이면 위시리스트가 없음
+        setWishId(null);
+      }
+    }, [wishlistData?.wish_id, wishlistData]);
+
+    // 위시리스트 상태 (wishlistData 우선, 없으면 placeInfoData, 그 다음 placeInfo)
+    const isBookmarked =
+      wishlistData !== undefined
+        ? wishlistData !== null
+        : placeInfoData?.my_wish_exists ?? placeInfo?.my_wish_exists ?? false;
+    const displayPlaceInfo = placeInfoData || placeInfo;
+
     // API 데이터가 없거나 에러가 발생하면 목업 데이터 사용
     const allRecords =
       apiRecords.length > 0 && !pinsError ? apiRecords : MOCK_RECORDS;
 
-    // 필터에 따라 레코드 필터링
+    // 필터에 따라 레코드 필터링 (기본값: 나만 보기)
+    const defaultFilter =
+      selectedFilters && selectedFilters.length > 0
+        ? selectedFilters
+        : ['mine'];
+
     const filteredRecords = useMemo(() => {
-      if (selectedFilters.includes('all')) {
+      const filters =
+        selectedFilters && selectedFilters.length > 0
+          ? selectedFilters
+          : defaultFilter;
+
+      if (filters.includes('all')) {
         return allRecords;
       }
-      if (selectedFilters.includes('mine')) {
+      if (filters.includes('mine')) {
         return allRecords.filter(record => record.isOwner);
       }
-      // TODO: 실제 필터링 로직 구현
+      // TODO: 실제 필터링 로직 구현 (친구, 그룹 등)
       return allRecords;
-    }, [allRecords, selectedFilters]);
+    }, [allRecords, selectedFilters, defaultFilter]);
+
+    // 위시리스트 토글 핸들러
+    const handleWishlistToggle = useCallback(async () => {
+      if (!placeInfo?.place_id) return;
+
+      if (isBookmarked) {
+        // 위시리스트 삭제
+        if (wishId) {
+          deleteWishlist.mutate(
+            {wishId, placeId: placeInfo.place_id},
+            {
+              onSuccess: () => {
+                Toast.show({
+                  type: 'success',
+                  text1: '위시리스트에서 제거되었습니다.',
+                });
+              },
+              onError: () => {
+                Toast.show({
+                  type: 'error',
+                  text1: '위시리스트 제거에 실패했습니다.',
+                });
+              },
+            },
+          );
+        }
+      } else {
+        // 위시리스트 추가
+        createWishlist.mutate(placeInfo.place_id, {
+          onSuccess: data => {
+            setWishId(data.wish_id);
+            Toast.show({
+              type: 'success',
+              text1: '위시리스트에 추가되었습니다.',
+            });
+          },
+          onError: () => {
+            Toast.show({
+              type: 'error',
+              text1: '위시리스트 추가에 실패했습니다.',
+            });
+          },
+        });
+      }
+    }, [
+      isBookmarked,
+      wishId,
+      placeInfo?.place_id,
+      createWishlist,
+      deleteWishlist,
+    ]);
 
     const snapPoints = useMemo(() => [300, '100%'], []);
 
@@ -231,23 +302,30 @@ const PlaceBottomSheet = forwardRef<BottomSheet, PlaceBottomSheetProps>(
     }, []);
 
     const getFilterLabel = useCallback(() => {
-      if (selectedFilters.includes('all')) {
+      const filters =
+        selectedFilters && selectedFilters.length > 0
+          ? selectedFilters
+          : ['mine'];
+
+      if (filters.includes('all')) {
         return '모두 보기';
       }
-      if (selectedFilters.length === 1) {
+      if (filters.includes('mine')) {
+        return '나만 보기';
+      }
+      if (filters.length === 1) {
         const filterOption = [
-          {id: 'mine', label: '나만 보기'},
           {id: 'friend', label: '친구'},
           {id: 'group1', label: '그룹1이름'},
           {id: 'group2', label: '그룹2이름'},
           {id: 'group3', label: '그룹3이름'},
-        ].find(f => f.id === selectedFilters[0]);
-        return filterOption?.label || '모두 보기';
+        ].find(f => f.id === filters[0]);
+        return filterOption?.label || '나만 보기';
       }
-      return `${selectedFilters.length}개 선택`;
+      return `${filters.length}개 선택`;
     }, [selectedFilters]);
 
-    if (!placeInfo) {
+    if (!placeInfo && !displayPlaceInfo) {
       return null;
     }
 
@@ -297,7 +375,10 @@ const PlaceBottomSheet = forwardRef<BottomSheet, PlaceBottomSheetProps>(
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={styles.bookmarkButton}
-                    onPress={() => setIsBookmarked(!isBookmarked)}>
+                    onPress={handleWishlistToggle}
+                    disabled={
+                      createWishlist.isPending || deleteWishlist.isPending
+                    }>
                     <Image
                       source={require('@/assets/common/star.png')}
                       style={[
@@ -315,27 +396,29 @@ const PlaceBottomSheet = forwardRef<BottomSheet, PlaceBottomSheetProps>(
             )}
 
             {/* 식당 정보 영역 */}
-            <View
-              style={{
-                paddingHorizontal: layout.ios.bottomsheet.margin,
-                paddingBottom: 20,
-                paddingTop: 8,
-              }}>
-              <PlaceSummaryView
-                placeInfo={placeInfo}
-                isBookmarked={isBookmarked}
-                onBookmarkPress={() => setIsBookmarked(!isBookmarked)}
-                isExpanded={currentSheetIndex === 1}
-                pinInfo={
-                  // TODO: 실제 핀 정보를 API에서 가져와서 전달
-                  // 현재는 내 핀만 있으므로 기본값으로 MY 핀 사용
-                  {
-                    visibility: 'PRIVATE',
-                    is_mine: true,
+            {displayPlaceInfo && (
+              <View
+                style={{
+                  paddingHorizontal: layout.ios.bottomsheet.margin,
+                  paddingBottom: 20,
+                  paddingTop: 8,
+                }}>
+                <PlaceSummaryView
+                  placeInfo={displayPlaceInfo}
+                  isBookmarked={isBookmarked}
+                  onBookmarkPress={handleWishlistToggle}
+                  isExpanded={currentSheetIndex === 1}
+                  pinInfo={
+                    // TODO: 실제 핀 정보를 API에서 가져와서 전달
+                    // 현재는 내 핀만 있으므로 기본값으로 MY 핀 사용
+                    {
+                      visibility: 'PRIVATE',
+                      is_mine: true,
+                    }
                   }
-                }
-              />
-            </View>
+                />
+              </View>
+            )}
 
             {/* 구분선 - 확장 상태에서만 표시 */}
             {currentSheetIndex === 1 && <View style={styles.divider} />}
@@ -352,7 +435,7 @@ const PlaceBottomSheet = forwardRef<BottomSheet, PlaceBottomSheetProps>(
                       </CustomText>
                       <CustomText style={styles.recordsSubtitle}>
                         <Text style={{color: colorSystem.system.info}}>
-                          {placeInfo.place_name}
+                          {displayPlaceInfo?.place_name || '이 장소'}
                         </Text>
                         에 대해 이야기 해 주세요!
                       </CustomText>
@@ -383,7 +466,15 @@ const PlaceBottomSheet = forwardRef<BottomSheet, PlaceBottomSheetProps>(
                   ) : (
                     <RecordsList
                       records={filteredRecords}
-                      activeFilter="all"
+                      activeFilter={
+                        selectedFilters &&
+                        selectedFilters.length > 0 &&
+                        !selectedFilters.includes('all')
+                          ? 'mine'
+                          : selectedFilters?.includes('all')
+                          ? 'all'
+                          : 'mine'
+                      }
                       isExpanded={currentSheetIndex === 1}
                       onEditRecord={onEditRecord}
                       onDeleteRecord={onDeleteRecord}

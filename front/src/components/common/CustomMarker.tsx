@@ -28,7 +28,7 @@ function CustomMarker({
   // 핀 이미지 사용 여부 결정
   const shouldUsePinImage = usePinImage && pinInfo;
   const pinImage = shouldUsePinImage
-    ? getPinImageFromParams(pinInfo, 'mini')
+    ? getPinImageFromParams(pinInfo, 'small')
     : null;
 
   const markerView =

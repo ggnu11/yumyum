@@ -8,18 +8,9 @@ import RecordAuthorInfo from './RecordAuthorInfo';
 import RecordActionMenu from './RecordActionMenu';
 import RecordImageView from './RecordImageView';
 
-interface RecordData {
-  id: number;
-  title: string;
-  content: string;
-  date: string;
-  images?: string[];
-  isOwner: boolean;
-  author?: {
-    name: string;
-    profileImage?: string;
-  };
-}
+import {RecordData} from '../../types/api';
+
+// RecordData는 types/api.ts에서 import
 
 interface RecordCardProps {
   record: RecordData;
@@ -37,22 +28,64 @@ function RecordCard({
   const {theme} = useThemeStore();
   const styles = styling(theme);
 
+  // visibility 배열에서 표시할 텍스트 생성
+  const getVisibilityText = () => {
+    if (!record.visibility || record.visibility.length === 0) {
+      return '내 카드';
+    }
+    
+    const visibilityLabels: Record<string, string> = {
+      PRIVATE: '나만 보기',
+      FRIEND: '친구',
+      GROUP: record.groupName || '그룹',
+    };
+    
+    // PRIVATE이 항상 포함되므로 제외하고 표시
+    const visibleTypes = record.visibility.filter(v => v !== 'PRIVATE');
+    if (visibleTypes.length === 0) {
+      return '내 카드';
+    }
+    
+    return visibleTypes.map(v => visibilityLabels[v] || v).join(', ');
+  };
+
+  // origin_type에 따른 텍스트
+  const getOriginText = () => {
+    if (record.originType === 'FRIEND') {
+      return '친구';
+    }
+    if (record.originType === 'GROUP') {
+      return record.groupName || '그룹';
+    }
+    return '';
+  };
+
   return (
     <View style={styles.container}>
       {/* 카드 헤더 */}
       <View style={styles.header}>
         {!record.isOwner && record.author ? (
-          <RecordAuthorInfo author={record.author} />
+          // 타인 핀 카드
+          <View style={styles.authorContainer}>
+            <RecordAuthorInfo author={record.author} />
+            {record.originType && (
+              <CustomText style={styles.originText}>
+                {getOriginText()}
+              </CustomText>
+            )}
+          </View>
         ) : (
+          // 내 핀 카드
           <View style={styles.titleRow}>
-            <CustomText style={styles.title}>{record.title}</CustomText>
+            {record.placeName && (
+              <CustomText style={styles.placeName}>
+                {record.placeName}
+              </CustomText>
+            )}
             <View style={styles.categoryBadge}>
-              <CustomText style={styles.categoryText}>내 카드</CustomText>
-              {record.isOwner && (
-                <View style={styles.lockIcon}>
-                  <CustomText style={styles.lockText}>🔒</CustomText>
-                </View>
-              )}
+              <CustomText style={styles.categoryText}>
+                {getVisibilityText()}
+              </CustomText>
             </View>
           </View>
         )}
@@ -92,14 +125,22 @@ const styling = (theme: Theme) =>
     },
     titleRow: {
       flex: 1,
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 8,
+      flexDirection: 'column',
+      gap: 4,
     },
-    title: {
+    placeName: {
       fontSize: 16,
       fontWeight: '600',
       color: colors[theme][100],
+    },
+    authorContainer: {
+      flex: 1,
+      gap: 4,
+    },
+    originText: {
+      fontSize: 12,
+      color: colors[theme].GRAY_500,
+      marginTop: 4,
     },
     categoryBadge: {
       flexDirection: 'row',

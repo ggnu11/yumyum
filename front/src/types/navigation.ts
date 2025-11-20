@@ -3,7 +3,10 @@ import {LatLng} from 'react-native-maps';
 
 export type MapStackParamList = {
   MapHome: undefined;
-  AddLocation: {location: LatLng};
+  AddLocation: {
+    location?: LatLng;
+    placeInfo?: import('./api').PlaceInfo;
+  };
   SearchLocation: {initialKeyword?: string};
   Search: undefined;
 };

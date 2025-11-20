@@ -27,9 +27,9 @@ export function SettingStack() {
         name="SettingHome"
         component={SettingHomeScreen}
         options={{
-          title: '마이',
+          headerShown: false,
           cardStyle: {
-            backgroundColor: colors[theme].GRAY_100,
+            backgroundColor: colors[theme][0],
           },
         }}
       />

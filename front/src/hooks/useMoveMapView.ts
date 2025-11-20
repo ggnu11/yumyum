@@ -9,13 +9,16 @@ type Delta = Pick<Region, 'latitudeDelta' | 'longitudeDelta'>;
 function useMoveMapView() {
   const mapRef = useRef<MapView | null>(null);
   const [regionDelta, setRegionDelta] = useState<Delta>(numbers.INITIAL_DELTA);
+  const [currentRegion, setCurrentRegion] = useState<Region | null>(null);
   const {moveLocation} = useLocationStore();
 
   const moveMapView = (coordinate: LatLng, delta?: Delta) => {
-    mapRef.current?.animateToRegion({
+    const newRegion = {
       ...coordinate,
       ...(delta ?? regionDelta),
-    });
+    };
+    mapRef.current?.animateToRegion(newRegion);
+    setCurrentRegion(newRegion);
   };
 
   // 핀 클릭 시 살짝 위로 이동하도록 오프셋 적용
@@ -25,23 +28,39 @@ function useMoveMapView() {
       latitude: coordinate.latitude + latitudeOffset,
       longitude: coordinate.longitude,
     };
-
-    mapRef.current?.animateToRegion({
+    const newRegion = {
       ...adjustedCoordinate,
       ...(delta ?? regionDelta),
-    });
+    };
+
+    mapRef.current?.animateToRegion(newRegion);
+    setCurrentRegion(newRegion);
   };
 
   const handleChangeDelta = (region: Region) => {
     const {latitudeDelta, longitudeDelta} = region;
     setRegionDelta({latitudeDelta, longitudeDelta});
+    setCurrentRegion(region);
   };
 
   useEffect(() => {
-    moveLocation && moveMapView(moveLocation);
+    if (moveLocation) {
+      const newRegion = {
+        ...moveLocation,
+        ...regionDelta,
+      };
+      moveMapView(moveLocation);
+      setCurrentRegion(newRegion);
+    }
   }, [moveLocation]);
 
-  return {mapRef, moveMapView, moveMapViewWithOffset, handleChangeDelta};
+  return {
+    mapRef,
+    moveMapView,
+    moveMapViewWithOffset,
+    handleChangeDelta,
+    currentRegion,
+  };
 }
 
 export default useMoveMapView;
