@@ -1,211 +1,258 @@
+import React, {useState, useRef, useMemo, useCallback} from 'react';
+import {
+  ScrollView,
+  StyleSheet,
+  View,
+  Pressable,
+  TextInput,
+  TouchableOpacity,
+} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
-import React, {useState, useMemo} from 'react';
-import {ScrollView, StyleSheet, View, Pressable, TextInput} from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Ionicons from '@react-native-vector-icons/ionicons';
-
-import PlaceInfoCard from '@/components/post/PlaceInfoCard';
-import PrivacyScopePicker from '@/components/post/PrivacyScopePicker';
+import BottomSheet, {
+  BottomSheetView,
+  BottomSheetBackdrop,
+} from '@gorhom/bottom-sheet';
+import CustomText from '@/components/common/CustomText';
 import PreviewImageList from '@/components/common/PreviewImageList';
 import ImageInput from '@/components/post/ImageInput';
 import {colors, colorSystem} from '@/constants/colors';
-import {useCreatePin} from '@/hooks/usePin';
-import {calculatePinColor, ensurePrivateIncluded} from '@/utils/pinColor';
-import useForm from '@/hooks/useForm';
-import useImagePicker from '@/hooks/useImagePicker';
-import usePermission from '@/hooks/usePermission';
-import useThemeStore from '@/store/theme';
+import {layout} from '@/constants/layout';
+import useThemeStore, {Theme} from '@/store/theme';
 import {MapStackParamList} from '@/types/navigation';
-import {PlaceInfo} from '@/types/api';
-import CustomText from '@/components/common/CustomText';
-import {useNavigation} from '@react-navigation/native';
+import {getDateWithSeparator} from '@/utils/date';
+import useImagePicker from '@/hooks/useImagePicker';
+import {useCreatePin} from '@/hooks/usePin';
 
 type Props = StackScreenProps<MapStackParamList, 'AddLocation'>;
 
-interface FormValues {
-  privacyScope: string;
-  date: Date;
-  memo: string;
-}
+const VISIBILITY_OPTIONS = [
+  {id: 'PRIVATE', label: '나만 보기'},
+  {id: 'FRIEND', label: '친구'},
+  {id: 'GROUP_10', label: '그룹1이름'},
+  {id: 'GROUP_20', label: '그룹2이름'},
+  {id: 'GROUP_30', label: '그룹3이름'},
+  {id: 'GROUP_40', label: '그룹4이름'},
+];
 
 function AddLocationScreen({route}: Props) {
-  const {theme} = useThemeStore();
+  const {placeInfo, location} = route.params;
   const navigation = useNavigation();
   const inset = useSafeAreaInsets();
-  const {location, placeInfo} = (route.params || {}) as {
-    location?: {latitude: number; longitude: number};
-    placeInfo?: PlaceInfo;
-  };
-
+  const {theme} = useThemeStore();
+  const styles = styling(theme);
+  const [memo, setMemo] = useState('');
+  const [selectedVisibility, setSelectedVisibility] = useState<string[]>([]);
+  const [visitDate, setVisitDate] = useState<Date | null>(null);
+  const [openDate, setOpenDate] = useState(false);
   const imagePicker = useImagePicker({initialImages: []});
   const createPin = useCreatePin();
-  usePermission('PHOTO');
 
-  const postForm = useForm<FormValues>({
-    initialValue: {
-      privacyScope: '',
-      date: new Date(),
-      memo: '',
-    },
-    validate: values => {
-      const errors: Record<keyof FormValues, string> = {
-        privacyScope: '',
-        date: '',
-        memo: '',
-      };
-      if (!values.privacyScope) {
-        errors.privacyScope = '공개 범위를 선택해주세요.';
+  // 바텀시트 관련
+  const visibilityBottomSheetRef = useRef<BottomSheet>(null);
+  const snapPoints = useMemo(() => ['50%'], []);
+
+  const handleOpenVisibilitySheet = useCallback(() => {
+    visibilityBottomSheetRef.current?.snapToIndex(0);
+  }, []);
+
+  const handleCloseVisibilitySheet = useCallback(() => {
+    visibilityBottomSheetRef.current?.close();
+  }, []);
+
+  const renderBackdrop = useCallback(
+    (props: any) => (
+      <BottomSheetBackdrop
+        {...props}
+        disappearsOnIndex={-1}
+        appearsOnIndex={0}
+        opacity={0.5}
+        pressBehavior="close"
+      />
+    ),
+    [],
+  );
+
+  const getVisibilityLabel = () => {
+    if (selectedVisibility.length === 0) {
+      return '공개 범위를 선택해 주세요';
+    }
+    if (selectedVisibility.length === 1) {
+      return VISIBILITY_OPTIONS.find(opt => opt.id === selectedVisibility[0])
+        ?.label;
+    }
+    // 복수 선택 시 첫 번째 항목 외 N개 표시
+    const firstLabel = VISIBILITY_OPTIONS.find(
+      opt => opt.id === selectedVisibility[0],
+    )?.label;
+    return `${firstLabel} 외 ${selectedVisibility.length - 1}`;
+  };
+
+  const handleVisibilityToggle = (id: string) => {
+    setSelectedVisibility(prev => {
+      if (prev.includes(id)) {
+        return prev.filter(item => item !== id);
+      } else {
+        return [...prev, id];
       }
-      return errors;
-    },
-  });
-
-  const [openDate, setOpenDate] = useState(false);
-
-  // 공개 범위를 visibility 배열로 변환
-  const visibility = useMemo((): Array<'PRIVATE' | 'FRIEND' | 'GROUP'> => {
-    if (!postForm.values.privacyScope) return ['PRIVATE'];
-
-    const scopeMap: Record<string, Array<'PRIVATE' | 'FRIEND' | 'GROUP'>> = {
-      public: ['PRIVATE', 'FRIEND'],
-      private: ['PRIVATE'],
-      friends: ['PRIVATE', 'FRIEND'],
-    };
-
-    return ensurePrivateIncluded(
-      scopeMap[postForm.values.privacyScope] || ['PRIVATE'],
-    );
-  }, [postForm.values.privacyScope]);
-
-  // 핀 색상 자동 계산
-  const pinColor = useMemo(() => {
-    return calculatePinColor(visibility);
-  }, [visibility]);
+    });
+  };
 
   const handleSubmit = () => {
-    if (!placeInfo) {
-      return;
+    if (!placeInfo || !visitDate || selectedVisibility.length === 0) return;
+    const groupIds = selectedVisibility
+      .filter(v => v.startsWith('GROUP_'))
+      .map(v => parseInt(v.split('_')[1]));
+    const visibilityArray: Array<'PRIVATE' | 'FRIEND' | 'GROUP'> = [];
+    if (selectedVisibility.includes('PRIVATE')) {
+      visibilityArray.push('PRIVATE');
     }
-
-    const visitDate = postForm.values.date.toISOString().split('T')[0]; // YYYY-MM-DD 형식
-
+    if (selectedVisibility.includes('FRIEND')) {
+      visibilityArray.push('FRIEND');
+    }
+    if (groupIds.length > 0) {
+      visibilityArray.push('GROUP');
+    }
     createPin.mutate(
       {
         place_id: placeInfo.place_id,
-        visit_date: visitDate,
-        memo: postForm.values.memo || undefined,
-        photos: imagePicker.imageUris.map(img => img.uri),
-        visibility,
-        color: pinColor,
+        visit_date: visitDate.toISOString(),
+        memo: memo || undefined,
+        photos:
+          imagePicker.imageUris.length > 0
+            ? imagePicker.imageUris.map(img => img.uri)
+            : undefined,
+        visibility: visibilityArray,
+        group_ids: groupIds.length > 0 ? groupIds : undefined,
+        color: colorSystem.primary.normal,
       },
       {
         onSuccess: () => {
           navigation.goBack();
         },
-        onError: error => {
-          console.error('핀 생성 실패:', error);
-        },
       },
     );
   };
 
-  const memoLength = postForm.values.memo.length;
-  const maxLength = 100;
-
-  // 날짜 포맷팅 (YYYY/MM/DD)
-  const formattedDate = postForm.values.date
-    .toLocaleDateString('ko-KR', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    })
-    .replace(/\. /g, '/')
-    .replace('.', '');
-
   return (
     <>
-      <View style={[styles.header, {paddingTop: inset.top}]}>
-        <Pressable
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}>
-          <Ionicons name="chevron-back" size={24} color={colors[theme][100]} />
-        </Pressable>
-        <CustomText style={styles.headerTitle}>기록카드 등록하기</CustomText>
-        <View style={styles.headerRight} />
-      </View>
-
       <ScrollView
         contentContainerStyle={[
           styles.container,
           {paddingBottom: inset.bottom + 100},
         ]}>
-        {/* 기록 장소 */}
-        {placeInfo && (
-          <View style={styles.section}>
-            <CustomText style={styles.label}>
-              기록 장소 <CustomText style={styles.required}>*</CustomText>
-            </CustomText>
-            <PlaceInfoCard placeInfo={placeInfo} />
+        <View style={styles.section}>
+          <View style={styles.labelContainer}>
+            <CustomText style={styles.label}>기록 장소</CustomText>
+            <CustomText style={styles.required}>*</CustomText>
           </View>
-        )}
-
-        {/* 공개 범위 */}
-        <View style={styles.section}>
-          <CustomText style={styles.label}>
-            공개 범위 <CustomText style={styles.required}>*</CustomText>
-          </CustomText>
-          <PrivacyScopePicker
-            value={postForm.values.privacyScope}
-            onChange={value => postForm.onChange('privacyScope', value)}
-            error={postForm.errors.privacyScope}
-            touched={postForm.touched.privacyScope}
-          />
-        </View>
-
-        {/* 방문 일자 */}
-        <View style={styles.section}>
-          <CustomText style={styles.label}>
-            방문 일자 <CustomText style={styles.required}>*</CustomText>
-          </CustomText>
-          <Pressable
-            style={styles.dateButton}
-            onPress={() => setOpenDate(true)}>
-            <CustomText style={styles.dateText}>
-              {formattedDate || '2000/00/00'}
-            </CustomText>
-          </Pressable>
-        </View>
-
-        {/* 기록 */}
-        <View style={styles.section}>
-          <CustomText style={styles.label}>기록</CustomText>
-          <View style={styles.memoContainer}>
-            <TextInput
-              style={styles.memoInput}
-              placeholder="이 장소에 어떤 추억이 담겨있나요?"
-              placeholderTextColor={colors[theme].GRAY_500}
-              multiline
-              value={postForm.values.memo}
-              onChangeText={text => {
-                if (text.length <= maxLength) {
-                  postForm.onChange('memo', text);
-                }
-              }}
-              maxLength={maxLength}
-            />
-            <View style={styles.counterContainer}>
-              <CustomText style={styles.counter}>
-                {memoLength}/{maxLength}
+          <View style={[styles.placeCard, placeInfo && styles.placeCardActive]}>
+            <View style={styles.placeIconContainer}>
+              <Ionicons
+                name="location"
+                size={24}
+                color={colorSystem.label.assistive}
+              />
+            </View>
+            <View style={styles.placeInfo}>
+              <CustomText style={styles.placeName} numberOfLines={1}>
+                {placeInfo?.place_name || '장소 이름'}
+              </CustomText>
+              <CustomText style={styles.placeAddress} numberOfLines={1}>
+                <Ionicons
+                  name="location-outline"
+                  size={12}
+                  color={colorSystem.label.alternative}
+                />{' '}
+                {placeInfo?.address || '주소'}
               </CustomText>
             </View>
           </View>
         </View>
-
-        {/* 이미지 업로드 */}
         <View style={styles.section}>
-          <View style={styles.imageRow}>
-            <ImageInput onChange={imagePicker.handleChangeImage} />
+          <View style={styles.labelContainer}>
+            <CustomText style={styles.label}>공개 범위</CustomText>
+            <CustomText style={styles.required}>*</CustomText>
+          </View>
+          <Pressable
+            style={[
+              styles.selectButton,
+              selectedVisibility.length > 0 && styles.selectButtonActive,
+            ]}
+            onPress={handleOpenVisibilitySheet}>
+            <View style={styles.selectButtonContent}>
+              <Ionicons
+                name="people"
+                size={20}
+                color={
+                  selectedVisibility.length > 0
+                    ? colorSystem.primary.normal
+                    : colorSystem.label.assistive
+                }
+              />
+              <CustomText
+                style={[
+                  styles.selectButtonText,
+                  selectedVisibility.length > 0 &&
+                    styles.selectButtonTextActive,
+                ]}>
+                {getVisibilityLabel()}
+              </CustomText>
+            </View>
+            <Ionicons
+              name="chevron-down"
+              size={20}
+              color={colorSystem.label.alternative}
+            />
+          </Pressable>
+        </View>
+        <View style={styles.section}>
+          <View style={styles.labelContainer}>
+            <CustomText style={styles.label}>방문 일자</CustomText>
+            <CustomText style={styles.required}>*</CustomText>
+          </View>
+          <Pressable
+            style={[styles.dateButton, visitDate && styles.dateButtonActive]}
+            onPress={() => setOpenDate(true)}>
+            <CustomText
+              style={[
+                styles.dateButtonText,
+                !visitDate && styles.dateButtonTextPlaceholder,
+              ]}>
+              {visitDate
+                ? getDateWithSeparator(visitDate, ' / ')
+                : '방문 일자를 선택해 주세요'}
+            </CustomText>
+          </Pressable>
+        </View>
+        <View style={styles.section}>
+          <CustomText style={styles.label}>기록</CustomText>
+          <View
+            style={[
+              styles.memoContainer,
+              (memo.length > 0 || imagePicker.imageUris.length > 0) &&
+                styles.memoContainerActive,
+            ]}>
+            <TextInput
+              style={styles.memoInput}
+              placeholder="이 장소에 어떤 추억이 담겨있나요?"
+              placeholderTextColor={colorSystem.label.assistive}
+              multiline
+              value={memo}
+              onChangeText={setMemo}
+              maxLength={100}
+              textAlignVertical="top"
+            />
+            <CustomText style={styles.charCount}>{memo.length}/100</CustomText>
+          </View>
+          <View style={styles.imageSection}>
+            <ImageInput
+              onChange={imagePicker.handleChangeImage}
+              disabled={imagePicker.imageUris.length >= 6}
+            />
             <PreviewImageList
               imageUris={imagePicker.imageUris}
               onDelete={imagePicker.delete}
@@ -213,154 +260,312 @@ function AddLocationScreen({route}: Props) {
             />
           </View>
         </View>
-
-        <DatePicker
-          modal
-          locale="ko"
-          mode="date"
-          title={null}
-          cancelText="취소"
-          confirmText="완료"
-          date={postForm.values.date}
-          open={openDate}
-          onConfirm={date => {
-            postForm.onChange('date', date);
-            setOpenDate(false);
-          }}
-          onCancel={() => setOpenDate(false)}
-        />
       </ScrollView>
-
-      {/* 하단 저장 버튼 */}
-      <View style={[styles.footer, {paddingBottom: inset.bottom || 12}]}>
+      {/* 기록카드 저장하기 버튼 */}
+      <View
+        style={[
+          styles.saveButtonContainer,
+          {paddingBottom: inset.bottom || 12},
+        ]}>
         <Pressable
           style={[
             styles.saveButton,
-            (!postForm.values.privacyScope || !placeInfo) &&
+            (!visitDate || selectedVisibility.length === 0) &&
               styles.saveButtonDisabled,
           ]}
           onPress={handleSubmit}
-          disabled={!postForm.values.privacyScope || !placeInfo}>
-          <Ionicons name="checkmark" size={20} color={colors[theme][0]} />
+          disabled={!visitDate || selectedVisibility.length === 0}>
           <CustomText style={styles.saveButtonText}>
-            기록카드 저장하기
+            ✓ 기록카드 저장하기
           </CustomText>
         </Pressable>
       </View>
+      <DatePicker
+        modal
+        locale="ko"
+        mode="date"
+        title="방문일자 설정"
+        cancelText="취소"
+        confirmText="완료"
+        date={visitDate || new Date()}
+        open={openDate}
+        onConfirm={date => {
+          setVisitDate(date);
+          setOpenDate(false);
+        }}
+        onCancel={() => setOpenDate(false)}
+        minimumDate={new Date(2000, 0, 1)}
+        maximumDate={new Date(2050, 11, 31)}
+      />
+      {/* 공개 범위 선택 바텀시트 */}
+      <BottomSheet
+        ref={visibilityBottomSheetRef}
+        index={-1}
+        snapPoints={snapPoints}
+        enablePanDownToClose={true}
+        backdropComponent={renderBackdrop}
+        style={{
+          zIndex: 99999,
+          elevation: 99999,
+        }}
+        backgroundStyle={{
+          backgroundColor: colors[theme][0],
+          borderTopLeftRadius: layout.ios.bottomsheet.rounding,
+          borderTopRightRadius: layout.ios.bottomsheet.rounding,
+        }}
+        handleIndicatorStyle={{
+          backgroundColor: colors[theme].GRAY_300,
+          width: 40,
+        }}>
+        <BottomSheetView style={styles.bottomSheetContainer}>
+          {/* 헤더 */}
+          <View style={styles.bottomSheetHeader}>
+            <CustomText style={styles.bottomSheetTitle}>
+              공개범위 선택
+            </CustomText>
+            <TouchableOpacity
+              onPress={handleCloseVisibilitySheet}
+              style={styles.doneButton}>
+              <CustomText style={styles.doneButtonText}>완료</CustomText>
+            </TouchableOpacity>
+          </View>
+
+          {/* 옵션 리스트 */}
+          <View style={styles.optionList}>
+            {VISIBILITY_OPTIONS.map(option => {
+              const isSelected = selectedVisibility.includes(option.id);
+              return (
+                <TouchableOpacity
+                  key={option.id}
+                  style={styles.optionItem}
+                  onPress={() => handleVisibilityToggle(option.id)}>
+                  <View
+                    style={[
+                      styles.checkbox,
+                      isSelected && styles.checkboxSelected,
+                    ]}>
+                    {isSelected && (
+                      <Ionicons
+                        name="checkmark"
+                        size={18}
+                        color={colors[theme].WHITE}
+                      />
+                    )}
+                  </View>
+                  <CustomText style={styles.optionLabel}>
+                    {option.label}
+                  </CustomText>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        </BottomSheetView>
+      </BottomSheet>
     </>
   );
 }
 
-const styles = StyleSheet.create({
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingBottom: 16,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.light.GRAY_200,
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: colors.light[100],
-  },
-  headerRight: {
-    width: 40,
-  },
-  container: {
-    padding: 20,
-    gap: 24,
-  },
-  section: {
-    gap: 8,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.light[100],
-  },
-  required: {
-    color: colors.light.RED_500,
-  },
-  dateButton: {
-    borderWidth: 1,
-    borderColor: colors.light.GRAY_200,
-    borderRadius: 8,
-    height: 50,
-    paddingHorizontal: 16,
-    backgroundColor: colors.light.GRAY_100,
-    justifyContent: 'center',
-  },
-  dateText: {
-    fontSize: 16,
-    color: colors.light[100],
-  },
-  memoContainer: {
-    borderWidth: 1,
-    borderColor: colors.light.GRAY_200,
-    borderRadius: 8,
-    backgroundColor: colors.light.GRAY_100,
-    minHeight: 120,
-    padding: 16,
-    position: 'relative',
-  },
-  memoInput: {
-    fontSize: 14,
-    color: colors.light[100],
-    textAlignVertical: 'top',
-    flex: 1,
-    minHeight: 80,
-  },
-  counterContainer: {
-    position: 'absolute',
-    bottom: 12,
-    right: 12,
-  },
-  counter: {
-    fontSize: 12,
-    color: colors.light.GRAY_500,
-  },
-  imageRow: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  footer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    paddingTop: 12,
-    paddingHorizontal: 16,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: colors.light.GRAY_200,
-    backgroundColor: colors.light[0],
-  },
-  saveButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colorSystem.primary.normal,
-    borderRadius: 8,
-    height: 50,
-    gap: 8,
-  },
-  saveButtonDisabled: {
-    backgroundColor: colors.light.GRAY_300,
-    opacity: 0.6,
-  },
-  saveButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.light[0],
-  },
-});
+const styling = (theme: Theme) =>
+  StyleSheet.create({
+    container: {gap: 24, padding: 20, backgroundColor: colors[theme][0]},
+    section: {gap: 8},
+    labelContainer: {flexDirection: 'row', alignItems: 'center', gap: 4},
+    label: {fontSize: 16, fontWeight: '600', color: colorSystem.label.normal},
+    required: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: colorSystem.system.error,
+    },
+    placeCard: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 12,
+      padding: 16,
+      backgroundColor: colorSystem.background.gray,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: colorSystem.label.disable,
+    },
+    placeCardActive: {
+      borderColor: colorSystem.secondary.strong,
+      borderWidth: 2,
+    },
+    placeIconContainer: {
+      width: 48,
+      height: 48,
+      borderRadius: 8,
+      backgroundColor: colors[theme].WHITE,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    placeInfo: {flex: 1, gap: 4},
+    placeName: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: colorSystem.label.strong,
+    },
+    placeAddress: {fontSize: 13, color: colorSystem.label.alternative},
+    selectButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: 16,
+      paddingVertical: 14,
+      backgroundColor: colorSystem.background.gray,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: colorSystem.label.disable,
+      minHeight: 50,
+    },
+    selectButtonContent: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+      flex: 1,
+    },
+    selectButtonText: {
+      fontSize: 15,
+      color: colorSystem.label.assistive,
+      flex: 1,
+    },
+    selectButtonTextActive: {color: colorSystem.label.normal},
+    selectButtonActive: {
+      borderColor: colorSystem.secondary.strong,
+      borderWidth: 2,
+    },
+    dateButton: {
+      paddingHorizontal: 16,
+      paddingVertical: 14,
+      backgroundColor: colorSystem.background.gray,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: colorSystem.label.disable,
+      minHeight: 50,
+      justifyContent: 'center',
+    },
+    dateButtonActive: {
+      borderColor: colorSystem.secondary.strong,
+      borderWidth: 2,
+    },
+    dateButtonText: {fontSize: 15, color: colorSystem.label.normal},
+    dateButtonTextPlaceholder: {color: colorSystem.label.assistive},
+    memoContainer: {
+      backgroundColor: colorSystem.background.gray,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: colorSystem.label.disable,
+      padding: 16,
+      minHeight: 120,
+    },
+    memoContainerActive: {
+      borderColor: colorSystem.secondary.strong,
+      borderWidth: 2,
+    },
+    memoInput: {
+      fontSize: 15,
+      color: colorSystem.label.normal,
+      flex: 1,
+      minHeight: 80,
+    },
+    charCount: {
+      fontSize: 12,
+      color: colorSystem.label.alternative,
+      textAlign: 'right',
+      marginTop: 8,
+    },
+    imageSection: {flexDirection: 'row', marginTop: 12},
+    // 바텀시트 스타일
+    bottomSheetContainer: {
+      flex: 1,
+      paddingHorizontal: 20,
+    },
+    bottomSheetHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingBottom: 16,
+      borderBottomWidth: 1,
+      borderBottomColor: colorSystem.label.disable,
+      marginBottom: 8,
+    },
+    bottomSheetTitle: {
+      fontSize: 18,
+      fontWeight: '600',
+      color: colorSystem.label.strong,
+    },
+    doneButton: {
+      paddingVertical: 4,
+      paddingHorizontal: 8,
+    },
+    doneButtonText: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: colorSystem.primary.normal,
+    },
+    optionList: {
+      paddingTop: 8,
+    },
+    optionItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 12,
+      paddingVertical: 16,
+    },
+    checkbox: {
+      width: 24,
+      height: 24,
+      borderRadius: 6,
+      borderWidth: 2,
+      borderColor: colorSystem.label.assistive,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    checkboxSelected: {
+      backgroundColor: colorSystem.primary.normal,
+      borderColor: colorSystem.primary.normal,
+    },
+    optionLabel: {
+      fontSize: 16,
+      color: colorSystem.label.normal,
+    },
+    // 저장 버튼 스타일
+    saveButtonContainer: {
+      position: 'absolute',
+      bottom: 0,
+      width: '100%',
+      paddingTop: 12,
+      paddingHorizontal: 16,
+      borderTopWidth: StyleSheet.hairlineWidth,
+      borderTopColor: colors[theme].GRAY_300,
+      backgroundColor: colors[theme][0],
+    },
+    saveButton: {
+      width: '100%',
+      height: 50,
+      backgroundColor: colorSystem.primary.normal,
+      borderRadius: 12,
+      justifyContent: 'center',
+      alignItems: 'center',
+      shadowColor: colorSystem.primary.normal,
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5,
+    },
+    saveButtonText: {
+      fontSize: 16,
+      fontWeight: '700',
+      color: colorSystem.label.white,
+      letterSpacing: 0.3,
+    },
+    saveButtonDisabled: {
+      backgroundColor: colorSystem.label.disable,
+      shadowOpacity: 0,
+      elevation: 0,
+    },
+  });
 
 export default AddLocationScreen;
