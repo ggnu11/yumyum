@@ -18,12 +18,14 @@ interface PreviewImageListProps {
   imageUris: ImageUri[];
   onDelete?: (uri: string) => void;
   showDeleteButton?: boolean;
+  onPressImage?: (index: number) => void;
 }
 
 function PreviewImageList({
   imageUris,
   onDelete,
   showDeleteButton = false,
+  onPressImage,
 }: PreviewImageListProps) {
   const {theme} = useThemeStore();
   const styles = styling(theme);
@@ -31,10 +33,14 @@ function PreviewImageList({
   const route = useRoute<RouteProp<FeedStackParamList>>();
 
   const handlePressImage = (index: number) => {
-    navigation.navigate('ImageZoom', {
-      id: route.params?.id,
-      index,
-    });
+    if (onPressImage) {
+      onPressImage(index);
+    } else {
+      navigation.navigate('ImageZoom', {
+        id: route.params?.id,
+        index,
+      });
+    }
   };
 
   return (

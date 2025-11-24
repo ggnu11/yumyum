@@ -6,6 +6,10 @@ import {
   Pressable,
   TextInput,
   TouchableOpacity,
+  Modal,
+  Image,
+  Dimensions,
+  FlatList,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
@@ -48,12 +52,19 @@ function AddLocationScreen({route}: Props) {
   const [selectedVisibility, setSelectedVisibility] = useState<string[]>([]);
   const [visitDate, setVisitDate] = useState<Date | null>(null);
   const [openDate, setOpenDate] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(
+    null,
+  );
   const imagePicker = useImagePicker({initialImages: []});
   const createPin = useCreatePin();
 
   // 바텀시트 관련
   const visibilityBottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ['50%'], []);
+
+  // 이미지 갤러리 관련
+  const imageGalleryRef = useRef<FlatList>(null);
+  const screenWidth = Dimensions.get('window').width;
 
   const handleOpenVisibilitySheet = useCallback(() => {
     visibilityBottomSheetRef.current?.snapToIndex(0);
@@ -257,6 +268,7 @@ function AddLocationScreen({route}: Props) {
               imageUris={imagePicker.imageUris}
               onDelete={imagePicker.delete}
               showDeleteButton
+              onPressImage={index => setSelectedImageIndex(index)}
             />
           </View>
         </View>
@@ -361,6 +373,59 @@ function AddLocationScreen({route}: Props) {
           </View>
         </BottomSheetView>
       </BottomSheet>
+      {/* 이미지 확대 모달 */}
+      <Modal
+        visible={selectedImageIndex !== null}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setSelectedImageIndex(null)}>
+        <View style={styles.imageModalOverlay}>
+          <Pressable
+            style={styles.imageModalCloseButton}
+            onPress={() => setSelectedImageIndex(null)}>
+            <Ionicons name="close" size={30} color={colors[theme][0]} />
+          </Pressable>
+          {selectedImageIndex !== null && (
+            <>
+              <FlatList
+                ref={imageGalleryRef}
+                data={imagePicker.imageUris}
+                horizontal
+                pagingEnabled
+                showsHorizontalScrollIndicator={false}
+                initialScrollIndex={selectedImageIndex}
+                getItemLayout={(data, index) => ({
+                  length: screenWidth,
+                  offset: screenWidth * index,
+                  index,
+                })}
+                onMomentumScrollEnd={event => {
+                  const newIndex = Math.round(
+                    event.nativeEvent.contentOffset.x / screenWidth,
+                  );
+                  setSelectedImageIndex(newIndex);
+                }}
+                keyExtractor={(item, index) => `${item.uri}-${index}`}
+                renderItem={({item}) => (
+                  <View style={styles.imageModalSlide}>
+                    <Image
+                      source={{uri: item.uri}}
+                      style={styles.imageModalImage}
+                      resizeMode="contain"
+                    />
+                  </View>
+                )}
+              />
+              <View style={styles.imageModalIndicator}>
+                <CustomText style={styles.imageModalIndicatorText}>
+                  {(selectedImageIndex || 0) + 1} /{' '}
+                  {imagePicker.imageUris.length}
+                </CustomText>
+              </View>
+            </>
+          )}
+        </View>
+      </Modal>
     </>
   );
 }
@@ -565,6 +630,42 @@ const styling = (theme: Theme) =>
       backgroundColor: colorSystem.label.disable,
       shadowOpacity: 0,
       elevation: 0,
+    },
+    // 이미지 모달 스타일
+    imageModalOverlay: {
+      flex: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    },
+    imageModalCloseButton: {
+      position: 'absolute',
+      top: 50,
+      right: 20,
+      zIndex: 10,
+      padding: 10,
+    },
+    imageModalSlide: {
+      width: Dimensions.get('window').width,
+      height: Dimensions.get('window').height,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    imageModalImage: {
+      width: Dimensions.get('window').width,
+      height: Dimensions.get('window').height,
+    },
+    imageModalIndicator: {
+      position: 'absolute',
+      bottom: 50,
+      alignSelf: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.6)',
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      borderRadius: 20,
+    },
+    imageModalIndicatorText: {
+      color: colors[theme][0],
+      fontSize: 14,
+      fontWeight: '600',
     },
   });
 
