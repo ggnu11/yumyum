@@ -26,6 +26,7 @@ interface Profile {
   nickname: string | null;
   imageUri: string | null;
   loginType: 'email' | 'kakao' | 'apple';
+  yumyum_id?: string | null;
 }
 
 export type {ImageUri, Marker, Post, Profile};

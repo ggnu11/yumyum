@@ -51,11 +51,12 @@ function SettingHomeScreen() {
   const {auth} = useAuth();
   const inset = useSafeAreaInsets();
 
-  // TODO: 친구 수는 API 연동 후 실제 데이터로 교체
+  // TODO: 친구 수와 모임 수는 API 연동 후 실제 데이터로 교체
   const friendCount = 36;
+  const groupCount = 3;
 
-  // 사용자 ID 생성 (실제로는 API에서 받아올 수 있음)
-  const userId = auth.id ? `@${auth.id.slice(0, 8)}` : '@QI2kd3ie';
+  // 사용자 ID 생성 (yumyum_id 사용)
+  const userId = auth.yumyum_id ? `@${auth.yumyum_id}` : '@QI2kd3ie';
 
   return (
     <View style={styles.container}>
@@ -82,7 +83,7 @@ function SettingHomeScreen() {
         showsVerticalScrollIndicator={false}>
         {/* 프로필 섹션 */}
         <View style={styles.profileSection}>
-          <View style={styles.profileLeft}>
+          <View style={styles.profileMain}>
             <Image
               source={
                 auth.imageUri
@@ -96,52 +97,54 @@ function SettingHomeScreen() {
                 {auth.nickname || '행복한물고기34'}
               </CustomText>
               <CustomText style={styles.userId}>{userId}</CustomText>
-              <View style={styles.statusRow}>
-                <CustomText style={styles.status}>맛집 탐험가!</CustomText>
-                <Pressable
-                  style={styles.editButton}
-                  onPress={() => navigation.navigate('EditProfile')}>
-                  <CustomText style={styles.editButtonText}>
-                    프로필 편집
-                  </CustomText>
-                </Pressable>
+            </View>
+            <View style={styles.countInfo}>
+              <View style={styles.countItem}>
+                <CustomText style={styles.countLabel}>친구</CustomText>
+                <CustomText style={styles.countValue}>{friendCount}</CustomText>
+              </View>
+              <View style={styles.countItem}>
+                <CustomText style={styles.countLabel}>모임</CustomText>
+                <CustomText style={styles.countValue}>{groupCount}</CustomText>
               </View>
             </View>
           </View>
-          <View style={styles.friendInfo}>
-            <CustomText style={styles.friendLabel}>친구</CustomText>
-            <CustomText style={styles.friendCount}>{friendCount}</CustomText>
-          </View>
+          <Pressable
+            style={styles.changeNicknameButton}
+            onPress={() => navigation.navigate('EditProfile')}>
+            <CustomText style={styles.changeNicknameText}>
+              닉네임 변경하기
+            </CustomText>
+          </Pressable>
         </View>
 
         {/* 친구 관리 섹션 */}
         <View style={styles.section}>
           <CustomText style={styles.sectionTitle}>친구 관리</CustomText>
           <View style={styles.menuContainer}>
-            <MenuItem title="친구 초대하기 (추가)" />
+            <MenuItem title="친구 초대하기" />
             <MenuItem title="친구 목록 확인하기" />
             <MenuItem title="친구 요청 관리하기" />
-            <MenuItem title="친구 검색하기" />
           </View>
         </View>
 
-        {/* 그룹 관리 섹션 */}
+        {/* 모임 관리 섹션 */}
         <View style={styles.section}>
-          <CustomText style={styles.sectionTitle}>그룹 관리</CustomText>
+          <CustomText style={styles.sectionTitle}>모임 관리</CustomText>
           <View style={styles.menuContainer}>
-            <MenuItem title="그룹 초대하기" />
-            <MenuItem title="그룹 목록 확인하기" />
-            <MenuItem title="그룹 요청 관리하기" />
+            <MenuItem title="모임 초대하기" />
+            <MenuItem title="모임 목록 확인하기" />
+            <MenuItem title="모임 요청 관리하기" />
           </View>
         </View>
 
-        {/* 결제 관리 섹션 */}
+        {/* 설정 섹션 */}
         <View style={styles.section}>
-          <CustomText style={styles.sectionTitle}>결제 관리</CustomText>
+          <CustomText style={styles.sectionTitle}>설정</CustomText>
           <View style={styles.menuContainer}>
-            <MenuItem title="상점" />
-            <MenuItem title="구매 내역" />
-            <MenuItem title="구매 복원" />
+            <MenuItem title="공지사항" />
+            <MenuItem title="이용약관" />
+            <MenuItem title="개인정보취급방침" />
           </View>
         </View>
 
@@ -188,69 +191,67 @@ const styling = (theme: Theme) =>
       paddingBottom: 20,
     },
     profileSection: {
-      flexDirection: 'row',
-      alignItems: 'flex-start',
-      justifyContent: 'space-between',
       padding: 20,
       borderBottomWidth: StyleSheet.hairlineWidth,
       borderBottomColor: colors[theme].GRAY_200,
     },
-    profileLeft: {
+    profileMain: {
       flexDirection: 'row',
-      flex: 1,
-      gap: 12,
+      alignItems: 'center',
+      marginBottom: 16,
     },
     profileImage: {
-      width: 60,
-      height: 60,
-      borderRadius: 30,
+      width: 51,
+      height: 51,
+      borderRadius: 25.5,
       backgroundColor: colors[theme].GRAY_200,
+      marginRight: 16,
     },
     profileInfo: {
       flex: 1,
-      gap: 4,
+      gap: 8,
     },
     username: {
-      fontSize: 16,
+      fontSize: 18,
       fontWeight: '600',
       color: colors[theme][100],
     },
     userId: {
       fontSize: 14,
-      color: colors[theme].GRAY_500,
+      color: '#D4A574', // 황갈색 계열
+      width: 58,
+      height: 14,
     },
-    statusRow: {
+    countInfo: {
       flexDirection: 'row',
+      gap: 24,
       alignItems: 'center',
-      gap: 8,
-      marginTop: 4,
     },
-    status: {
-      fontSize: 14,
-      color: colors[theme][100],
-    },
-    editButton: {
-      paddingHorizontal: 8,
-      paddingVertical: 4,
-      borderRadius: 4,
-      backgroundColor: colors[theme].GRAY_100,
-    },
-    editButtonText: {
-      fontSize: 12,
-      color: colors[theme][100],
-    },
-    friendInfo: {
+    countItem: {
       alignItems: 'center',
       gap: 4,
     },
-    friendLabel: {
+    countLabel: {
       fontSize: 14,
       color: colors[theme].GRAY_500,
     },
-    friendCount: {
-      fontSize: 16,
+    countValue: {
+      fontSize: 18,
       fontWeight: '600',
       color: colors[theme][100],
+    },
+    changeNicknameButton: {
+      backgroundColor: colors[theme].GRAY_200,
+      borderRadius: 8,
+      width: 348,
+      height: 34,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    changeNicknameText: {
+      fontSize: 14,
+      color: colors[theme][100],
+      fontWeight: '500',
     },
     section: {
       marginTop: 24,

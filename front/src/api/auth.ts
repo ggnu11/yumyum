@@ -131,6 +131,14 @@ async function revokeNaverToken(
   return data;
 }
 
+async function checkNickname(nickname: string): Promise<{available: boolean}> {
+  const {data} = await axiosInstance.post('/users/nickname/check', {
+    nickname,
+  });
+
+  return data;
+}
+
 export {
   kakaoLogin,
   appleLogin,
@@ -145,4 +153,5 @@ export {
   revokeAppleToken,
   revokeGoogleToken,
   revokeNaverToken,
+  checkNickname,
 };

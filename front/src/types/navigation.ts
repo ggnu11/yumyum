@@ -20,6 +20,7 @@ export type AuthStackParamList = {
   };
   KakaoLogin: undefined;
   NaverLogin: undefined;
+  ProfileRegistration: undefined;
 };
 
 export type FeedStackParamList = {

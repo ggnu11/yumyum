@@ -32,11 +32,18 @@ function TermsItemComponent({
             onPress={() => onDetailPress('terms', '이용약관')}>
             이용약관
           </CustomText>
-          {' 및 '}
+          {' (필수)'}
+        </CustomText>
+      );
+    }
+
+    if (item.id === 'privacy') {
+      return (
+        <CustomText style={styles.termText}>
           <CustomText
             style={styles.underlineText}
-            onPress={() => onDetailPress('privacy', '개인정보위탁방침')}>
-            개인정보위탁방침
+            onPress={() => onDetailPress('privacy', '개인정보처리방침')}>
+            개인정보처리방침
           </CustomText>
           {' (필수)'}
         </CustomText>
@@ -76,7 +83,7 @@ function TermsItemComponent({
 
   return (
     <View style={styles.termItemContainer}>
-      {index === 1 && <View style={styles.separator} />}
+      {index === 0 && <View style={styles.separator} />}
       <View style={styles.termItem}>
         <View style={styles.termTextContainer}>{renderTermText()}</View>
         <TouchableOpacity

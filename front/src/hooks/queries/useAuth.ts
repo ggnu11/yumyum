@@ -150,6 +150,7 @@ function useAuth() {
       nickname: data?.nickname || '',
       email: data?.email || '',
       imageUri: data?.imageUri || '',
+      yumyum_id: data?.yumyum_id || null,
     },
     kakaoLoginMutation,
     appleLoginMutation,

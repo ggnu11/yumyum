@@ -34,12 +34,36 @@ import {useCreatePin} from '@/hooks/usePin';
 type Props = StackScreenProps<MapStackParamList, 'AddLocation'>;
 
 const VISIBILITY_OPTIONS = [
-  {id: 'PRIVATE', label: '나만 보기'},
-  {id: 'FRIEND', label: '친구'},
-  {id: 'GROUP_10', label: '그룹1이름'},
-  {id: 'GROUP_20', label: '그룹2이름'},
-  {id: 'GROUP_30', label: '그룹3이름'},
-  {id: 'GROUP_40', label: '그룹4이름'},
+  {
+    id: 'PRIVATE',
+    label: '나만 보기',
+    pin: require('@/assets/pin/mini/miniMy.png'),
+  },
+  {
+    id: 'FRIEND',
+    label: '친구',
+    pin: require('@/assets/pin/mini/miniFriend.png'),
+  },
+  {
+    id: 'GROUP_10',
+    label: '그룹1이름',
+    pin: require('@/assets/pin/mini/miniGroup1.png'),
+  },
+  {
+    id: 'GROUP_20',
+    label: '그룹2이름',
+    pin: require('@/assets/pin/mini/miniGroup2.png'),
+  },
+  {
+    id: 'GROUP_30',
+    label: '그룹3이름',
+    pin: require('@/assets/pin/mini/miniGroup3.png'),
+  },
+  {
+    id: 'GROUP_40',
+    label: '그룹4이름',
+    pin: require('@/assets/pin/mini/miniGroup4.png'),
+  },
 ];
 
 function AddLocationScreen({route}: Props) {
@@ -87,19 +111,26 @@ function AddLocationScreen({route}: Props) {
     [],
   );
 
+  // 선택된 항목들을 VISIBILITY_OPTIONS 순서대로 정렬
+  const getSortedSelectedVisibility = () => {
+    return VISIBILITY_OPTIONS.filter(opt =>
+      selectedVisibility.includes(opt.id),
+    ).map(opt => opt.id);
+  };
+
   const getVisibilityLabel = () => {
     if (selectedVisibility.length === 0) {
       return '공개 범위를 선택해 주세요';
     }
-    if (selectedVisibility.length === 1) {
-      return VISIBILITY_OPTIONS.find(opt => opt.id === selectedVisibility[0])
-        ?.label;
+    const sortedIds = getSortedSelectedVisibility();
+    if (sortedIds.length === 1) {
+      return VISIBILITY_OPTIONS.find(opt => opt.id === sortedIds[0])?.label;
     }
     // 복수 선택 시 첫 번째 항목 외 N개 표시
     const firstLabel = VISIBILITY_OPTIONS.find(
-      opt => opt.id === selectedVisibility[0],
+      opt => opt.id === sortedIds[0],
     )?.label;
-    return `${firstLabel} 외 ${selectedVisibility.length - 1}`;
+    return `${firstLabel} 외 ${sortedIds.length - 1}`;
   };
 
   const handleVisibilityToggle = (id: string) => {
@@ -195,15 +226,23 @@ function AddLocationScreen({route}: Props) {
             ]}
             onPress={handleOpenVisibilitySheet}>
             <View style={styles.selectButtonContent}>
-              <Ionicons
-                name="people"
-                size={20}
-                color={
-                  selectedVisibility.length > 0
-                    ? colorSystem.primary.normal
-                    : colorSystem.label.assistive
-                }
-              />
+              {selectedVisibility.length > 0 ? (
+                <Image
+                  source={
+                    VISIBILITY_OPTIONS.find(
+                      opt => opt.id === getSortedSelectedVisibility()[0],
+                    )?.pin
+                  }
+                  style={styles.pinIcon}
+                  resizeMode="contain"
+                />
+              ) : (
+                <Ionicons
+                  name="people"
+                  size={20}
+                  color={colorSystem.label.assistive}
+                />
+              )}
               <CustomText
                 style={[
                   styles.selectButtonText,
@@ -487,6 +526,10 @@ const styling = (theme: Theme) =>
       alignItems: 'center',
       gap: 8,
       flex: 1,
+    },
+    pinIcon: {
+      width: 20,
+      height: 20,
     },
     selectButtonText: {
       fontSize: 15,

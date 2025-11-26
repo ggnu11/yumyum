@@ -32,16 +32,32 @@ function TermsAgreementScreen() {
 
   const handleAgree = () => {
     // TODO: API 연동 시 약관 동의 정보 저장
-    // 임시로 AuthHome으로 돌아가기 (실제로는 프로필 설정 화면으로 이동)
-    navigation.goBack();
+    // 약관 동의 완료 후 프로필 등록 화면으로 이동
+    navigation.navigate('ProfileRegistration');
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <TermsHeader title={'서비스 이용을 위해\n이용약관 동의가 필요합니다.'} />
 
+      <View style={styles.allAgreeContainer}>
+        <CustomButton
+          label="서비스 이용약관 전체동의"
+          variant="outlined"
+          size="large"
+          style={[
+            styles.allAgreeButton,
+            termsItems[0].isChecked && styles.allAgreeButtonActive,
+          ]}
+          textStyle={[
+            termsItems[0].isChecked && styles.allAgreeButtonTextActive,
+          ]}
+          onPress={() => handleItemCheck('all')}
+        />
+      </View>
+
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {termsItems.map((item, index) => (
+        {termsItems.slice(1).map((item, index) => (
           <TermsItemComponent
             key={item.id}
             item={item}
@@ -82,8 +98,22 @@ const styling = (theme: Theme) =>
       paddingTop: 30,
     },
     agreeButton: {
-      backgroundColor: colors[theme].BLUE_500,
+      backgroundColor: colors[theme].PINK_700,
       borderRadius: 10,
+    },
+    allAgreeContainer: {
+      paddingHorizontal: 20,
+      marginBottom: 20,
+    },
+    allAgreeButton: {
+      borderRadius: 10,
+    },
+    allAgreeButtonActive: {
+      backgroundColor: colors[theme].PINK_700,
+      borderColor: colors[theme].PINK_700,
+    },
+    allAgreeButtonTextActive: {
+      color: colors[theme][0],
     },
   });
 
