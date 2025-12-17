@@ -84,7 +84,7 @@ const styling = (theme: Theme) =>
       fontSize: 12,
     },
     titleText: {
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
       fontWeight: '500',
       fontSize: 13,
     },

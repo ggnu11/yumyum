@@ -28,8 +28,9 @@ function RecordImageView({images, isExpanded = false}: RecordImageViewProps) {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   useEffect(() => {
+    // 확장 상태에서는 이미지 크기를 더 크게 표시
     Animated.timing(imageSize, {
-      toValue: isExpanded ? 50 : 100,
+      toValue: isExpanded ? 100 : 100,
       duration: 300,
       useNativeDriver: false,
     }).start();
@@ -144,7 +145,7 @@ const styling = (theme: Theme) =>
       alignItems: 'center',
     },
     moreText: {
-      color: colors[theme].WHITE,
+      color: colors[theme][0],
       fontSize: 16,
       fontWeight: 'bold',
     },

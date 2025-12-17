@@ -60,10 +60,11 @@ export const getMyPins = async (): Promise<PinObject[]> => {
 
 // API 데이터를 컴포넌트에서 사용할 형태로 변환하는 유틸 함수들
 export const transformPinToRecord = (pin: PinObject): RecordData => {
+  const memo = pin.memo || '';
   return {
     id: pin.pin_id,
-    title: pin.memo.slice(0, 50) + (pin.memo.length > 50 ? '...' : ''), // 제목으로 사용할 짧은 텍스트
-    content: pin.memo,
+    title: memo.slice(0, 50) + (memo.length > 50 ? '...' : ''), // 제목으로 사용할 짧은 텍스트
+    content: memo,
     date: pin.visit_date,
     images: pin.photos,
     isOwner: pin.is_mine,
@@ -73,11 +74,20 @@ export const transformPinToRecord = (pin: PinObject): RecordData => {
     },
     visibility: pin.visibility,
     groupName: pin.group_name,
+    originType: pin.origin_type,
+    placeName: pin.place_name,
+    updatedAt: pin.updated_at,
   };
 };
 
 export const transformPinsToRecords = (pins: PinObject[]): RecordData[] => {
-  return pins.map(transformPinToRecord);
+  // updated_at 기준 최신순 정렬
+  const sortedPins = [...pins].sort((a, b) => {
+    const dateA = new Date(a.updated_at).getTime();
+    const dateB = new Date(b.updated_at).getTime();
+    return dateB - dateA; // 최신순 (내림차순)
+  });
+  return sortedPins.map(transformPinToRecord);
 };
 
 // 사용자별 필터링 함수

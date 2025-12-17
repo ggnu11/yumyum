@@ -1,7 +1,5 @@
 import {useQuery, useMutation, useQueryClient} from '@tanstack/react-query';
 import {
-  getPlaceInfo,
-  getPlacePins,
   createPin,
   updatePin,
   deletePin,
@@ -34,7 +32,12 @@ export const usePlaceInfo = (
 ) => {
   return useQuery({
     queryKey: pinQueryKeys.placeInfo(placeId),
-    queryFn: () => getPlaceInfo(placeId),
+    queryFn: async () => {
+      // 더미 데이터 반환 (API 작업 전까지)
+      await new Promise(resolve => setTimeout(resolve, 300)); // 로딩 시뮬레이션
+      const {getMockPlaceInfo} = await import('../utils/mockData');
+      return getMockPlaceInfo(placeId);
+    },
     enabled: !!placeId,
     ...options,
   });
@@ -47,7 +50,12 @@ export const usePlacePins = (
 ) => {
   return useQuery({
     queryKey: pinQueryKeys.place(placeId),
-    queryFn: () => getPlacePins(placeId),
+    queryFn: async () => {
+      // 더미 데이터 반환 (API 작업 전까지)
+      await new Promise(resolve => setTimeout(resolve, 400)); // 로딩 시뮬레이션
+      const {getMockPlacePins} = await import('../utils/mockData');
+      return getMockPlacePins(placeId);
+    },
     select: data => transformPinsToRecords(data),
     enabled: !!placeId,
     ...options,
@@ -102,11 +110,18 @@ export const useUpdatePin = (
 
   return useMutation({
     mutationFn: ({pinId, data}) => updatePin(pinId, data),
-    onSuccess: data => {
+    onSuccess: (data, variables) => {
       // 관련 쿼리들 무효화하여 리프레시
       queryClient.invalidateQueries({
         queryKey: pinQueryKeys.all,
       });
+      // 장소별 핀 목록도 업데이트
+      if (variables.data.visibility) {
+        // visibility가 변경되면 지도 핀도 업데이트될 수 있음
+        queryClient.invalidateQueries({
+          queryKey: ['marker', 'map-pins'],
+        });
+      }
     },
     ...options,
   });

@@ -1,4 +1,4 @@
-import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
+import Ionicons from '@react-native-vector-icons/ionicons';
 import React, {useState, useRef} from 'react';
 import {
   StyleSheet,
@@ -129,11 +129,10 @@ function RecordActionMenu({recordId, onEdit, onDelete}: RecordActionMenuProps) {
         onPress={handleMorePress}
         style={styles.moreButton}
         activeOpacity={0.7}>
-        <FontAwesome6
-          name="ellipsis"
-          size={16}
+        <Ionicons
+          name="ellipsis-vertical"
+          size={20}
           color={colors[theme].GRAY_500}
-          iconStyle="solid"
         />
       </TouchableOpacity>
 
@@ -231,7 +230,7 @@ const styling = (theme: Theme) =>
       paddingHorizontal: 40,
     },
     deleteModal: {
-      backgroundColor: colors[theme].WHITE,
+      backgroundColor: colors[theme][0],
       borderRadius: 14,
       width: 335,
       height: 218,
@@ -239,7 +238,7 @@ const styling = (theme: Theme) =>
     deleteModalTitle: {
       fontSize: 17,
       fontWeight: '600',
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
       textAlign: 'center',
       marginTop: 40,
       marginBottom: 20,
@@ -271,7 +270,7 @@ const styling = (theme: Theme) =>
       backgroundColor: colors[theme].GRAY_200,
     },
     confirmDeleteButton: {
-      backgroundColor: colors[theme].BLACK,
+      backgroundColor: colors[theme][100],
     },
     cancelDeleteButtonText: {
       fontSize: 16,
@@ -280,7 +279,7 @@ const styling = (theme: Theme) =>
     },
     confirmDeleteButtonText: {
       fontSize: 16,
-      color: colors[theme].WHITE,
+      color: colors[theme][0],
       fontWeight: '600',
     },
   });

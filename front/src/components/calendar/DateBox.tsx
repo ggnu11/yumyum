@@ -67,13 +67,13 @@ const styling = (theme: Theme) =>
     },
     dateText: {
       fontSize: 17,
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
     },
     selectedContainer: {
-      backgroundColor: colors[theme].BLACK,
+      backgroundColor: colors[theme][100],
     },
     selectedDateText: {
-      color: colors[theme].WHITE,
+      color: colors[theme][0],
       fontWeight: 'bold',
     },
     todayText: {

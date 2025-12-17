@@ -119,7 +119,7 @@ const styling = (theme: Theme) =>
       gap: 5,
     },
     placeText: {
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
       flexShrink: 1,
       fontSize: 16,
       fontWeight: '600',
@@ -129,7 +129,7 @@ const styling = (theme: Theme) =>
       gap: 10,
     },
     distanceText: {
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
     },
     subInfoText: {
       color: colors[theme].GRAY_500,

@@ -56,7 +56,7 @@ function PhotoListView({
       {/* 헤더 */}
       <View style={styles.header}>
         <TouchableOpacity onPress={onClose} style={styles.backButton}>
-          <Ionicons name="chevron-back" size={24} color={colors[theme].BLACK} />
+          <Ionicons name="chevron-back" size={24} color={colors[theme][100]} />
         </TouchableOpacity>
         <View style={styles.placeInfo}>
           <View style={styles.placeNameRow}>
@@ -104,18 +104,18 @@ const styling = (theme: Theme) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: colors[theme].WHITE,
+      backgroundColor: colors[theme][0],
     },
     statusBar: {
       height: 44,
-      backgroundColor: colors[theme].WHITE,
+      backgroundColor: colors[theme][0],
     },
     header: {
       height: 60,
       flexDirection: 'row',
       alignItems: 'center',
       paddingHorizontal: 16,
-      backgroundColor: colors[theme].WHITE,
+      backgroundColor: colors[theme][0],
       borderBottomWidth: 1,
       borderBottomColor: colors[theme].GRAY_200,
     },
@@ -134,7 +134,7 @@ const styling = (theme: Theme) =>
     placeName: {
       fontSize: 18,
       fontWeight: 'bold',
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
       flexShrink: 1,
     },
     category: {

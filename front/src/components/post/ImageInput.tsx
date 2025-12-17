@@ -8,25 +8,31 @@ import CustomText from '../common/CustomText';
 
 interface ImageInputProps {
   onChange: () => void;
+  disabled?: boolean;
 }
 
-function ImageInput({onChange}: ImageInputProps) {
+function ImageInput({onChange, disabled = false}: ImageInputProps) {
   const {theme} = useThemeStore();
   const styles = styling(theme);
 
   return (
     <Pressable
       style={({pressed}) => [
-        pressed && styles.imageInputPressed,
+        pressed && !disabled && styles.imageInputPressed,
         styles.imageInput,
+        disabled && styles.imageInputDisabled,
       ]}
-      onPress={onChange}>
+      onPress={onChange}
+      disabled={disabled}>
       <Ionicons
         name="camera-outline"
         size={20}
-        color={colors[theme].GRAY_500}
+        color={disabled ? colors[theme].GRAY_300 : colors[theme].GRAY_500}
       />
-      <CustomText style={styles.inputText}>사진 추가</CustomText>
+      <CustomText
+        style={[styles.inputText, disabled && styles.inputTextDisabled]}>
+        사진 추가
+      </CustomText>
     </Pressable>
   );
 }
@@ -46,9 +52,16 @@ const styling = (theme: Theme) =>
     imageInputPressed: {
       opacity: 0.5,
     },
+    imageInputDisabled: {
+      opacity: 0.4,
+      borderColor: colors[theme].GRAY_200,
+    },
     inputText: {
       fontSize: 12,
       color: colors[theme].GRAY_500,
+    },
+    inputTextDisabled: {
+      color: colors[theme].GRAY_300,
     },
   });
 

@@ -71,7 +71,7 @@ const styling = (theme: Theme) =>
     feedTitle: {
       fontSize: 18,
       fontWeight: 'bold',
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
       marginBottom: 4,
     },
     feedSubtitle: {
@@ -93,8 +93,8 @@ const styling = (theme: Theme) =>
       alignItems: 'center',
     },
     activeFilter: {
-      backgroundColor: colors[theme].WHITE,
-      shadowColor: colors[theme].BLACK,
+      backgroundColor: colors[theme][0],
+      shadowColor: colors[theme][100],
       shadowOffset: {
         width: 0,
         height: 1,
@@ -108,7 +108,7 @@ const styling = (theme: Theme) =>
       color: colors[theme].GRAY_500,
     },
     activeFilterText: {
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
       fontWeight: '600',
     },
   });

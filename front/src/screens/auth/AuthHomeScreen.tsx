@@ -172,7 +172,7 @@ const styling = (theme: Theme) =>
     },
     subtitleText: {
       fontSize: 24,
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
       marginTop: 10,
       textAlign: 'center',
     },

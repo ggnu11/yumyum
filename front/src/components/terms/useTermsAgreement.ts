@@ -5,18 +5,27 @@ export const useTermsAgreement = () => {
   const [termsItems, setTermsItems] = useState<TermsItem[]>([
     {
       id: 'all',
-      title: '전체동의',
+      title: '서비스 이용약관 전체동의',
       isRequired: false,
       isChecked: false,
     },
     {
       id: 'terms',
-      title: '이용약관 및 개인정보위탁방침 (필수)',
+      title: '이용약관 (필수)',
       isRequired: true,
       isChecked: false,
       hasDetail: true,
       detailType: 'terms',
       detailTitle: '이용약관',
+    },
+    {
+      id: 'privacy',
+      title: '개인정보처리방침 (필수)',
+      isRequired: true,
+      isChecked: false,
+      hasDetail: true,
+      detailType: 'privacy',
+      detailTitle: '개인정보처리방침',
     },
     {
       id: 'location',

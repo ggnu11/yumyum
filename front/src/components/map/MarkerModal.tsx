@@ -97,7 +97,7 @@ function MarkerModal({markerId, isVisible, hide}: MarkerModalProps) {
               <Ionicons
                 name="chevron-forward"
                 size={25}
-                color={colors[theme].BLACK}
+                color={colors[theme][100]}
               />
             </View>
           </View>
@@ -114,7 +114,7 @@ const styling = (theme: Theme) =>
       justifyContent: 'flex-end',
     },
     cardContainer: {
-      backgroundColor: colors[theme].WHITE,
+      backgroundColor: colors[theme][0],
       margin: 10,
       borderWidth: 1,
       borderColor: colors[theme].GRAY_500,
@@ -167,7 +167,7 @@ const styling = (theme: Theme) =>
       gap: 2,
     },
     titleText: {
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
       fontSize: 15,
       fontWeight: 'bold',
     },

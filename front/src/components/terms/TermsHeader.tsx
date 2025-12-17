@@ -27,7 +27,7 @@ const styling = (theme: Theme) =>
     headerTitle: {
       fontSize: 20,
       fontWeight: '400',
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
       lineHeight: 28,
     },
   });

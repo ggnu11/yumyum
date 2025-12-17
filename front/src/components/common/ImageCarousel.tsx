@@ -44,7 +44,7 @@ function ImageCarousel({images, pressedIndex = 0}: ImageCarouselProps) {
       <Pressable
         style={[styles.backButton, {marginTop: insets.top + 10}]}
         onPress={() => navigation.goBack()}>
-        <Ionicons name="chevron-back" size={30} color={colors[theme].WHITE} />
+        <Ionicons name="chevron-back" size={30} color={colors[theme][0]} />
       </Pressable>
 
       <FlatList
@@ -92,7 +92,7 @@ const styling = (theme: Theme) =>
     container: {
       flex: 1,
       alignItems: 'center',
-      backgroundColor: colors[theme].BLACK,
+      backgroundColor: colors[theme][100],
     },
     backButton: {
       position: 'absolute',

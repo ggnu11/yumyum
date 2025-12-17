@@ -2,6 +2,7 @@ import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import React, {useEffect, useRef, useState} from 'react';
 import {
+  Image,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -13,19 +14,21 @@ import {
   Modal,
 } from 'react-native';
 
-import {colors} from '../../constants/colors';
+import {colorSystem, colors} from '../../constants/colors';
 import useThemeStore, {Theme} from '../../store/theme';
 import {PlaceInfo} from '../../types/api';
 import CustomText from '../common/CustomText';
 import PhotoListView from './PhotoListView';
 import PhotoExpandView from './PhotoExpandView';
 import {formatPlaceTypes} from '../../utils/placeUtils';
+import {getPinImageFromParams, PinTypeParams} from '../../utils/pinImage';
 
 interface PlaceSummaryViewProps {
   placeInfo: PlaceInfo | null;
   isBookmarked?: boolean;
   onBookmarkPress?: () => void;
   isExpanded?: boolean;
+  pinInfo?: PinTypeParams; // 핀 정보 (있으면 large 핀 이미지 표시)
 }
 
 function PlaceSummaryView({
@@ -33,6 +36,7 @@ function PlaceSummaryView({
   isBookmarked = false,
   onBookmarkPress,
   isExpanded = false,
+  pinInfo,
 }: PlaceSummaryViewProps) {
   const {theme} = useThemeStore();
   const styles = styling(theme);
@@ -67,34 +71,42 @@ function PlaceSummaryView({
       {/* 장소 이름, 카테고리, 위시(즐겨찾기) */}
       <View style={styles.placeHeader}>
         <View style={styles.placeNameRow}>
-          <CustomText style={styles.placeName}>
-            {placeInfo.place_name}
-          </CustomText>
-          {placeInfo.types && formatPlaceTypes(placeInfo.types) && (
-            <CustomText style={styles.categoryText}>
-              {formatPlaceTypes(placeInfo.types)}
+          <View style={styles.placeNameContainer}>
+            <CustomText style={styles.placeName}>
+              {placeInfo.place_name}
             </CustomText>
+            {placeInfo.types && formatPlaceTypes(placeInfo.types) && (
+              <CustomText style={styles.categoryText}>
+                {formatPlaceTypes(placeInfo.types)}
+              </CustomText>
+            )}
+          </View>
+          {!isExpanded && (
+            <TouchableOpacity
+              style={styles.wishButton}
+              onPress={onBookmarkPress}>
+              <Image
+                source={require('@/assets/common/star.png')}
+                style={[
+                  {
+                    tintColor: isBookmarked
+                      ? colorSystem.system.warning
+                      : colorSystem.label.disable,
+                  },
+                ]}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
           )}
         </View>
-        {!isExpanded && (
-          <TouchableOpacity style={styles.wishButton} onPress={onBookmarkPress}>
-            <Ionicons
-              name={isBookmarked ? 'star' : 'star-outline'}
-              size={24}
-              color={
-                isBookmarked ? colors[theme].YELLOW_500 : colors[theme].GRAY_500
-              }
-            />
-          </TouchableOpacity>
-        )}
       </View>
 
-      {/* 기록카드 갯수 */}
+      {/* 기록카드 갯수 및 핀 이미지 */}
       <View style={styles.recordCountRow}>
-        <Ionicons
-          name="reader-outline"
-          size={16}
-          color={colors[theme].GRAY_500}
+        <Image
+          source={require('@/assets/common/feed.png')}
+          style={{width: 16, height: 16}}
+          resizeMode="contain"
         />
         <CustomText style={styles.recordCount}>
           기록카드 {placeInfo.total_pin_count}개
@@ -104,10 +116,10 @@ function PlaceSummaryView({
       {/* 장소 기본 정보 */}
       <View style={styles.placeInfoSection}>
         <View style={styles.infoRow}>
-          <Ionicons
-            name="location-outline"
-            size={16}
-            color={colors[theme].GRAY_500}
+          <Image
+            source={require('@/assets/common/pin.png')}
+            style={{width: 16, height: 16}}
+            resizeMode="contain"
           />
           <CustomText style={styles.infoText}>
             {placeInfo.address || '주소 정보 없음'}
@@ -117,10 +129,10 @@ function PlaceSummaryView({
         {placeInfo.phone_number && (
           <View style={styles.phoneRow}>
             <View style={styles.phoneNumberRow}>
-              <Ionicons
-                name="call-outline"
-                size={16}
-                color={colors[theme].GRAY_500}
+              <Image
+                source={require('@/assets/common/phone.png')}
+                style={{width: 16, height: 16}}
+                resizeMode="contain"
               />
               <CustomText style={styles.infoText}>
                 {placeInfo.phone_number}
@@ -221,6 +233,12 @@ const styling = (theme: Theme) =>
     },
     placeNameRow: {
       flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      flex: 1,
+    },
+    placeNameContainer: {
+      flexDirection: 'row',
       alignItems: 'baseline',
       gap: 8,
       flex: 1,
@@ -228,7 +246,7 @@ const styling = (theme: Theme) =>
     placeName: {
       fontSize: 20,
       fontWeight: 'bold',
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
     },
     categoryText: {
       fontSize: 14,
@@ -241,12 +259,18 @@ const styling = (theme: Theme) =>
     recordCountRow: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: 4,
+      gap: 6,
       marginBottom: 16,
+      color: colorSystem.label.normal,
+    },
+    pinImage: {
+      width: 24,
+      height: 24,
+      marginRight: 4,
     },
     recordCount: {
       fontSize: 14,
-      color: colors[theme].GRAY_500,
+      color: colorSystem.label.normal,
     },
     placeInfoSection: {
       gap: 8,
@@ -255,7 +279,7 @@ const styling = (theme: Theme) =>
     infoRow: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: 8,
+      gap: 6,
     },
     phoneRow: {
       flexDirection: 'row',
@@ -265,7 +289,7 @@ const styling = (theme: Theme) =>
     phoneNumberRow: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: 8,
+      gap: 6,
     },
     infoText: {
       fontSize: 14,
@@ -306,7 +330,7 @@ const styling = (theme: Theme) =>
       alignItems: 'center',
     },
     moreImagesText: {
-      color: colors[theme].WHITE,
+      color: colors[theme][0],
       fontSize: 12,
       fontWeight: 'bold',
     },

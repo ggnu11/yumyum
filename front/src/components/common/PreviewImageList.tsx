@@ -18,12 +18,14 @@ interface PreviewImageListProps {
   imageUris: ImageUri[];
   onDelete?: (uri: string) => void;
   showDeleteButton?: boolean;
+  onPressImage?: (index: number) => void;
 }
 
 function PreviewImageList({
   imageUris,
   onDelete,
   showDeleteButton = false,
+  onPressImage,
 }: PreviewImageListProps) {
   const {theme} = useThemeStore();
   const styles = styling(theme);
@@ -31,10 +33,14 @@ function PreviewImageList({
   const route = useRoute<RouteProp<FeedStackParamList>>();
 
   const handlePressImage = (index: number) => {
-    navigation.navigate('ImageZoom', {
-      id: route.params?.id,
-      index,
-    });
+    if (onPressImage) {
+      onPressImage(index);
+    } else {
+      navigation.navigate('ImageZoom', {
+        id: route.params?.id,
+        index,
+      });
+    }
   };
 
   return (
@@ -50,7 +56,7 @@ function PreviewImageList({
               <Pressable
                 style={styles.deleteButton}
                 onPress={() => onDelete?.(uri)}>
-                <Ionicons name="close" size={16} color={colors[theme].WHITE} />
+                <Ionicons name="close" size={16} color={colors[theme][0]} />
               </Pressable>
             )}
           </Pressable>
@@ -78,7 +84,7 @@ const styling = (theme: Theme) =>
       position: 'absolute',
       top: 0,
       right: 0,
-      backgroundColor: colors[theme].BLACK,
+      backgroundColor: colors[theme][100],
     },
   });
 

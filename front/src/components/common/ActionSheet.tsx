@@ -316,7 +316,7 @@ const styling = (theme: Theme) =>
     titleText: {
       fontSize: 16,
       fontWeight: '500',
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
     },
     border: {
       borderBottomColor: colors[theme].GRAY_200,
@@ -348,7 +348,7 @@ const styling = (theme: Theme) =>
       gap: 10,
     },
     checkBoxText: {
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
       fontSize: 15,
     },
   });

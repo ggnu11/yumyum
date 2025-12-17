@@ -2,20 +2,9 @@ import React from 'react';
 import {View, StyleSheet} from 'react-native';
 
 import RecordCard from './RecordCard';
-import {FilterType} from './FeedFilterSection';
+import {RecordData} from '../../types/api';
 
-interface RecordData {
-  id: number;
-  title: string;
-  content: string;
-  date: string;
-  images?: string[];
-  isOwner: boolean;
-  author?: {
-    name: string;
-    profileImage?: string;
-  };
-}
+type FilterType = 'mine' | 'all';
 
 interface RecordsListProps {
   records: RecordData[];

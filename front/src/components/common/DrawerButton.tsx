@@ -23,7 +23,7 @@ function DrawerButton({style, color}: DrawerButtonProps) {
     <Pressable
       style={[styles.container, style]}
       onPress={() => navigation.openDrawer()}>
-      <Ionicons name="menu" size={25} color={color ?? colors[theme].BLACK} />
+      <Ionicons name="menu" size={25} color={color ?? colors[theme][100]} />
     </Pressable>
   );
 }

@@ -77,7 +77,7 @@ function YearSelector({
           </View>
           <Pressable style={styles.closeButton} onPress={hide}>
             <CustomText style={styles.closeText}>닫기</CustomText>
-            <Ionicons name="chevron-up" size={20} color={colors[theme].BLACK} />
+            <Ionicons name="chevron-up" size={20} color={colors[theme][100]} />
           </Pressable>
         </View>
       )}
@@ -93,11 +93,11 @@ const styling = (theme: Theme) =>
     },
     yearsContainer: {
       alignItems: 'center',
-      backgroundColor: colors[theme].WHITE,
+      backgroundColor: colors[theme][0],
     },
     scrollContainer: {
       maxHeight: 200,
-      backgroundColor: colors[theme].WHITE,
+      backgroundColor: colors[theme][0],
     },
     yearButton: {
       width: 80,
@@ -120,13 +120,13 @@ const styling = (theme: Theme) =>
       color: colors[theme].GRAY_700,
     },
     currentYearText: {
-      color: colors[theme].WHITE,
+      color: colors[theme][0],
       fontWeight: '600',
     },
     closeButton: {
       flex: 1,
       flexDirection: 'row',
-      backgroundColor: colors[theme].WHITE,
+      backgroundColor: colors[theme][0],
       padding: 15,
       alignItems: 'center',
       justifyContent: 'center',
@@ -135,7 +135,7 @@ const styling = (theme: Theme) =>
       borderColor: colors[theme].GRAY_500,
     },
     closeText: {
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
       fontSize: 16,
       fontWeight: '600',
     },

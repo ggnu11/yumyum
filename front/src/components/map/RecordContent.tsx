@@ -37,7 +37,7 @@ const styling = (theme: Theme) =>
     title: {
       fontSize: 16,
       fontWeight: 'bold',
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
     },
     description: {
       fontSize: 14,

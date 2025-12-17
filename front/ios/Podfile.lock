@@ -20,9 +20,9 @@ PODS:
   - glog (0.3.5)
   - Google-Maps-iOS-Utils (6.1.0):
     - GoogleMaps (~> 9.0)
-  - GoogleMaps (9.4.0):
-    - GoogleMaps/Maps (= 9.4.0)
-  - GoogleMaps/Maps (9.4.0)
+  - GoogleMaps (9.3.0):
+    - GoogleMaps/Maps (= 9.3.0)
+  - GoogleMaps/Maps (9.3.0)
   - GoogleSignIn (9.0.0):
     - AppAuth (~> 2.0)
     - AppCheckCore (~> 11.0)
@@ -44,7 +44,7 @@ PODS:
   - hermes-engine (0.79.4):
     - hermes-engine/Pre-built (= 0.79.4)
   - hermes-engine/Pre-built (0.79.4)
-  - kakao-login (5.4.1):
+  - kakao-login (5.4.2):
     - KakaoSDKAuth (= 2.22.0)
     - KakaoSDKCommon (= 2.22.0)
     - KakaoSDKUser (= 2.22.0)
@@ -1440,7 +1440,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-maps/Generated (1.26.9):
+  - react-native-maps/Generated (1.23.12):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1464,11 +1464,11 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-maps/Google (1.26.9):
+  - react-native-maps/Google (1.23.12):
     - DoubleConversion
     - glog
     - Google-Maps-iOS-Utils (= 6.1.0)
-    - GoogleMaps (= 9.4.0)
+    - GoogleMaps (= 9.3.0)
     - hermes-engine
     - RCT-Folly (= 2024.11.18.00)
     - RCTRequired
@@ -1492,7 +1492,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-maps/Maps (1.26.9):
+  - react-native-maps/Maps (1.23.12):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -2683,13 +2683,13 @@ SPEC CHECKSUMS:
   fmt: a40bb5bd0294ea969aaaba240a927bd33d878cdd
   glog: 5683914934d5b6e4240e497e0f4a3b42d1854183
   Google-Maps-iOS-Utils: 0a484b05ed21d88c9f9ebbacb007956edd508a96
-  GoogleMaps: 0608099d4870cac8754bdba9b6953db543432438
+  GoogleMaps: b58e9627004f47043897eeae830c3ef023678f3b
   GoogleSignIn: c7f09cfbc85a1abf69187be091997c317cc33b77
   GoogleUtilities: 00c88b9a86066ef77f0da2fab05f65d7768ed8e1
   GTMAppAuth: 217a876b249c3c585a54fd6f73e6b58c4f5c4238
   GTMSessionFetcher: 5aea5ba6bd522a239e236100971f10cb71b96ab6
   hermes-engine: 8b5a5eb386b990287d072fd7b6f6ebd9544dd251
-  kakao-login: 39d7c13140ad97c54f9d42893d32ab4a1476420a
+  kakao-login: c7b882cd279ca11f5b3abd15d0e0fcb41a427108
   KakaoSDKAuth: 569b377eda622d93d4575240b8031cd658163eef
   KakaoSDKCommon: d57127c339fc79e73aa8b236a4c77211c29924f1
   KakaoSDKUser: 043bcd7e91454ebf3bf64f150c430e6f65f0a08d
@@ -2730,7 +2730,7 @@ SPEC CHECKSUMS:
   react-native-date-picker: d0f7b5c8c7c85932dec43c4e4725abc45b309ef1
   react-native-encrypted-storage: 569d114e329b1c2c2d9f8c84bcdbe4478dda2258
   react-native-geolocation: d43962eb0be1b0056ba5c1f95e94fb7907494268
-  react-native-maps: 7c4f042c31e7ba4a124478ae5ebbb098786469fc
+  react-native-maps: 6db1c5a613e43094a88a4110074964584fca340d
   react-native-safe-area-context: 091add53da15b67c76b176724725581b29a1cde3
   react-native-slider: bbaef403486de7d0ecb35ea7d4f3f236609c15c7
   react-native-vector-icons-fontawesome6: 624a5578d701e52b18fb7f35b56556395a4249c0

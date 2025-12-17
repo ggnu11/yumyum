@@ -56,7 +56,7 @@ const styling = (theme: Theme) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: colors[theme].WHITE,
+      backgroundColor: colors[theme][0],
     },
     header: {
       flexDirection: 'row',
@@ -79,7 +79,7 @@ const styling = (theme: Theme) =>
     headerTitle: {
       fontSize: 18,
       fontWeight: '600',
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
     },
     content: {
       flex: 1,
@@ -88,7 +88,7 @@ const styling = (theme: Theme) =>
     },
     contentText: {
       fontSize: 14,
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
       lineHeight: 22,
       paddingBottom: 40,
     },

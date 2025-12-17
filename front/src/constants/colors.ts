@@ -1,58 +1,58 @@
 // 디자인 가이드 기반 색상 팔레트
 const common = {
   // Common
-  COMMON_WHITE: '#FFFFFF',
-  COMMON_BLACK: '#000000',
+  0: '#FFFFFF',
+  100: '#121212',
 
   // Grayscale
   GRAYSCALE_5: '#F7F7F7',
   GRAYSCALE_10: '#F2F2F2',
   GRAYSCALE_20: '#E7E7E7',
-  GRAYSCALE_30: '#CCCCCC',
-  GRAYSCALE_40: '#AAAAAA',
-  GRAYSCALE_50: '#888888',
-  GRAYSCALE_60: '#666666',
-  GRAYSCALE_70: '#555555',
-  GRAYSCALE_80: '#333333',
-  GRAYSCALE_90: '#1A1A1A',
+  GRAYSCALE_30: '#D0D0D0',
+  GRAYSCALE_40: '#A9A9A9',
+  GRAYSCALE_50: '#8D8E8F',
+  GRAYSCALE_60: '#6A6A6A',
+  GRAYSCALE_70: '#3D3D3D',
+  GRAYSCALE_80: '#222222',
+  GRAYSCALE_90: '#181818',
 
   // Red
-  RED_10: '#FFE5E5',
-  RED_50: '#FF8A8A',
-  RED_100: '#E55555',
+  RED_10: '#FFECE8',
+  RED_50: '#FFB3A4',
+  RED_100: '#FB6E52',
 
   // Yellow
-  YELLOW_10: '#FFF5D0',
-  YELLOW_50: '#FFE79C',
-  YELLOW_100: '#FFC955',
+  YELLOW_10: '#FFF5DD',
+  YELLOW_50: '#FFE7AC',
+  YELLOW_100: '#FFCE55',
 
   // LightGreen
-  LIGHTGREEN_10: '#F0F7F0',
-  LIGHTGREEN_50: '#C7F7B7',
+  LIGHTGREEN_10: '#F0FFDF',
+  LIGHTGREEN_50: '#E0FFBF',
   LIGHTGREEN_100: '#A0D468',
 
   // Green
-  GREEN_10: '#D7F3D7',
-  GREEN_50: '#8FD3A4',
-  GREEN_100: '#47C07B',
+  GREEN_10: '#D3FFE3',
+  GREEN_50: '#9AF9BA',
+  GREEN_100: '#1EC05B',
 
   // Teal
-  TEAL_10: '#D7F7F7',
-  TEAL_50: '#8FD2E1',
-  TEAL_100: '#4AD2AE',
+  TEAL_10: '#DEFFF7',
+  TEAL_50: '#ADF2E1',
+  TEAL_100: '#48CFAE',
 
   // Blue
-  BLUE_10: '#E0F1FF',
-  BLUE_50: '#8CCAFF',
-  BLUE_100: '#4DA2DC',
+  BLUE_10: '#E6F1FF',
+  BLUE_50: '#BDDAFF',
+  BLUE_100: '#5D9CEC',
 
   // Purple
-  PURPLE_10: '#E8E4FF',
-  PURPLE_20: '#D5CCFF',
-  PURPLE_40: '#B59CFF',
-  PURPLE_60: '#9A77FF',
-  PURPLE_80: '#7E4EFF',
-  PURPLE_100: '#6732FF',
+  PURPLE_10: '#EEEEFF',
+  PURPLE_20: '#DEDEFF',
+  PURPLE_40: '#C4C5FF',
+  PURPLE_60: '#A9ABFF',
+  PURPLE_80: '#8C8EF9',
+  PURPLE_100: '#7C7EFF',
 
   // Social Colors
   SOCIAL_KAKAO_BRAND: '#FEE500',
@@ -61,7 +61,6 @@ const common = {
   SOCIAL_NAVER_BRAND: '#03C75A',
 
   // Legacy colors (호환성을 위해 유지)
-  PINK_200: '#FAE2E9',
   PINK_400: '#EC87A5',
   PINK_500: '#BF5C79',
   PINK_700: '#C63B64',
@@ -73,8 +72,6 @@ const common = {
   YELLOW_400: '#FFE594',
   YELLOW_500: '#FACC15',
   PURPLE_400: '#C4C4E7',
-  UNCHANGE_WHITE: '#fff',
-  UNCHANGE_BLACK: '#000',
 };
 
 const colors = {
@@ -104,36 +101,36 @@ const colors = {
 const colorSystem = {
   // Primary Colors
   primary: {
-    light: '#C4C4E7', // Purple30
-    normal: '#7E4EFF', // Purple80
-    strong: '#6732FF', // Purple100
-    gradient: ['#6732FF', '#B59CFF'], // Purple100 to Purple40
+    light: common.PURPLE_60, // Purple30
+    normal: common.PURPLE_80, // Purple80
+    strong: common.PURPLE_100, // Purple100
+    gradient: [common.PURPLE_100, common.PURPLE_40], // Purple100 to Purple40
   },
 
   // Secondary Colors
   secondary: {
-    light: '#E8E4FF', // Purple10
-    normal: '#D5CCFF', // Purple20
-    strong: '#B59CFF', // Purple40
+    light: common.PURPLE_10, // Purple10
+    normal: common.PURPLE_20, // Purple20
+    strong: common.PURPLE_40, // Purple40
   },
 
   // Label Colors
   label: {
-    white: common.COMMON_WHITE,
+    white: common[0],
     disable: common.GRAYSCALE_20,
     assistive: common.GRAYSCALE_30,
     alternative: common.GRAYSCALE_50,
-    neutral: common.GRAYSCALE_80,
+    neutral: common.GRAYSCALE_60,
     normal: common.GRAYSCALE_70,
     strong: common.GRAYSCALE_80,
   },
 
   // Background Colors
   background: {
-    normal: common.COMMON_WHITE,
+    normal: common[0],
     gray: common.GRAYSCALE_10,
-    pressed: common.COMMON_WHITE, // 100% opacity
-    dim: common.COMMON_WHITE, // 100% opacity, but with dimming effect
+    pressed: common[100],
+    dim: common[100],
   },
 
   // System Colors
@@ -156,12 +153,16 @@ const colorSystem = {
     yellowGreen: common.LIGHTGREEN_100,
     teal: common.TEAL_100,
     blue: common.BLUE_100,
+    gray: common.GRAYSCALE_30,
+    black: common.GRAYSCALE_90,
 
-    red_gr: common.RED_50,
-    yellow_gr: common.YELLOW_50,
-    yellowGreen_gr: common.LIGHTGREEN_50,
-    teal_gr: common.TEAL_50,
-    blue_gr: common.BLUE_50,
+    red_gr: [common.RED_100, common.RED_50],
+    yellow_gr: [common.YELLOW_100, common.YELLOW_50],
+    yellowGreen_gr: [common.GREEN_100, common.GREEN_50],
+    teal_gr: [common.TEAL_100, common.TEAL_50],
+    blue_gr: [common.BLUE_100, common.BLUE_50],
+    gray_gr: [common.GRAYSCALE_5, common.GRAYSCALE_50],
+    black_gr: [common.GRAYSCALE_50, common.GRAYSCALE_90],
   },
 
   // Social Colors
@@ -169,15 +170,15 @@ const colorSystem = {
     kakao: {
       container: common.SOCIAL_KAKAO_BRAND,
       label: common.SOCIAL_KAKAO_TEXT,
-      symbol: common.COMMON_BLACK,
+      symbol: common[100],
     },
     apple: {
-      container: common.COMMON_BLACK,
-      label: common.COMMON_WHITE,
+      container: common[100],
+      label: common[0],
     },
     naver: {
       container: common.SOCIAL_NAVER_BRAND,
-      label: common.COMMON_WHITE,
+      label: common[0],
     },
   },
 };

@@ -14,9 +14,9 @@ export function SettingStack() {
       screenOptions={{
         headerTitleAlign: 'center',
         headerBackButtonDisplayMode: 'minimal',
-        headerTintColor: colors[theme].BLACK,
+        headerTintColor: colors[theme][100],
         headerStyle: {
-          backgroundColor: colors[theme].WHITE,
+          backgroundColor: colors[theme][0],
           shadowColor: colors[theme].GRAY_500,
         },
         headerTitleStyle: {
@@ -27,9 +27,9 @@ export function SettingStack() {
         name="SettingHome"
         component={SettingHomeScreen}
         options={{
-          title: '마이',
+          headerShown: false,
           cardStyle: {
-            backgroundColor: colors[theme].GRAY_100,
+            backgroundColor: colors[theme][0],
           },
         }}
       />
@@ -39,7 +39,7 @@ export function SettingStack() {
         options={{
           title: '프로필 수정',
           cardStyle: {
-            backgroundColor: colors[theme].WHITE,
+            backgroundColor: colors[theme][0],
           },
         }}
       />

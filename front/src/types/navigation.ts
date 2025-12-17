@@ -3,8 +3,12 @@ import {LatLng} from 'react-native-maps';
 
 export type MapStackParamList = {
   MapHome: undefined;
-  AddLocation: {location: LatLng};
-  SearchLocation: undefined;
+  AddLocation: {
+    location?: LatLng;
+    placeInfo?: import('./api').PlaceInfo;
+  };
+  SearchLocation: {initialKeyword?: string};
+  Search: undefined;
 };
 
 export type AuthStackParamList = {
@@ -16,6 +20,7 @@ export type AuthStackParamList = {
   };
   KakaoLogin: undefined;
   NaverLogin: undefined;
+  ProfileRegistration: undefined;
 };
 
 export type FeedStackParamList = {

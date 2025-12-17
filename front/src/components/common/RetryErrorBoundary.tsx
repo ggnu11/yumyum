@@ -43,12 +43,12 @@ const styling = (theme: Theme) =>
       alignItems: 'center',
       justifyContent: 'center',
       gap: 10,
-      backgroundColor: colors[theme].WHITE,
+      backgroundColor: colors[theme][0],
     },
     titleText: {
       fontSize: 18,
       fontWeight: '600',
-      color: colors[theme].BLACK,
+      color: colors[theme][100],
     },
     descriptionText: {
       fontSize: 15,

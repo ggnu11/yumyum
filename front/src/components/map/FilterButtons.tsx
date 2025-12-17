@@ -82,15 +82,13 @@ function FilterButtons({activeFilters, onFilterPress}: FilterButtonsProps) {
               activeOpacity={0.7}>
               <View style={styles.buttonContent}>
                 {isGroupFilter ? (
-                  <ColorDot size={12} color={filter.color || '#000'} />
+                  <ColorDot size={8} color={filter.color || '#000'} />
                 ) : (
                   IconComponent && (
                     <IconComponent
                       size={12}
                       color={
-                        isActive
-                          ? colors[theme].WHITE
-                          : colors[theme].GRAYSCALE_70
+                        isActive ? colors[theme][0] : colors[theme].GRAYSCALE_70
                       }
                     />
                   )
@@ -125,7 +123,7 @@ const styling = (theme: Theme) =>
       paddingRight: 20,
     },
     filterButton: {
-      backgroundColor: colors[theme].WHITE,
+      backgroundColor: colors[theme][0],
       height: 29,
       borderRadius: 20,
       marginRight: 8,
@@ -150,7 +148,7 @@ const styling = (theme: Theme) =>
       color: colors[theme].GRAYSCALE_70,
     },
     activeFilterText: {
-      color: colors[theme].WHITE,
+      color: colors[theme][0],
       fontWeight: '600',
     },
   });
