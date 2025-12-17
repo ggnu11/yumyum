@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 
-import {colors} from '../../constants/colors';
+import {colors, colorSystem} from '../../constants/colors';
 import useThemeStore, {Theme} from '../../store/theme';
 import CustomText from '../common/CustomText';
 
@@ -53,13 +53,7 @@ function AddRecordFloatingButton({
   return (
     <Animated.View style={[styles.container, {transform: [{translateY}]}]}>
       <TouchableOpacity style={styles.button} onPress={onPress}>
-        <Ionicons
-          name="add"
-          size={20}
-          color={colors[theme][0]}
-          style={styles.icon}
-        />
-        <CustomText style={styles.buttonText}>기록 추가하기</CustomText>
+        <CustomText style={styles.buttonText}>+ 기록카드 등록하기</CustomText>
       </TouchableOpacity>
     </Animated.View>
   );
@@ -76,7 +70,7 @@ const styling = (theme: Theme) =>
       elevation: 0,
     },
     button: {
-      backgroundColor: colors[theme][100],
+      backgroundColor: colorSystem.primary.normal, // Primary/normal
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
@@ -92,11 +86,8 @@ const styling = (theme: Theme) =>
       shadowRadius: 8,
       elevation: 10, // RecordFilterBottomSheet보다 낮게 설정
     },
-    icon: {
-      marginRight: 8,
-    },
     buttonText: {
-      color: colors[theme][0],
+      color: colorSystem.label.white, // label/white
       fontSize: 16,
       fontWeight: '600',
     },

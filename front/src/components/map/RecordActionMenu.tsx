@@ -1,4 +1,4 @@
-import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
+import Ionicons from '@react-native-vector-icons/ionicons';
 import React, {useState, useRef} from 'react';
 import {
   StyleSheet,
@@ -129,11 +129,10 @@ function RecordActionMenu({recordId, onEdit, onDelete}: RecordActionMenuProps) {
         onPress={handleMorePress}
         style={styles.moreButton}
         activeOpacity={0.7}>
-        <FontAwesome6
-          name="ellipsis"
-          size={16}
+        <Ionicons
+          name="ellipsis-vertical"
+          size={20}
           color={colors[theme].GRAY_500}
-          iconStyle="solid"
         />
       </TouchableOpacity>
 

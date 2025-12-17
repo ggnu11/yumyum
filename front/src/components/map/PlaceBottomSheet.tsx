@@ -12,7 +12,6 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Image,
   Pressable,
 } from 'react-native';
 import {colorSystem, colors} from '../../constants/colors';
@@ -370,7 +369,7 @@ const PlaceBottomSheet = forwardRef<BottomSheet, PlaceBottomSheetProps>(
                     <Ionicons
                       name="chevron-back"
                       size={24}
-                      color={colors.light.BLACK}
+                      color={colors.light.GRAY_500}
                     />
                   </TouchableOpacity>
                   <TouchableOpacity
@@ -379,16 +378,10 @@ const PlaceBottomSheet = forwardRef<BottomSheet, PlaceBottomSheetProps>(
                     disabled={
                       createWishlist.isPending || deleteWishlist.isPending
                     }>
-                    <Image
-                      source={require('@/assets/common/star.png')}
-                      style={[
-                        {
-                          tintColor: isBookmarked
-                            ? colorSystem.system.warning
-                            : colorSystem.label.disable,
-                        },
-                      ]}
-                      resizeMode="contain"
+                    <Ionicons
+                      name="star-outline"
+                      size={24}
+                      color={colors.light.GRAY_500}
                     />
                   </TouchableOpacity>
                 </View>
