@@ -19,7 +19,7 @@ export class User extends BaseEntity {
   id: number;
 
   @Column()
-  loginType: 'email' | 'kakao' | 'apple';
+  loginType: 'email' | 'kakao' | 'apple' | 'naver';
 
   @Column()
   email: string;

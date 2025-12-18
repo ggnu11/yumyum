@@ -7,10 +7,8 @@ import {
   Dimensions,
   Image,
   Platform,
-  Pressable,
   SafeAreaView,
   StyleSheet,
-  Text,
   View,
 } from 'react-native';
 
@@ -102,12 +100,11 @@ function AuthHomeScreen() {
           onPress={() => navigation.navigate('KakaoLogin')}
         />
         <CustomButton
-          label="이메일 로그인"
-          onPress={() => navigation.navigate('Login')}
+          label="네이버 로그인"
+          style={styles.naverButtonContainer}
+          textStyle={styles.naverButtonText}
+          onPress={() => navigation.navigate('NaverLogin')}
         />
-        <Pressable onPress={() => navigation.navigate('Signup')}>
-          <Text style={styles.emailText}>이메일로 가입하기</Text>
-        </Pressable>
       </View>
     </SafeAreaView>
   );
@@ -132,17 +129,17 @@ const styling = (theme: Theme) =>
       paddingHorizontal: 30,
       gap: 5,
     },
-    emailText: {
-      textDecorationLine: 'underline',
-      fontWeight: '500',
-      padding: 10,
-      color: colors[theme].BLACK,
-    },
     kakaoButtonContainer: {
       backgroundColor: '#fee503',
     },
     kakaoButtonText: {
       color: '#181600',
+    },
+    naverButtonContainer: {
+      backgroundColor: '#03C75A',
+    },
+    naverButtonText: {
+      color: '#FFFFFF',
     },
     appleButton: {
       width: Dimensions.get('screen').width,

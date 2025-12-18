@@ -258,6 +258,56 @@ export class AuthService {
     }
   }
 
+  async naverLogin(naverToken: { token: string }) {
+    const url = 'https://openapi.naver.com/v1/nid/me';
+    const headers = {
+      Authorization: `Bearer ${naverToken.token}`,
+    };
+
+    try {
+      const response = await axios.get(url, { headers });
+      const userData = response.data;
+      const { id: naverId, nickname, email } = userData.response;
+
+      const existingUser = await this.userRepository.findOneBy({
+        email: naverId,
+      });
+
+      if (existingUser) {
+        const { accessToken, refreshToken } = await this.getTokens({
+          email: existingUser.email,
+        });
+
+        await this.updateHashedRefreshToken(existingUser.id, refreshToken);
+        return { accessToken, refreshToken };
+      }
+
+      const newUser = this.userRepository.create({
+        email: naverId,
+        password: nickname ?? '',
+        nickname: nickname || null,
+        loginType: 'naver',
+      });
+
+      try {
+        await this.userRepository.save(newUser);
+      } catch (error) {
+        console.log(error);
+        throw new InternalServerErrorException();
+      }
+
+      const { accessToken, refreshToken } = await this.getTokens({
+        email: newUser.email,
+      });
+
+      await this.updateHashedRefreshToken(newUser.id, refreshToken);
+      return { accessToken, refreshToken };
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException('Naver 서버 에러가 발생했습니다.');
+    }
+  }
+
   async withdrawUser(user: User) {
     try {
       const existingUser = await this.userRepository.findOneBy({ id: user.id });

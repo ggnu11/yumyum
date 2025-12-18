@@ -34,6 +34,12 @@ async function kakaoLogin(token: string): Promise<ResponseToken> {
   return data;
 }
 
+async function naverLogin(token: string): Promise<ResponseToken> {
+  const {data} = await axiosInstance.post('/auth/oauth/naver', {token});
+
+  return data;
+}
+
 type RequestAppleIdentity = {
   identityToken: string;
   appId: string;
@@ -88,6 +94,7 @@ export {
   getAccessToken,
   getProfile,
   kakaoLogin,
+  naverLogin,
   logout,
   postLogin,
   postSignup,

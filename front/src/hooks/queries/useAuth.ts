@@ -7,6 +7,7 @@ import {
   getAccessToken,
   getProfile,
   kakaoLogin,
+  naverLogin,
   logout,
   postLogin,
   postSignup,
@@ -53,6 +54,10 @@ function useEmailLogin(mutationOptions?: UseMutationCustomOptions) {
 
 function useKakaoLogin(mutationOptions?: UseMutationCustomOptions) {
   return useLogin(kakaoLogin, mutationOptions);
+}
+
+function useNaverLogin(mutationOptions?: UseMutationCustomOptions) {
+  return useLogin(naverLogin, mutationOptions);
 }
 
 function useAppleLogin(mutationOptions?: UseMutationCustomOptions) {
@@ -137,6 +142,7 @@ function useAuth() {
   const signupMutation = useSignup();
   const loginMutation = useEmailLogin();
   const kakaoLoginMutation = useKakaoLogin();
+  const naverLoginMutation = useNaverLogin();
   const appleLoginMutation = useAppleLogin();
   const refreshTokenQuery = useGetRefreshToken();
   const {data, isSuccess: isLogin} = useGetProfile({
@@ -156,6 +162,7 @@ function useAuth() {
     signupMutation,
     loginMutation,
     kakaoLoginMutation,
+    naverLoginMutation,
     appleLoginMutation,
     isLogin,
     logoutMutation,
