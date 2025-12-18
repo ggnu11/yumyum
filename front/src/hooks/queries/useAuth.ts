@@ -158,6 +158,7 @@ function useAuth() {
       nickname: data?.nickname || '',
       email: data?.email || '',
       imageUri: data?.imageUri || '',
+      loginType: data?.loginType || 'email',
     },
     signupMutation,
     loginMutation,

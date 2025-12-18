@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
+import NaverLogin from '@react-native-seoul/naver-login';
 
 import DarkModeActionSheet from '@/components/setting/DarkModeActionSheet';
 import {colors} from '@/constants/colors';
@@ -25,7 +26,7 @@ function SettingHomeScreen() {
   const {theme} = useThemeStore();
   const styles = styling(theme);
   const navigation = useNavigation<Navigation>();
-  const {logoutMutation, withdrawMutation} = useAuth();
+  const {auth, logoutMutation, withdrawMutation} = useAuth();
   const darkModeAction = useModal();
 
   const handleWithdrawUser = () => {
@@ -40,7 +41,17 @@ function SettingHomeScreen() {
         {
           text: '탈퇴',
           style: 'destructive',
-          onPress: () => {
+          onPress: async () => {
+            // 네이버 로그인인 경우 SDK 로그아웃
+            if (auth.loginType === 'naver') {
+              try {
+                await NaverLogin.logout();
+                console.log('네이버 SDK 로그아웃 성공');
+              } catch (error) {
+                console.log('네이버 SDK 로그아웃 실패:', error);
+              }
+            }
+
             withdrawMutation.mutate(null, {
               onSuccess: () => {
                 Toast.show({

@@ -45,6 +45,9 @@ export class User extends BaseEntity {
   @Column({ nullable: true })
   hashedRefreshToken?: string;
 
+  @Column({ nullable: true })
+  socialAccessToken?: string;
+
   @OneToMany(() => Post, (post) => post.user, { eager: false })
   post: Post[];
 

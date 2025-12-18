@@ -172,6 +172,9 @@ export class AuthService {
         });
 
         await this.updateHashedRefreshToken(existingUser.id, refreshToken);
+        await this.userRepository.update(existingUser.id, {
+          socialAccessToken: kakaoToken.token,
+        });
         return { accessToken, refreshToken };
       }
 
@@ -180,6 +183,7 @@ export class AuthService {
         password: nickname ?? '',
         nickname,
         loginType: 'kakao',
+        socialAccessToken: kakaoToken.token,
       });
 
       try {
@@ -227,6 +231,9 @@ export class AuthService {
         });
 
         await this.updateHashedRefreshToken(existingUser.id, refreshToken);
+        await this.userRepository.update(existingUser.id, {
+          socialAccessToken: identityToken,
+        });
         return { accessToken, refreshToken };
       }
 
@@ -235,6 +242,7 @@ export class AuthService {
         nickname: nickname === null ? '이름없음' : nickname,
         password: '',
         loginType: 'apple',
+        socialAccessToken: identityToken,
       });
 
       try {
@@ -279,6 +287,9 @@ export class AuthService {
         });
 
         await this.updateHashedRefreshToken(existingUser.id, refreshToken);
+        await this.userRepository.update(existingUser.id, {
+          socialAccessToken: naverToken.token,
+        });
         return { accessToken, refreshToken };
       }
 
@@ -287,6 +298,7 @@ export class AuthService {
         password: nickname ?? '',
         nickname: nickname || null,
         loginType: 'naver',
+        socialAccessToken: naverToken.token,
       });
 
       try {
@@ -316,6 +328,19 @@ export class AuthService {
         throw new NotFoundException('존재하지 않는 사용자입니다.');
       }
 
+      // 소셜 로그인 연동 해제
+      if (existingUser.socialAccessToken) {
+        try {
+          await this.unlinkSocialAccount(
+            existingUser.loginType,
+            existingUser.socialAccessToken,
+          );
+        } catch (error) {
+          console.log('소셜 연동 해제 실패:', error);
+          // 연동 해제 실패해도 회원탈퇴는 진행
+        }
+      }
+
       await this.userRepository.delete(user.id);
 
       return { message: '회원탈퇴가 완료되었습니다.' };
@@ -329,6 +354,68 @@ export class AuthService {
       throw new InternalServerErrorException(
         '회원탈퇴 처리 중 에러가 발생했습니다.',
       );
+    }
+  }
+
+  private async unlinkSocialAccount(
+    loginType: 'email' | 'kakao' | 'apple' | 'naver',
+    accessToken: string,
+  ) {
+    try {
+      switch (loginType) {
+        case 'kakao':
+          await this.unlinkKakao(accessToken);
+          break;
+        case 'naver':
+          await this.unlinkNaver(accessToken);
+          break;
+        case 'apple':
+          // Apple은 서버에서 직접 연동 해제가 복잡하므로 로그 남기기만 함
+          console.log('Apple 계정 연동 해제는 사용자가 직접 수행해야 합니다.');
+          break;
+        default:
+          // email 로그인은 연동 해제 불필요
+          break;
+      }
+    } catch (error) {
+      console.log('소셜 연동 해제 중 오류:', error);
+      throw error;
+    }
+  }
+
+  private async unlinkKakao(accessToken: string) {
+    const url = 'https://kapi.kakao.com/v1/user/unlink';
+    const headers = {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    };
+
+    try {
+      const response = await axios.post(url, {}, { headers });
+      console.log('카카오 연동 해제 성공:', response.data);
+      return response.data;
+    } catch (error) {
+      console.log('카카오 연동 해제 실패:', error);
+      throw error;
+    }
+  }
+
+  private async unlinkNaver(accessToken: string) {
+    const url = 'https://nid.naver.com/oauth2.0/token';
+    const params = {
+      grant_type: 'delete',
+      client_id: process.env.NAVER_CLIENT_ID,
+      client_secret: process.env.NAVER_CLIENT_SECRET,
+      access_token: accessToken,
+    };
+
+    try {
+      const response = await axios.post(url, null, { params });
+      console.log('네이버 연동 해제 성공:', response.data);
+      return response.data;
+    } catch (error) {
+      console.log('네이버 연동 해제 실패:', error);
+      throw error;
     }
   }
 }
