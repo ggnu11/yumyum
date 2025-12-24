@@ -3,8 +3,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {colors} from '@/constants/colors';
 import AuthHomeScreen from '@/screens/auth/AuthHomeScreen';
 import KakaoLoginScreen from '@/screens/auth/KakaoLoginScreen';
-import LoginScreen from '@/screens/auth/LoginScreen';
-import SignupScreen from '@/screens/auth/SignupScreen';
+import NaverLoginScreen from '@/screens/auth/NaverLoginScreen';
 import useThemeStore from '@/store/theme';
 
 const Stack = createStackNavigator();
@@ -37,19 +36,14 @@ function AuthNavigation() {
         options={{headerShown: false}}
       />
       <Stack.Screen
-        name="Login"
-        component={LoginScreen}
-        options={{title: '로그인'}}
-      />
-      <Stack.Screen
-        name="Signup"
-        component={SignupScreen}
-        options={{title: '회원가입'}}
-      />
-      <Stack.Screen
         name="KakaoLogin"
         component={KakaoLoginScreen}
         options={{title: '카카오 로그인'}}
+      />
+      <Stack.Screen
+        name="NaverLogin"
+        component={NaverLoginScreen}
+        options={{title: '네이버 로그인'}}
       />
     </Stack.Navigator>
   );

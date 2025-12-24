@@ -70,6 +70,11 @@ export class AuthController {
     return this.authService.appleLogin(appleIdentity);
   }
 
+  @Post('/oauth/naver')
+  naverLogin(@Body() naverToken: { token: string }) {
+    return this.authService.naverLogin(naverToken);
+  }
+
   @Delete('/withdraw')
   @UseGuards(AuthGuard())
   withdrawUser(@GetUser() user: User) {

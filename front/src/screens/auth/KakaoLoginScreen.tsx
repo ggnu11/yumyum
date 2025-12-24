@@ -24,6 +24,7 @@ function KakaoLoginScreen() {
         code,
       },
     });
+    console.log('■■ ~ response■■:', response);
 
     kakaoLoginMutation.mutate(response.data.access_token, {
       onSuccess: () => {
