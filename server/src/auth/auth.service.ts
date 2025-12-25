@@ -172,9 +172,6 @@ export class AuthService {
         });
 
         await this.updateHashedRefreshToken(existingUser.id, refreshToken);
-        await this.userRepository.update(existingUser.id, {
-          socialAccessToken: kakaoToken.token,
-        });
         return { accessToken, refreshToken };
       }
 
@@ -183,7 +180,6 @@ export class AuthService {
         password: nickname ?? '',
         nickname,
         loginType: 'kakao',
-        socialAccessToken: kakaoToken.token,
       });
 
       try {
@@ -231,9 +227,6 @@ export class AuthService {
         });
 
         await this.updateHashedRefreshToken(existingUser.id, refreshToken);
-        await this.userRepository.update(existingUser.id, {
-          socialAccessToken: identityToken,
-        });
         return { accessToken, refreshToken };
       }
 
@@ -287,9 +280,6 @@ export class AuthService {
         });
 
         await this.updateHashedRefreshToken(existingUser.id, refreshToken);
-        await this.userRepository.update(existingUser.id, {
-          socialAccessToken: naverToken.token,
-        });
         return { accessToken, refreshToken };
       }
 
@@ -326,19 +316,6 @@ export class AuthService {
 
       if (!existingUser) {
         throw new NotFoundException('존재하지 않는 사용자입니다.');
-      }
-
-      // 소셜 로그인 연동 해제
-      if (existingUser.socialAccessToken) {
-        try {
-          await this.unlinkSocialAccount(
-            existingUser.loginType,
-            existingUser.socialAccessToken,
-          );
-        } catch (error) {
-          console.log('소셜 연동 해제 실패:', error);
-          // 연동 해제 실패해도 회원탈퇴는 진행
-        }
       }
 
       await this.userRepository.delete(user.id);
