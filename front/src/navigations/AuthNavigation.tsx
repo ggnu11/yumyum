@@ -32,11 +32,6 @@ function AuthNavigation() {
         },
       }}>
       <Stack.Screen
-        name="TestConnection"
-        component={TestConnection}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
         name="AuthHome"
         component={AuthHomeScreen}
         options={{headerShown: false}}
