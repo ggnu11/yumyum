@@ -7,7 +7,7 @@ import Config from 'react-native-config';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import WebView, {WebViewNavigation} from 'react-native-webview';
 
-const REDIRECT_URI = `http://localhost:3030/auth/oauth/kakao`;
+const REDIRECT_URI = Config.KAKAO_REDIRECT_URI;
 
 function KakaoLoginScreen() {
   const {kakaoLoginMutation} = useAuth();

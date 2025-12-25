@@ -5,6 +5,7 @@ import AuthHomeScreen from '@/screens/auth/AuthHomeScreen';
 import KakaoLoginScreen from '@/screens/auth/KakaoLoginScreen';
 import NaverLoginScreen from '@/screens/auth/NaverLoginScreen';
 import useThemeStore from '@/store/theme';
+import TestConnection from '@/components/common/TestConnection';
 
 const Stack = createStackNavigator();
 
@@ -30,6 +31,11 @@ function AuthNavigation() {
           backgroundColor: colors[theme].WHITE,
         },
       }}>
+      <Stack.Screen
+        name="TestConnection"
+        component={TestConnection}
+        options={{headerShown: false}}
+      />
       <Stack.Screen
         name="AuthHome"
         component={AuthHomeScreen}

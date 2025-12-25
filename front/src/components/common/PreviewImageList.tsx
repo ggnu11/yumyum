@@ -2,7 +2,6 @@ import Ionicons from '@react-native-vector-icons/ionicons';
 import React from 'react';
 import {Image, Platform, Pressable, ScrollView, StyleSheet} from 'react-native';
 
-import {BASE_URL} from '@/api/axios';
 import {colors} from '@/constants/colors';
 import useThemeStore, {Theme} from '@/store/theme';
 import {ImageUri} from '@/types/domain';

@@ -13,7 +13,6 @@ import {
 } from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
-import {BASE_URL} from '@/api/axios';
 import CustomButton from '@/components/common/CustomButton';
 import PreviewImageList from '@/components/common/PreviewImageList';
 import FeedDetailActionSheet from '@/components/feed/FeedDetailActionSheet';

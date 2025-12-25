@@ -1,4 +1,3 @@
-import {BASE_URL} from '@/api/axios';
 import {colors} from '@/constants/colors';
 import useThemeStore, {Theme} from '@/store/theme';
 import {Post} from '@/types/domain';

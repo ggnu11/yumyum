@@ -9,7 +9,6 @@ import {
   View,
 } from 'react-native';
 
-import {BASE_URL} from '@/api/axios';
 import FixedBottomCTA from '@/components/common/FixedBottomCTA';
 import InputField from '@/components/common/InputField';
 import EditProfileActionSheet from '@/components/setting/EditProfileActionSheet';
