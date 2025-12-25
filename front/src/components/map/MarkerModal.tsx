@@ -12,7 +12,6 @@ import {
   View,
 } from 'react-native';
 
-import {BASE_URL} from '@/api/axios';
 import {colors} from '@/constants/colors';
 import useGetPost from '@/hooks/queries/useGetPost';
 import useThemeStore, {Theme} from '@/store/theme';

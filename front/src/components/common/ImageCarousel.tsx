@@ -14,7 +14,6 @@ import {
 } from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
-import {BASE_URL} from '@/api/axios';
 import {colors} from '@/constants/colors';
 import useThemeStore, {Theme} from '@/store/theme';
 import {ImageUri} from '@/types/domain';
