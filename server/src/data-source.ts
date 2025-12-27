@@ -6,14 +6,14 @@ import { config } from 'dotenv';
 config();
 
 export const AppDataSource = new DataSource({
-  type: 'postgres',
-  host: process.env.DB_HOST,
-  port: 5432,
-  username: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASE,
-  entities: [__dirname + '/**/*.entity.{js,ts}'],
-  migrations: [__dirname + '/migrations/*.{js,ts}'],
-  ssl: { rejectUnauthorized: false },
-  synchronize: false, // disable sync when using migrations
+    type: 'postgres',
+    host: process.env.DB_HOST,
+    port: 5432,
+    username: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
+    entities: [__dirname + '/**/*.entity.{js,ts}'],
+    migrations: [__dirname + '/migrations/*.{js,ts}'],
+    ssl: false, //{ rejectUnauthorized: false },
+    synchronize: true, // disable sync when using migrations
 });

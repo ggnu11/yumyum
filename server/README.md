@@ -39,33 +39,33 @@ npm run start:dev
 
 ```ts
 interface ImageUri {
-  id?: number;
-  uri: string;
+    id?: number;
+    uri: string;
 }
 
 interface Marker {
-  id: number;
-  latitude: number;
-  longitude: number;
-  color: string;
-  score: number;
+    id: number;
+    latitude: number;
+    longitude: number;
+    color: string;
+    score: number;
 }
 
 interface Post extends Marker {
-  title: string;
-  address: string;
-  date: Date | string;
-  description: string;
-  imageUris: ImageUri[];
-  isFavorite?: boolean;
+    title: string;
+    address: string;
+    date: Date | string;
+    description: string;
+    imageUris: ImageUri[];
+    isFavorite?: boolean;
 }
 
 interface Profile {
-  id: number;
-  email: string;
-  nickname: string | null;
-  imageUri: string | null;
-  loginType: 'email' | 'kakao' | 'apple';
+    id: number;
+    email: string;
+    nickname: string | null;
+    imageUri: string | null;
+    loginType: 'email' | 'kakao' | 'apple';
 }
 ```
 
@@ -90,8 +90,8 @@ interface Profile {
 
 ```js
 {
-  email: string;
-  password: string;
+    email: string;
+    password: string;
 }
 ```
 
@@ -99,8 +99,8 @@ interface Profile {
 
 ```js
 {
-  accessToken: string;
-  refreshToken: string;
+    accessToken: string;
+    refreshToken: string;
 }
 ```
 
@@ -116,8 +116,8 @@ Authorization: `Bearer ${refreshToken}`;
 
 ```js
 {
-  accessToken: string;
-  refreshToken: string;
+    accessToken: string;
+    refreshToken: string;
 }
 ```
 
@@ -157,7 +157,7 @@ Authorization: `Bearer ${accessToken}`;
 
 ```js
 {
-  message: string;
+    message: string;
 }
 ```
 
@@ -167,7 +167,7 @@ Authorization: `Bearer ${accessToken}`;
 
 ```js
 {
-  token: string;
+    token: string;
 }
 ```
 
@@ -175,8 +175,8 @@ Authorization: `Bearer ${accessToken}`;
 
 ```js
 {
-  accessToken: string;
-  refreshToken: string;
+    accessToken: string;
+    refreshToken: string;
 }
 ```
 
@@ -186,9 +186,9 @@ Authorization: `Bearer ${accessToken}`;
 
 ```js
 {
-  identityToken: string;
-  appId: string;
-  nickname: string | null;
+    identityToken: string;
+    appId: string;
+    nickname: string | null;
 }
 ```
 
@@ -196,8 +196,8 @@ Authorization: `Bearer ${accessToken}`;
 
 ```js
 {
-  accessToken: string;
-  refreshToken: string;
+    accessToken: string;
+    refreshToken: string;
 }
 ```
 
@@ -219,7 +219,7 @@ Marker[]
 
 ```ts
 {
-  id: number;
+    id: number;
 }
 ```
 
@@ -237,7 +237,7 @@ type ResponseSinglePost = ResponsePost & { isFavorite: boolean };
 
 ```ts
 {
-  id: number;
+    id: number;
 }
 ```
 
@@ -247,7 +247,7 @@ type ResponseSinglePost = ResponsePost & { isFavorite: boolean };
 
 ```js
 {
-  page: number;
+    page: number;
 }
 ```
 
@@ -272,7 +272,7 @@ type RequestCreatePost = Omit<Post, 'id'>;
 
 ```ts
 {
-  id: number;
+    id: number;
 }
 ```
 
@@ -280,10 +280,10 @@ type RequestCreatePost = Omit<Post, 'id'>;
 
 ```ts
 type RequestUpdatePost = {
-  id: number;
-  body: Omit<Post, 'id' | 'longitude' | 'latitude' | 'address'> & {
-    imageUris: ImageUri[];
-  };
+    id: number;
+    body: Omit<Post, 'id' | 'longitude' | 'latitude' | 'address'> & {
+        imageUris: ImageUri[];
+    };
 };
 ```
 
@@ -299,8 +299,8 @@ type ResponseSinglePost = ResponsePost & { isFavorite: boolean };
 
 ```ts
 {
-  year: number;
-  month: number;
+    year: number;
+    month: number;
 }
 ```
 
@@ -322,7 +322,7 @@ type ResponseCalendarPost = Record<number, CalendarPost[]>;
 
 ```ts
 {
-  page: number;
+    page: number;
 }
 ```
 
@@ -332,7 +332,7 @@ type ResponseCalendarPost = Record<number, CalendarPost[]>;
 
 ```ts
 {
-  id: number;
+    id: number;
 }
 ```
 
@@ -340,7 +340,7 @@ type ResponseCalendarPost = Record<number, CalendarPost[]>;
 
 ```ts
 {
-  id: number;
+    id: number;
 }
 ```
 

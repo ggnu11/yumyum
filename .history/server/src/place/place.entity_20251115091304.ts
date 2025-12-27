@@ -1,0 +1,64 @@
+import {
+    BaseEntity,
+    Column,
+    CreateDateColumn,
+    DeleteDateColumn,
+    Entity,
+    OneToMany,
+    PrimaryGeneratedColumn,
+    Unique,
+    UpdateDateColumn,
+    Check,
+} from 'typeorm';
+import { WishList } from 'src/wish-list/wish-list.entity';
+
+@Entity()
+export class Place extends BaseEntity {
+    @PrimaryGeneratedColumn()
+    yumyum_place_id: number;
+
+    @Column({ nullable: true })
+    place_id: number;
+
+    @Column({ nullable: true })
+    place_name: string;
+
+    @Column({ nullable: true })
+    address_name: string;
+
+    @Column({ nullable: true })
+    phone_number: string;
+
+    @Column({ nullable: true })
+    place_url: string;
+
+    @Column({ nullable: true })
+    category: string;
+
+    @Column('double precision')
+    latitude: number;
+
+    @Column('double precision')
+    longitude: number;
+
+    @CreateDateColumn()
+    created_at: Date;
+
+    @UpdateDateColumn()
+    updated_at: Date;
+
+    @Column({ default: 'kakao_api' })
+    created_by: string;
+
+    @Column({ nullable: true, type: 'json' })
+    extraData?: Record<string, any>;
+
+    @OneToMany(() => WishList, (wishList) => wishList.user, { eager: false })
+    wishList: WishList[];
+
+    @OneToMany(() => Pin, (pin) => pin.place)
+    pins: Pin[];
+
+    @OneToMany(() => VisitReview, (review) => review.place)
+    visitReviews: VisitReview[];
+}
