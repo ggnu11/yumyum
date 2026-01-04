@@ -1,4 +1,3 @@
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import {
   Controller,
   Post,
@@ -8,14 +7,18 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { basename, extname } from 'path';
+import { createClient } from '@supabase/supabase-js';
 import { numbers } from 'src/@common/contants';
 import { getUniqueFileName } from 'src/@common/utils';
 
 @Controller('images')
 @UseGuards(AuthGuard())
 export class ImageController {
+  private supabase = createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
+
   @UseInterceptors(
     FilesInterceptor('images', numbers.MAX_IMAGE_COUNT, {
       limits: { fileSize: numbers.MAX_IAMGE_SIZE },
@@ -23,34 +26,36 @@ export class ImageController {
   )
   @Post('/')
   async uploadImages(@UploadedFiles() files: Express.Multer.File[]) {
-    const s3Client = new S3Client({
-      region: process.env.AWS_BUCKET_REGION,
-      credentials: {
-        accessKeyId: process.env.S3_ACCESS_KEY_ID,
-        secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
-      },
-    });
-
+    const bucketName = process.env.SUPABASE_BUCKET_NAME || 'images';
     const uuid = Date.now();
 
-    const uploadPromises = files.map((file) => {
+    const uploadPromises = files.map(async (file) => {
       const fileName = getUniqueFileName(file, uuid);
-      const uploadParams = {
-        Bucket: process.env.AWS_BUCKET_NAME,
-        Key: `original/${fileName}`,
-        Body: file.buffer,
-      };
-      const command = new PutObjectCommand(uploadParams);
+      const filePath = `original/${fileName}`;
 
-      return s3Client.send(command);
+      const { error } = await this.supabase.storage
+        .from(bucketName)
+        .upload(filePath, file.buffer, {
+          contentType: file.mimetype,
+          upsert: false,
+        });
+
+      if (error) {
+        throw new Error(`Failed to upload image: ${error.message}`);
+      }
+
+      return filePath;
     });
 
-    await Promise.all(uploadPromises);
+    const filePaths = await Promise.all(uploadPromises);
 
-    const uris = files.map((file) => {
-      const fileName = getUniqueFileName(file, uuid);
+    // Public URL 생성
+    const uris = filePaths.map((filePath) => {
+      const {
+        data: { publicUrl },
+      } = this.supabase.storage.from(bucketName).getPublicUrl(filePath);
 
-      return `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_BUCKET_REGION}.amazonaws.com/original/${fileName}`;
+      return publicUrl;
     });
 
     return uris;
