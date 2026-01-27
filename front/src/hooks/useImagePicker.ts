@@ -4,7 +4,6 @@ import Toast from 'react-native-toast-message';
 
 import useMutateImages from '@/hooks/queries/useMutateImages';
 import {ImageUri} from '@/types/domain';
-import {getFormDataImages} from '@/utils/image';
 import {Alert} from 'react-native';
 
 interface UseImagePickerProps {
@@ -48,8 +47,7 @@ function useImagePicker({
     })
       .then(images => {
         const imageArray = Array.isArray(images) ? images : [images];
-        const formData = getFormDataImages('images', imageArray);
-        uploadImages.mutate(formData, {
+        uploadImages.mutate(imageArray, {
           onSuccess: data =>
             mode === 'multiple' ? addImageUris(data) : replaceImageUri(data),
           onSettled: () => onSettled && onSettled(),

@@ -1,10 +1,26 @@
 import {Marker} from '@/types/domain';
-import axiosInstance from './axios';
+import {supabase} from './supabase';
 
 async function getMarkers(): Promise<Marker[]> {
-  const {data} = await axiosInstance.get('/markers');
+  const {
+    data: {user},
+    error: authError,
+  } = await supabase.auth.getUser();
 
-  return data;
+  if (authError || !user) {
+    throw authError || new Error('인증이 필요합니다.');
+  }
+
+  const {data: posts, error} = await supabase
+    .from('posts')
+    .select('id, latitude, longitude, color, score')
+    .eq('userId', user.id);
+
+  if (error) {
+    throw error;
+  }
+
+  return (posts || []) as Marker[];
 }
 
 export {getMarkers};
