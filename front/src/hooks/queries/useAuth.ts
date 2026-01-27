@@ -4,7 +4,6 @@ import {useEffect} from 'react';
 import {
   appleLogin,
   editProfile,
-  getAccessToken,
   getProfile,
   kakaoLogin,
   naverLogin,
@@ -14,6 +13,7 @@ import {
   ResponseToken,
   withdrawUser,
 } from '@/api/auth';
+import {supabase} from '@/api/supabase';
 import queryClient from '@/api/queryClient';
 import {queryKeys, storageKeys} from '@/constants/keys';
 import {numbers} from '@/constants/numbers';
@@ -65,21 +65,39 @@ function useAppleLogin(mutationOptions?: UseMutationCustomOptions) {
 }
 
 function useGetRefreshToken() {
+  // Supabase는 자동으로 세션을 관리하므로, 세션 확인만 하면 됨
   const {data, isSuccess, isError} = useQuery({
     queryKey: [queryKeys.AUTH, queryKeys.GET_ACCESS_TOKEN],
-    queryFn: getAccessToken,
+    queryFn: async () => {
+      const {
+        data: {session},
+        error,
+      } = await supabase.auth.getSession();
+
+      if (error || !session) {
+        throw error || new Error('세션이 없습니다.');
+      }
+
+      return {
+        accessToken: session.access_token,
+        refreshToken: session.refresh_token,
+      };
+    },
     staleTime: numbers.ACCESS_TOKEN_REFRESH_TIME,
     refetchInterval: numbers.ACCESS_TOKEN_REFRESH_TIME,
+    retry: false,
   });
 
   useEffect(() => {
     (async () => {
-      if (isSuccess) {
+      if (isSuccess && data) {
+        // Supabase는 자동으로 헤더를 관리하므로 별도 설정 불필요
+        // 하지만 기존 코드와의 호환성을 위해 유지
         setHeader('Authorization', `Bearer ${data.accessToken}`);
         await setEncryptStorage(storageKeys.REFRESH_TOKEN, data.refreshToken);
       }
     })();
-  }, [isSuccess]);
+  }, [isSuccess, data]);
 
   useEffect(() => {
     (async () => {
@@ -97,6 +115,7 @@ function useGetProfile(queryOptions?: UseQueryCustomOptions<Profile>) {
   return useQuery({
     queryFn: getProfile,
     queryKey: [queryKeys.AUTH, queryKeys.GET_PROFILE],
+    retry: false,
     ...queryOptions,
   });
 }
@@ -107,7 +126,7 @@ function useLogout(mutationOptions?: UseMutationCustomOptions) {
     onSuccess: async () => {
       removeHeader('Authorization');
       await removeEncryptStorage(storageKeys.REFRESH_TOKEN);
-      queryClient.resetQueries({queryKey: [queryKeys.AUTH]});
+      queryClient.removeQueries({queryKey: [queryKeys.AUTH]});
     },
     ...mutationOptions,
   });
@@ -132,7 +151,7 @@ function useWithdrawUser(mutationOptions?: UseMutationCustomOptions) {
     onSuccess: async () => {
       removeHeader('Authorization');
       await removeEncryptStorage(storageKeys.REFRESH_TOKEN);
-      queryClient.resetQueries({queryKey: [queryKeys.AUTH]});
+      queryClient.removeQueries({queryKey: [queryKeys.AUTH]});
     },
     ...mutationOptions,
   });

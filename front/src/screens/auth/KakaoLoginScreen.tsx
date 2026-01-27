@@ -7,7 +7,7 @@ import Config from 'react-native-config';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import WebView, {WebViewNavigation} from 'react-native-webview';
 
-const REDIRECT_URI = Config.KAKAO_REDIRECT_URI;
+const REDIRECT_URI = `http://localhost:3030/auth/oauth/kakao`;
 
 function KakaoLoginScreen() {
   const {kakaoLoginMutation} = useAuth();
@@ -20,6 +20,7 @@ function KakaoLoginScreen() {
       params: {
         grant_type: 'authorization_code',
         client_id: Config.KAKAO_REST_API_KEY,
+        client_secret: Config.KAKAO_CLIENT_SECRET,
         redirect_uri: REDIRECT_URI,
         code,
       },

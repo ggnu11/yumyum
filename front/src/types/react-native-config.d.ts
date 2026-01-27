@@ -2,11 +2,12 @@ declare module 'react-native-config' {
   export interface NativeConfig {
     GOOGLE_MAP_API_KEY?: string;
     KAKAO_REST_API_KEY?: string;
-    KAKAO_REDIRECT_URI?: string;
+    KAKAO_CLIENT_SECRET?: string;
     NAVER_CLIENT_ID?: string;
     NAVER_CLIENT_SECRET?: string;
     NAVER_URL_SCHEME?: string;
-    API_BASE_URL?: string;
+    SUPABASE_URL?: string;
+    SUPABASE_ANON_KEY?: string;
   }
 
   export const Config: NativeConfig;

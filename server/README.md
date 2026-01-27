@@ -14,20 +14,48 @@ npm install
 
 2. 환경 변수 설정
 
-`[YOUR_USERNAME]` 부분 추가하여 `.env` 파일을 server 폴더 루트에 추가해주세요.
+`.env` 파일을 server 폴더 루트에 추가해주세요.
 
 ```
+# Server
 PORT=3030
-DB_USERNAME=[YOUR_USERNAME]
-DB_PASSWORD=postgres
-DB_DATABASE=matzip-app
-DB_HOST=localhost
+
+# Database (Supabase PostgreSQL)
+DB_USERNAME=[YOUR_SUPABASE_DB_USERNAME]
+DB_PASSWORD=[YOUR_SUPABASE_DB_PASSWORD]
+DB_DATABASE=postgres
+DB_HOST=[YOUR_SUPABASE_DB_HOST]
+DB_PORT=5432
+
+# JWT
 JWT_SECRET=SecretMatzip
 JWT_ACCESS_TOKEN_EXPIRATION=30m
 JWT_REFRESH_TOKEN_EXPIRATION=30d
+
+# Supabase Storage
+SUPABASE_URL=https://[YOUR_PROJECT_REF].supabase.co
+SUPABASE_SERVICE_ROLE_KEY=[YOUR_SERVICE_ROLE_KEY]
+SUPABASE_BUCKET_NAME=images
 ```
 
-3. 개발 환경 실행
+### Supabase 설정 방법
+
+1. [Supabase](https://supabase.com)에서 프로젝트 생성
+2. **Database 설정**:
+   - Settings > Database에서 연결 정보 확인
+   - `DB_HOST`: Connection string의 호스트 부분
+   - `DB_USERNAME`: postgres (기본값)
+   - `DB_PASSWORD`: Database password
+   - `DB_DATABASE`: postgres (기본값)
+
+3. **Storage 설정**:
+   - Storage 메뉴에서 새 버킷 생성 (이름: `images`)
+   - 버킷을 Public으로 설정 (이미지 공개 접근 필요 시)
+   - Settings > API에서 다음 정보 확인:
+     - `SUPABASE_URL`: Project URL
+     - `SUPABASE_SERVICE_ROLE_KEY`: service_role key (서버 사이드 전용)
+
+4. 개발 환경 실행
 
 ```
 npm run start:dev
