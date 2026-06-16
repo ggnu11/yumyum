@@ -1,6 +1,16 @@
 import Ionicons from '@react-native-vector-icons/ionicons';
-import {createContext, PropsWithChildren, ReactNode, useContext} from 'react';
 import {
+  createContext,
+  PropsWithChildren,
+  ReactNode,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import {
+  Animated,
+  Dimensions,
   GestureResponderEvent,
   Modal,
   ModalProps,
@@ -17,11 +27,14 @@ import useThemeStore, {Theme} from '@/store/theme';
 
 interface ActionSheetContextValue {
   onPressOutSide?: (event: GestureResponderEvent) => void;
+  slideAnim: Animated.Value;
 }
 
 const ActionSheetContext = createContext<ActionSheetContextValue | undefined>(
   undefined,
 );
+
+const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 interface ActionMainProps extends ModalProps {
   children: ReactNode;
@@ -33,10 +46,32 @@ interface ActionMainProps extends ModalProps {
 function ActionMain({
   children,
   isVisible,
-  animationType = 'slide',
   hideAction,
   ...props
 }: ActionMainProps) {
+  const [modalVisible, setModalVisible] = useState(isVisible);
+  const slideAnim = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
+
+  useEffect(() => {
+    if (isVisible) {
+      setModalVisible(true);
+      Animated.spring(slideAnim, {
+        toValue: 0,
+        useNativeDriver: true,
+        damping: 20,
+        stiffness: 200,
+      }).start();
+    } else if (modalVisible) {
+      Animated.timing(slideAnim, {
+        toValue: SCREEN_HEIGHT,
+        duration: 250,
+        useNativeDriver: true,
+      }).start(() => {
+        setModalVisible(false);
+      });
+    }
+  }, [isVisible]);
+
   const onPressOutSide = (event: GestureResponderEvent) => {
     if (event.target === event.currentTarget) {
       hideAction();
@@ -45,12 +80,12 @@ function ActionMain({
 
   return (
     <Modal
-      visible={isVisible}
+      visible={modalVisible}
       transparent
-      animationType={animationType}
+      animationType="fade"
       onRequestClose={hideAction}
       {...props}>
-      <ActionSheetContext value={{onPressOutSide}}>
+      <ActionSheetContext value={{onPressOutSide, slideAnim}}>
         {children}
       </ActionSheetContext>
     </Modal>
@@ -66,7 +101,10 @@ function Background({children}: PropsWithChildren) {
     <SafeAreaView
       style={styles.actionBackground}
       onTouchEnd={actionSheetContext?.onPressOutSide}>
-      {children}
+      <Animated.View
+        style={{transform: [{translateY: actionSheetContext?.slideAnim ?? 0}]}}>
+        {children}
+      </Animated.View>
     </SafeAreaView>
   );
 }

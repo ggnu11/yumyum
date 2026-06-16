@@ -133,22 +133,10 @@ async function editProfile(body: RequestProfile): Promise<Profile> {
 }
 
 async function withdrawUser(): Promise<{message: string}> {
-  const {
-    data: {user},
-    error: authError,
-  } = await supabase.auth.getUser();
+  const {error} = await supabase.rpc('delete_user');
 
-  if (authError || !user) {
-    throw authError || new Error('사용자를 찾을 수 없습니다.');
-  }
-
-  const {error: deleteError} = await supabase
-    .from('users')
-    .delete()
-    .eq('id', user.id);
-
-  if (deleteError) {
-    throw deleteError;
+  if (error) {
+    throw error;
   }
 
   await supabase.auth.signOut();
