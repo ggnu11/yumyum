@@ -69,10 +69,9 @@ async function getPost(id: number): Promise<Post> {
     throw authError || new Error('인증이 필요합니다.');
   }
 
-  // Post 가져오기
   const {data: post, error: postError} = await supabase
     .from('posts')
-    .select('*')
+    .select('*, images(id, uri), favorites!left(id)')
     .eq('id', id)
     .eq('userId', user.id)
     .single();
@@ -81,25 +80,10 @@ async function getPost(id: number): Promise<Post> {
     throw postError;
   }
 
-  // Images 가져오기
-  const {data: images} = await supabase
-    .from('images')
-    .select('*')
-    .eq('postId', id)
-    .order('id');
-
-  // Favorite 확인
-  const {data: favorite} = await supabase
-    .from('favorites')
-    .select('id')
-    .eq('postId', id)
-    .eq('userId', user.id)
-    .single();
-
   return {
     ...post,
-    imageUris: (images || []).map(img => ({id: img.id, uri: img.uri})),
-    isFavorite: !!favorite,
+    imageUris: (post.images || []).map((img: any) => ({id: img.id, uri: img.uri})),
+    isFavorite: (post.favorites || []).length > 0,
   };
 }
 
@@ -119,7 +103,7 @@ async function getPosts(page = 1): Promise<Post[]> {
 
   const {data: posts, error: postsError} = await supabase
     .from('posts')
-    .select('*')
+    .select('*, images(id, uri)')
     .eq('userId', user.id)
     .order('date', {ascending: false})
     .range(from, to);
@@ -128,23 +112,10 @@ async function getPosts(page = 1): Promise<Post[]> {
     throw postsError;
   }
 
-  // 각 포스트의 이미지 가져오기
-  const postsWithImages = await Promise.all(
-    (posts || []).map(async post => {
-      const {data: images} = await supabase
-        .from('images')
-        .select('*')
-        .eq('postId', post.id)
-        .order('id');
-
-      return {
-        ...post,
-        imageUris: (images || []).map(img => ({id: img.id, uri: img.uri})),
-      };
-    }),
-  );
-
-  return postsWithImages;
+  return (posts || []).map(post => ({
+    ...post,
+    imageUris: (post.images || []).map((img: any) => ({id: img.id, uri: img.uri})),
+  }));
 }
 
 async function deletePost(id: number) {
@@ -263,7 +234,7 @@ async function getFavoritePosts(page = 1): Promise<Post[]> {
 
   const {data: posts, error: postsError} = await supabase
     .from('posts')
-    .select('*')
+    .select('*, images(id, uri)')
     .in('id', postIds)
     .order('date', {ascending: false});
 
@@ -271,24 +242,11 @@ async function getFavoritePosts(page = 1): Promise<Post[]> {
     throw postsError;
   }
 
-  // 각 포스트의 이미지 가져오기
-  const postsWithImages = await Promise.all(
-    (posts || []).map(async post => {
-      const {data: images} = await supabase
-        .from('images')
-        .select('*')
-        .eq('postId', post.id)
-        .order('id');
-
-      return {
-        ...post,
-        imageUris: (images || []).map(img => ({id: img.id, uri: img.uri})),
-        isFavorite: true,
-      };
-    }),
-  );
-
-  return postsWithImages;
+  return (posts || []).map(post => ({
+    ...post,
+    imageUris: (post.images || []).map((img: any) => ({id: img.id, uri: img.uri})),
+    isFavorite: true,
+  }));
 }
 
 async function updateFavoritePost(id: number): Promise<number> {

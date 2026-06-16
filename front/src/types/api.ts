@@ -3,13 +3,8 @@ import {
   UseMutationOptions,
   UseQueryOptions,
 } from '@tanstack/react-query';
-import {AxiosError} from 'axios';
 
-type ResponseError = AxiosError<{
-  statusCode: number;
-  message: string;
-  error: string;
-}>;
+type ResponseError = Error;
 
 type UseMutationCustomOptions<TData = unknown, TVariables = unknown> = Omit<
   UseMutationOptions<TData, ResponseError, TVariables, unknown>,

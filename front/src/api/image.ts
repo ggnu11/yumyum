@@ -12,7 +12,7 @@ async function uploadImages(images: Image[]): Promise<string[]> {
   }
 
   const bucketName = 'images';
-  const uuid = Date.now();
+  const uuid = crypto.randomUUID();
   const uploadPromises = images.map(async (image, index) => {
     // React Native의 이미지 URI를 Blob으로 변환
     const response = await fetch(image.path);

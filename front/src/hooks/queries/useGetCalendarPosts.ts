@@ -2,6 +2,7 @@ import {keepPreviousData, useQuery} from '@tanstack/react-query';
 
 import {getCalendarPosts, ResponseCalendarPost} from '@/api/post';
 import {queryKeys} from '@/constants/keys';
+import {numbers} from '@/constants/numbers';
 import {UseQueryCustomOptions} from '@/types/api';
 
 function useGetCalendarPosts(
@@ -18,6 +19,7 @@ function useGetCalendarPosts(
       year,
       month,
     ],
+    staleTime: numbers.DEFAULT_STALE_TIME,
     placeholderData: keepPreviousData,
     ...queryOptions,
   });

@@ -1,14 +1,11 @@
-import {MutationFunction, useMutation, useQuery} from '@tanstack/react-query';
+import {useMutation, useQuery} from '@tanstack/react-query';
 import {useEffect} from 'react';
 
 import {
   appleLogin,
   editProfile,
   getProfile,
-  googleLogin,
   logout,
-  postLogin,
-  postSignup,
   ResponseToken,
   withdrawUser,
 } from '@/api/auth';
@@ -19,48 +16,22 @@ import {numbers} from '@/constants/numbers';
 import {UseMutationCustomOptions, UseQueryCustomOptions} from '@/types/api';
 import {Profile} from '@/types/domain';
 import {removeEncryptStorage, setEncryptStorage} from '@/utils/encryptStorage';
-import {removeHeader, setHeader} from '@/utils/header';
 
-function useSignup(mutationOptions?: UseMutationCustomOptions) {
+function useAppleLogin(mutationOptions?: UseMutationCustomOptions) {
   return useMutation({
-    mutationFn: postSignup,
-    throwOnError: error => Number(error.response?.status) >= 500,
-    ...mutationOptions,
-  });
-}
-
-function useLogin<T>(
-  loginAPI: MutationFunction<ResponseToken, T>,
-  mutationOptions?: UseMutationCustomOptions,
-) {
-  return useMutation({
-    mutationFn: loginAPI,
-    onSuccess: async ({accessToken, refreshToken}) => {
-      setHeader('Authorization', `Bearer ${accessToken}`);
+    mutationFn: appleLogin,
+    onSuccess: async ({refreshToken}) => {
       await setEncryptStorage(storageKeys.REFRESH_TOKEN, refreshToken);
       await queryClient.invalidateQueries({
         queryKey: [queryKeys.AUTH],
       });
     },
-    throwOnError: error => Number(error.response?.status) >= 500,
+    throwOnError: true,
     ...mutationOptions,
   });
 }
 
-function useEmailLogin(mutationOptions?: UseMutationCustomOptions) {
-  return useLogin(postLogin, mutationOptions);
-}
-
-function useGoogleLogin(mutationOptions?: UseMutationCustomOptions) {
-  return useLogin(googleLogin, mutationOptions);
-}
-
-function useAppleLogin(mutationOptions?: UseMutationCustomOptions) {
-  return useLogin(appleLogin, mutationOptions);
-}
-
 function useGetRefreshToken() {
-  // Supabase는 자동으로 세션을 관리하므로, 세션 확인만 하면 됨
   const {data, isSuccess, isError} = useQuery({
     queryKey: [queryKeys.AUTH, queryKeys.GET_ACCESS_TOKEN],
     queryFn: async () => {
@@ -86,9 +57,6 @@ function useGetRefreshToken() {
   useEffect(() => {
     (async () => {
       if (isSuccess && data) {
-        // Supabase는 자동으로 헤더를 관리하므로 별도 설정 불필요
-        // 하지만 기존 코드와의 호환성을 위해 유지
-        setHeader('Authorization', `Bearer ${data.accessToken}`);
         await setEncryptStorage(storageKeys.REFRESH_TOKEN, data.refreshToken);
       }
     })();
@@ -97,7 +65,6 @@ function useGetRefreshToken() {
   useEffect(() => {
     (async () => {
       if (isError) {
-        removeHeader('Authorization');
         await removeEncryptStorage(storageKeys.REFRESH_TOKEN);
       }
     })();
@@ -119,7 +86,6 @@ function useLogout(mutationOptions?: UseMutationCustomOptions) {
   return useMutation({
     mutationFn: logout,
     onSuccess: async () => {
-      removeHeader('Authorization');
       await removeEncryptStorage(storageKeys.REFRESH_TOKEN);
       queryClient.removeQueries({queryKey: [queryKeys.AUTH]});
     },
@@ -144,7 +110,6 @@ function useWithdrawUser(mutationOptions?: UseMutationCustomOptions) {
   return useMutation({
     mutationFn: withdrawUser,
     onSuccess: async () => {
-      removeHeader('Authorization');
       await removeEncryptStorage(storageKeys.REFRESH_TOKEN);
       queryClient.removeQueries({queryKey: [queryKeys.AUTH]});
     },
@@ -153,9 +118,6 @@ function useWithdrawUser(mutationOptions?: UseMutationCustomOptions) {
 }
 
 function useAuth() {
-  const signupMutation = useSignup();
-  const loginMutation = useEmailLogin();
-  const googleLoginMutation = useGoogleLogin();
   const appleLoginMutation = useAppleLogin();
   const refreshTokenQuery = useGetRefreshToken();
   const {data, isSuccess: isLogin} = useGetProfile({
@@ -173,9 +135,6 @@ function useAuth() {
       imageUri: data?.imageUri || '',
       loginType: data?.loginType || 'email',
     },
-    signupMutation,
-    loginMutation,
-    googleLoginMutation,
     appleLoginMutation,
     isLogin,
     logoutMutation,

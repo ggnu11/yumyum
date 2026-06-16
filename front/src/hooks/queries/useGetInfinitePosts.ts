@@ -7,6 +7,7 @@ import {
 
 import {getPosts} from '@/api/post';
 import {queryKeys} from '@/constants/keys';
+import {numbers} from '@/constants/numbers';
 import {ResponseError} from '@/types/api';
 import {Post} from '@/types/domain';
 
@@ -22,6 +23,7 @@ function useGetInfinitePosts(
   return useSuspenseInfiniteQuery({
     queryFn: ({pageParam}) => getPosts(pageParam),
     queryKey: [queryKeys.POST, queryKeys.GET_POSTS],
+    staleTime: numbers.DEFAULT_STALE_TIME,
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
       const lastPost = lastPage[lastPage.length - 1];

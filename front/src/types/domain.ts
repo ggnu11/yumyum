@@ -21,7 +21,7 @@ interface Post extends Marker {
 }
 
 interface Profile {
-  id: number;
+  id: string;
   email: string;
   nickname: string | null;
   imageUri: string | null;
