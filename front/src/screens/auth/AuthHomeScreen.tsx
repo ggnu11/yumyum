@@ -1,8 +1,7 @@
 import appleAuth, {
   AppleButton,
 } from '@invertase/react-native-apple-authentication';
-import {useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {
   Dimensions,
   Image,
@@ -11,20 +10,25 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
+import Config from 'react-native-config';
+import {supabase} from '@/api/supabase';
 
 import CustomButton from '@/components/common/CustomButton';
+import queryClient from '@/api/queryClient';
 import {colors} from '@/constants/colors';
+import {queryKeys} from '@/constants/keys';
 import useAuth from '@/hooks/queries/useAuth';
 import useThemeStore, {Theme} from '@/store/theme';
-import {AuthStackParamList} from '@/types/navigation';
 import Toast from 'react-native-toast-message';
 
-type Navigation = StackNavigationProp<AuthStackParamList>;
+GoogleSignin.configure({
+  iosClientId: Config.GOOGLE_IOS_CLIENT_ID,
+  webClientId: Config.GOOGLE_CLIENT_ID,
+});
 
 function AuthHomeScreen() {
   const {theme} = useThemeStore();
   const styles = styling(theme);
-  const navigation = useNavigation<Navigation>();
   const {appleLoginMutation} = useAuth();
 
   const handleAppleLogin = async () => {
@@ -53,8 +57,7 @@ function AuthHomeScreen() {
               Toast.show({
                 type: 'error',
                 text1: '애플 로그인이 실패했습니다.',
-                text2:
-                  error.response?.data?.message || '나중에 다시 시도해주세요',
+                text2: error?.message || '나중에 다시 시도해주세요',
               });
             },
           },
@@ -66,6 +69,43 @@ function AuthHomeScreen() {
           type: 'error',
           text1: '애플 로그인이 실패했습니다.',
           text2: '나중에 다시 시도해주세요',
+        });
+      }
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const response = await GoogleSignin.signIn();
+
+      if (response.type === 'success' && response.data.idToken) {
+        const {error} = await supabase.auth.signInWithIdToken({
+          provider: 'google',
+          token: response.data.idToken,
+        });
+
+        if (error) {
+          Toast.show({
+            type: 'error',
+            text1: '구글 로그인이 실패했습니다.',
+            text2: error.message || '나중에 다시 시도해주세요',
+          });
+        } else {
+          await queryClient.invalidateQueries({queryKey: [queryKeys.AUTH]});
+          Toast.show({
+            type: 'success',
+            text1: '구글 로그인 성공',
+            text2: '환영합니다!',
+          });
+        }
+      }
+    } catch (error: any) {
+      if (error.code !== 'SIGN_IN_CANCELLED') {
+        Toast.show({
+          type: 'error',
+          text1: '구글 로그인이 실패했습니다.',
+          text2: error?.message || '나중에 다시 시도해주세요',
         });
       }
     }
@@ -94,16 +134,10 @@ function AuthHomeScreen() {
           />
         )}
         <CustomButton
-          label="카카오 로그인"
-          style={styles.kakaoButtonContainer}
-          textStyle={styles.kakaoButtonText}
-          onPress={() => navigation.navigate('KakaoLogin')}
-        />
-        <CustomButton
-          label="네이버 로그인"
-          style={styles.naverButtonContainer}
-          textStyle={styles.naverButtonText}
-          onPress={() => navigation.navigate('NaverLogin')}
+          label="Google 로그인"
+          style={styles.googleButtonContainer}
+          textStyle={styles.googleButtonText}
+          onPress={handleGoogleLogin}
         />
       </View>
     </SafeAreaView>
@@ -129,17 +163,13 @@ const styling = (theme: Theme) =>
       paddingHorizontal: 30,
       gap: 5,
     },
-    kakaoButtonContainer: {
-      backgroundColor: '#fee503',
+    googleButtonContainer: {
+      backgroundColor: '#FFFFFF',
+      borderWidth: 1,
+      borderColor: colors[theme].GRAY_500,
     },
-    kakaoButtonText: {
-      color: '#181600',
-    },
-    naverButtonContainer: {
-      backgroundColor: '#03C75A',
-    },
-    naverButtonText: {
-      color: '#FFFFFF',
+    googleButtonText: {
+      color: '#000000',
     },
     appleButton: {
       width: Dimensions.get('screen').width,

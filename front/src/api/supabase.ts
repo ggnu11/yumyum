@@ -13,15 +13,28 @@ if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
 }
 
 // EncryptedStorage를 Supabase Auth storage로 사용
+// getItem/setItem/removeItem에서 예외가 나면 GoTrueClient·autoRefresh가 실패하므로 모두 try-catch 처리
 const customStorage = {
   getItem: async (key: string) => {
-    return await EncryptedStorage.getItem(key);
+    try {
+      return await EncryptedStorage.getItem(key);
+    } catch {
+      return null;
+    }
   },
   setItem: async (key: string, value: string) => {
-    await EncryptedStorage.setItem(key, value);
+    try {
+      await EncryptedStorage.setItem(key, value);
+    } catch {
+      // Keychain 오류 시 무시 (세션 저장 실패해도 앱이 죽지 않도록)
+    }
   },
   removeItem: async (key: string) => {
-    await EncryptedStorage.removeItem(key);
+    try {
+      await EncryptedStorage.removeItem(key);
+    } catch {
+      // 키 없음 또는 Keychain 오류 시 무시 (세션 정리·auto refresh 실패 방지)
+    }
   },
 };
 

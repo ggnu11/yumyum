@@ -5,8 +5,7 @@ import {
   appleLogin,
   editProfile,
   getProfile,
-  kakaoLogin,
-  naverLogin,
+  googleLogin,
   logout,
   postLogin,
   postSignup,
@@ -52,12 +51,8 @@ function useEmailLogin(mutationOptions?: UseMutationCustomOptions) {
   return useLogin(postLogin, mutationOptions);
 }
 
-function useKakaoLogin(mutationOptions?: UseMutationCustomOptions) {
-  return useLogin(kakaoLogin, mutationOptions);
-}
-
-function useNaverLogin(mutationOptions?: UseMutationCustomOptions) {
-  return useLogin(naverLogin, mutationOptions);
+function useGoogleLogin(mutationOptions?: UseMutationCustomOptions) {
+  return useLogin(googleLogin, mutationOptions);
 }
 
 function useAppleLogin(mutationOptions?: UseMutationCustomOptions) {
@@ -160,8 +155,7 @@ function useWithdrawUser(mutationOptions?: UseMutationCustomOptions) {
 function useAuth() {
   const signupMutation = useSignup();
   const loginMutation = useEmailLogin();
-  const kakaoLoginMutation = useKakaoLogin();
-  const naverLoginMutation = useNaverLogin();
+  const googleLoginMutation = useGoogleLogin();
   const appleLoginMutation = useAppleLogin();
   const refreshTokenQuery = useGetRefreshToken();
   const {data, isSuccess: isLogin} = useGetProfile({
@@ -181,8 +175,7 @@ function useAuth() {
     },
     signupMutation,
     loginMutation,
-    kakaoLoginMutation,
-    naverLoginMutation,
+    googleLoginMutation,
     appleLoginMutation,
     isLogin,
     logoutMutation,

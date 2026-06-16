@@ -69,42 +69,17 @@ async function postLogin({
   };
 }
 
-async function kakaoLogin(token: string): Promise<ResponseToken> {
-  // Supabase는 직접 OAuth를 지원하지만, Kakao는 커스텀 구현 필요
-  // 일단 서버를 통해 처리하거나, Supabase의 OAuth provider 설정 필요
+async function googleLogin(idToken: string): Promise<ResponseToken> {
   const {data, error} = await supabase.auth.signInWithIdToken({
-    provider: 'kakao',
-    token,
+    provider: 'google',
+    token: idToken,
   });
-
   if (error) {
     throw error;
   }
-
   if (!data.session) {
     throw new Error('세션이 생성되지 않았습니다.');
   }
-
-  return {
-    accessToken: data.session.access_token,
-    refreshToken: data.session.refresh_token,
-  };
-}
-
-async function naverLogin(token: string): Promise<ResponseToken> {
-  const {data, error} = await supabase.auth.signInWithIdToken({
-    provider: 'naver',
-    token,
-  });
-
-  if (error) {
-    throw error;
-  }
-
-  if (!data.session) {
-    throw new Error('세션이 생성되지 않았습니다.');
-  }
-
   return {
     accessToken: data.session.access_token,
     refreshToken: data.session.refresh_token,
@@ -118,23 +93,39 @@ type RequestAppleIdentity = {
 };
 
 async function appleLogin(body: RequestAppleIdentity): Promise<ResponseToken> {
+  console.log('[소셜/auth] appleLogin 호출', {
+    identityTokenLength: body?.identityToken?.length,
+    appId: body?.appId,
+  });
   const {data, error} = await supabase.auth.signInWithIdToken({
     provider: 'apple',
     token: body.identityToken,
   });
-
+  console.log('[소셜/auth] apple signInWithIdToken 결과', {
+    hasSession: !!data?.session,
+    hasUser: !!data?.user,
+    error: error ? {message: error.message, name: error.name} : null,
+  });
   if (error) {
     throw error;
   }
-
   if (!data.session) {
     throw new Error('세션이 생성되지 않았습니다.');
   }
-
   return {
     accessToken: data.session.access_token,
     refreshToken: data.session.refresh_token,
   };
+}
+
+function loginTypeFromProvider(provider: string): Profile['loginType'] {
+  if (provider === 'apple') {
+    return 'apple';
+  }
+  if (provider === 'google') {
+    return 'google';
+  }
+  return 'email';
 }
 
 async function getProfile(): Promise<Profile> {
@@ -148,21 +139,44 @@ async function getProfile(): Promise<Profile> {
   }
 
   // public.users 테이블에서 프로필 정보 가져오기
-  const {data: profile, error: profileError} = await supabase
+  let result = await supabase
     .from('users')
     .select('*')
     .eq('id', user.id)
     .single();
 
-  if (profileError) {
-    throw profileError;
+  // 소셜 로그인 최초 사용자는 public.users에 행이 없음 → 생성 후 다시 조회
+  if (result.error?.code === 'PGRST116') {
+    const provider = user.app_metadata?.provider ?? user.user_metadata?.provider ?? 'email';
+    const loginType = loginTypeFromProvider(provider);
+    const {error: insertError} = await supabase.from('users').insert({
+      id: user.id,
+      email: user.email ?? '',
+      loginType,
+      nickname: null,
+      imageUri: null,
+    });
+    if (insertError) {
+      console.error('[auth] public.users 프로필 생성 실패:', insertError);
+      throw insertError;
+    }
+    result = await supabase
+      .from('users')
+      .select('*')
+      .eq('id', user.id)
+      .single();
   }
 
+  if (result.error) {
+    throw result.error;
+  }
+
+  const profile = result.data;
   return {
-    id: typeof profile.id === 'string' ? parseInt(profile.id) : profile.id,
+    id: typeof profile.id === 'string' ? parseInt(profile.id, 10) : profile.id,
     email: profile.email || user.email || '',
-    nickname: profile.nickname || null,
-    imageUri: profile.imageUri || null,
+    nickname: profile.nickname ?? null,
+    imageUri: profile.imageUri ?? null,
     loginType: profile.loginType || 'email',
   };
 }
@@ -259,8 +273,7 @@ export {
   editProfile,
   getAccessToken,
   getProfile,
-  kakaoLogin,
-  naverLogin,
+  googleLogin,
   logout,
   postLogin,
   postSignup,

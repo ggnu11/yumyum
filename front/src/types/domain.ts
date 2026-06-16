@@ -25,7 +25,7 @@ interface Profile {
   email: string;
   nickname: string | null;
   imageUri: string | null;
-  loginType: 'email' | 'kakao' | 'apple' | 'naver';
+  loginType: 'email' | 'apple' | 'google';
 }
 
 export type {ImageUri, Marker, Post, Profile};

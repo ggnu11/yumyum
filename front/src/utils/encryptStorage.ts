@@ -11,10 +11,13 @@ async function getEncryptStorage(key: string) {
 }
 
 async function removeEncryptStorage(key: string) {
-  const data = await getEncryptStorage(key);
-
-  if (data) {
-    await EncryptedStorage.removeItem(key);
+  try {
+    const data = await getEncryptStorage(key);
+    if (data) {
+      await EncryptedStorage.removeItem(key);
+    }
+  } catch {
+    // 키 없음 또는 Keychain 오류 시 무시
   }
 }
 

@@ -77,14 +77,9 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.yumyum-app.naver</string>
+				<string>com.googleusercontent.apps.669973703848-rr0desnejm6oe1tr66v6431vgbp5n4c6</string>
 			</array>
 		</dict>
-	</array>
-	<key>LSApplicationQueriesSchemes</key>
-	<array>
-		<string>naversearchapp</string>
-		<string>naversearchthirdlogin</string>
 	</array>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
