@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, useColorScheme, View} from 'react-native';
+import {useColorScheme} from 'react-native';
 import {ActionSheet} from '../common/ActionSheet';
 import useThemeStorage from '@/hooks/useThemeStorage';
 
@@ -62,7 +62,5 @@ function DarkModeActionSheet({
     </ActionSheet>
   );
 }
-
-const styles = StyleSheet.create({});
 
 export default DarkModeActionSheet;

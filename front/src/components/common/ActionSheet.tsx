@@ -40,7 +40,6 @@ interface ActionMainProps extends ModalProps {
   children: ReactNode;
   isVisible: boolean;
   hideAction: () => void;
-  animationType?: ModalProps['animationType'];
 }
 
 function ActionMain({

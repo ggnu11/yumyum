@@ -1,10 +1,11 @@
 import Ionicons from '@react-native-vector-icons/ionicons';
 import {useNavigation} from '@react-navigation/native';
-import React from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
+  Animated,
+  Dimensions,
   Image,
   Modal,
-  Platform,
   Pressable,
   SafeAreaView,
   StyleSheet,
@@ -23,11 +24,35 @@ interface MarkerModalProps {
   hide: () => void;
 }
 
+const SCREEN_HEIGHT = Dimensions.get('window').height;
+
 function MarkerModal({markerId, isVisible, hide}: MarkerModalProps) {
   const {theme} = useThemeStore();
   const styles = styling(theme);
   const navigation = useNavigation();
   const {data: post, isPending, isError} = useGetPost(markerId);
+  const [modalVisible, setModalVisible] = useState(isVisible);
+  const slideAnim = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
+
+  useEffect(() => {
+    if (isVisible) {
+      setModalVisible(true);
+      Animated.spring(slideAnim, {
+        toValue: 0,
+        useNativeDriver: true,
+        damping: 20,
+        stiffness: 200,
+      }).start();
+    } else if (modalVisible) {
+      Animated.timing(slideAnim, {
+        toValue: SCREEN_HEIGHT,
+        duration: 250,
+        useNativeDriver: true,
+      }).start(() => {
+        setModalVisible(false);
+      });
+    }
+  }, [isVisible]);
 
   if (isPending || isError) {
     return <></>;
@@ -46,63 +71,65 @@ function MarkerModal({markerId, isVisible, hide}: MarkerModalProps) {
   };
 
   return (
-    <Modal visible={isVisible} transparent animationType="slide">
+    <Modal visible={modalVisible} transparent animationType="fade">
       <SafeAreaView style={styles.background} onTouchEnd={hide}>
-        <Pressable style={styles.cardContainer} onPress={handlePressModal}>
-          <View style={styles.cardInner}>
-            <View style={styles.cardAlign}>
-              {post.imageUris.length > 0 && (
-                <View style={styles.imageContainer}>
-                  <Image
-                    style={styles.image}
-                    source={{
-                      uri: post.imageUris[0]?.uri,
-                    }}
-                    resizeMode="cover"
-                  />
-                </View>
-              )}
-              {post.imageUris.length === 0 && (
-                <View
-                  style={[styles.imageContainer, styles.emptyImageContainer]}>
-                  <Text style={styles.emptyText}>No Image</Text>
-                </View>
-              )}
-              <View style={styles.infoContainer}>
-                <View style={styles.addressContainer}>
-                  <Ionicons
-                    name="location-outline"
-                    size={10}
-                    color={colors[theme].GRAY_500}
-                  />
+        <Animated.View style={{transform: [{translateY: slideAnim}]}}>
+          <Pressable style={styles.cardContainer} onPress={handlePressModal}>
+            <View style={styles.cardInner}>
+              <View style={styles.cardAlign}>
+                {post.imageUris.length > 0 && (
+                  <View style={styles.imageContainer}>
+                    <Image
+                      style={styles.image}
+                      source={{
+                        uri: post.imageUris[0]?.uri,
+                      }}
+                      resizeMode="cover"
+                    />
+                  </View>
+                )}
+                {post.imageUris.length === 0 && (
+                  <View
+                    style={[styles.imageContainer, styles.emptyImageContainer]}>
+                    <Text style={styles.emptyText}>No Image</Text>
+                  </View>
+                )}
+                <View style={styles.infoContainer}>
+                  <View style={styles.addressContainer}>
+                    <Ionicons
+                      name="location-outline"
+                      size={10}
+                      color={colors[theme].GRAY_500}
+                    />
+                    <Text
+                      style={styles.addressText}
+                      numberOfLines={1}
+                      ellipsizeMode="tail">
+                      {post.address}
+                    </Text>
+                  </View>
                   <Text
-                    style={styles.addressText}
+                    style={styles.titleText}
                     numberOfLines={1}
                     ellipsizeMode="tail">
-                    {post.address}
+                    {post.title}
+                  </Text>
+                  <Text style={styles.dateText}>
+                    {getDateWithSeparator(post.date, '.')}
                   </Text>
                 </View>
-                <Text
-                  style={styles.titleText}
-                  numberOfLines={1}
-                  ellipsizeMode="tail">
-                  {post.title}
-                </Text>
-                <Text style={styles.dateText}>
-                  {getDateWithSeparator(post.date, '.')}
-                </Text>
+              </View>
+
+              <View style={styles.nextButton}>
+                <Ionicons
+                  name="chevron-forward"
+                  size={25}
+                  color={colors[theme].BLACK}
+                />
               </View>
             </View>
-
-            <View style={styles.nextButton}>
-              <Ionicons
-                name="chevron-forward"
-                size={25}
-                color={colors[theme].BLACK}
-              />
-            </View>
-          </View>
-        </Pressable>
+          </Pressable>
+        </Animated.View>
       </SafeAreaView>
     </Modal>
   );

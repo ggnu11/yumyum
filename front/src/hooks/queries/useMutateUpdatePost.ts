@@ -15,9 +15,6 @@ function useMutateUpdatePost(mutationOptions?: UseMutationCustomOptions) {
       queryClient.invalidateQueries({
         queryKey: [queryKeys.MARKER, queryKeys.GET_MARKERS],
       });
-      //   queryClient.invalidateQueries({
-      //     queryKey: [queryKeys.POST, queryKeys.GET_POST, newPost.id],
-      //   });
       queryClient.setQueryData(
         [queryKeys.POST, queryKeys.GET_POST, newPost.id],
         newPost,

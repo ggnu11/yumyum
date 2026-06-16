@@ -22,8 +22,7 @@ function MarkerFilterAction({isVisible, hideAction}: MarkerFilterActionProps) {
   return (
     <ActionSheet
       isVisible={isVisible}
-      hideAction={hideAction}
-      animationType="fade">
+      hideAction={hideAction}>
       <ActionSheet.Background>
         <ActionSheet.Container>
           <ActionSheet.Title>마커 필터링</ActionSheet.Title>
