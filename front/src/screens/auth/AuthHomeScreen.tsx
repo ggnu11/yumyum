@@ -118,6 +118,7 @@ function AuthHomeScreen() {
           source={require('@/assets/matzip.png')}
           style={styles.image}
           resizeMode="contain"
+          tintColor="#FDA242"
         />
       </View>
       <View style={styles.buttonContainer}>
