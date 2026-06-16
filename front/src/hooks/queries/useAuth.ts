@@ -111,7 +111,7 @@ function useWithdrawUser(mutationOptions?: UseMutationCustomOptions) {
     mutationFn: withdrawUser,
     onSuccess: async () => {
       await removeEncryptStorage(storageKeys.REFRESH_TOKEN);
-      queryClient.removeQueries({queryKey: [queryKeys.AUTH]});
+      queryClient.resetQueries({queryKey: [queryKeys.AUTH]});
     },
     ...mutationOptions,
   });

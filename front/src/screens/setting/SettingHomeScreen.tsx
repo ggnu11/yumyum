@@ -49,10 +49,12 @@ function SettingHomeScreen() {
                   position: 'bottom',
                 });
               },
-              onError: () => {
+              onError: (error: any) => {
+                console.log('[회원탈퇴 에러]', JSON.stringify(error, null, 2));
                 Toast.show({
                   type: 'error',
                   text1: '회원탈퇴 중 오류가 발생했습니다.',
+                  text2: error?.message || '',
                   position: 'bottom',
                 });
               },
