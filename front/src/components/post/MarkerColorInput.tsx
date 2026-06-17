@@ -1,9 +1,8 @@
 import {colors} from '@/constants/colors';
-import {MARKER_CATEGORIES, MarkerCategory} from '@/constants/markerIcons';
 import useThemeStore, {Theme} from '@/store/theme';
 import React from 'react';
 import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
-import FoodMarker from '../common/FoodMarker';
+import CustomMarker from '../common/CustomMarker';
 
 interface MarkerColorInputProps {
   color: string;
@@ -24,27 +23,22 @@ function MarkerColorInput({
       <Text style={styles.markerLabel}>마커선택</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         <View style={styles.markerInputScroll}>
-          {MARKER_CATEGORIES.map(({key, label}) => {
-            const isSelected = color === key;
+          {[
+            colors[theme].PINK_400,
+            colors[theme].BLUE_400,
+            colors[theme].YELLOW_400,
+            colors[theme].GREEN_400,
+            colors[theme].PURPLE_400,
+          ].map(selectColor => {
             return (
               <Pressable
-                key={key}
+                key={selectColor}
                 style={[
                   styles.markerBox,
-                  isSelected && styles.pressedMarker,
+                  color === selectColor && styles.pressedMarker,
                 ]}
-                onPress={() => onChangeColor(key)}>
-                <View
-                  style={[
-                    styles.markerWrapper,
-                    isSelected && styles.selectedScale,
-                  ]}>
-                  <FoodMarker category={key as MarkerCategory} score={score} size={38} />
-                </View>
-                {isSelected && <View style={styles.selectedBadge} />}
-                <Text style={[styles.markerText, isSelected && styles.markerTextSelected]}>
-                  {label}
-                </Text>
+                onPress={() => onChangeColor(selectColor)}>
+                <CustomMarker color={selectColor} score={score} />
               </Pressable>
             );
           })}
@@ -58,57 +52,28 @@ const styling = (theme: Theme) =>
   StyleSheet.create({
     container: {
       borderWidth: 1,
-      borderColor: colors[theme].BORDER,
+      borderColor: colors[theme].GRAY_200,
       padding: 15,
-      borderRadius: 8,
     },
     markerInputScroll: {
       flexDirection: 'row',
-      gap: 16,
+      gap: 20,
     },
     markerLabel: {
       marginBottom: 15,
       color: colors[theme].GRAY_700,
-      fontWeight: '600',
     },
     markerBox: {
       alignItems: 'center',
       justifyContent: 'center',
-      width: 60,
-      height: 72,
-      borderRadius: 10,
+      width: 50,
+      height: 50,
+      borderRadius: 6,
       backgroundColor: colors[theme].GRAY_100,
-      position: 'relative',
     },
     pressedMarker: {
       borderWidth: 2,
-      borderColor: colors[theme].PRIMARY,
-      backgroundColor: colors[theme].BG_SOFT,
-    },
-    markerWrapper: {
-      width: 38,
-      height: 38,
-    },
-    selectedScale: {
-      transform: [{scale: 1.06}],
-    },
-    selectedBadge: {
-      position: 'absolute',
-      top: 4,
-      right: 4,
-      width: 8,
-      height: 8,
-      borderRadius: 4,
-      backgroundColor: colors[theme].PRIMARY,
-    },
-    markerText: {
-      fontSize: 10,
-      color: colors[theme].GRAY_500,
-      marginTop: 2,
-    },
-    markerTextSelected: {
-      color: colors[theme].PRIMARY_DARK,
-      fontWeight: '600',
+      borderColor: colors[theme].RED_500,
     },
   });
 

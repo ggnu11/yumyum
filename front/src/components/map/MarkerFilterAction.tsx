@@ -1,10 +1,9 @@
-import {MARKER_CATEGORIES} from '@/constants/markerIcons';
+import {colors} from '@/constants/colors';
 import useFilterStore from '@/store/filter';
 import useThemeStore from '@/store/theme';
 import React, {useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {ActionSheet} from '../common/ActionSheet';
-import FoodMarker from '../common/FoodMarker';
 
 interface MarkerFilterActionProps {
   isVisible: boolean;
@@ -13,7 +12,7 @@ interface MarkerFilterActionProps {
 
 function MarkerFilterAction({isVisible, hideAction}: MarkerFilterActionProps) {
   const {theme} = useThemeStore();
-  const [filterCondition, setFilterCondition] = useState('카테고리');
+  const [filterCondition, setFilterCondition] = useState('색상');
   const {filters, setFilters} = useFilterStore();
 
   const handleFilter = (name: string) => {
@@ -29,7 +28,7 @@ function MarkerFilterAction({isVisible, hideAction}: MarkerFilterActionProps) {
           <ActionSheet.Title>마커 필터링</ActionSheet.Title>
           <ActionSheet.Divider />
           <View style={styles.filterContainer}>
-            {['카테고리', '평점'].map(condition => (
+            {['색상', '평점'].map(condition => (
               <ActionSheet.Filter
                 key={condition}
                 isSelected={filterCondition === condition}
@@ -39,20 +38,23 @@ function MarkerFilterAction({isVisible, hideAction}: MarkerFilterActionProps) {
             ))}
           </View>
           <ActionSheet.Divider />
-          {filterCondition === '카테고리' && (
+          {filterCondition === '색상' && (
             <>
-              {MARKER_CATEGORIES.map(({key, label}) => (
+              {[
+                colors[theme].PINK_400,
+                colors[theme].YELLOW_400,
+                colors[theme].GREEN_400,
+                colors[theme].BLUE_400,
+                colors[theme].PURPLE_400,
+              ].map(color => (
                 <ActionSheet.CheckBox
-                  key={key}
-                  isChecked={filters[key]}
-                  onPress={() => handleFilter(key)}
+                  key={color}
+                  isChecked={filters[color]}
+                  onPress={() => handleFilter(color)}
                   icon={
-                    <View style={styles.markerIcon}>
-                      <FoodMarker category={key} score={4} size={28} />
-                    </View>
-                  }>
-                  {label}
-                </ActionSheet.CheckBox>
+                    <View style={[styles.marker, {backgroundColor: color}]} />
+                  }
+                />
               ))}
             </>
           )}
@@ -82,9 +84,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     justifyContent: 'space-around',
   },
-  markerIcon: {
-    width: 28,
-    height: 28,
+  marker: {
+    width: 20,
+    height: 20,
+    borderRadius: 20,
   },
 });
 

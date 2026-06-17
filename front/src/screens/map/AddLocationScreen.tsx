@@ -4,6 +4,7 @@ import {ScrollView, StyleSheet, View} from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
+import {colors} from '@/constants/colors';
 import CustomButton from '@/components/common/CustomButton';
 import FixedBottomCTA from '@/components/common/FixedBottomCTA';
 import InputField from '@/components/common/InputField';
@@ -37,7 +38,7 @@ function AddLocationScreen({route}: Props) {
       title: '',
       description: '',
       date: new Date(),
-      color: 'ramen',
+      color: colors[theme].PINK_400,
       score: 3,
     },
     validate: validateAddPost,
