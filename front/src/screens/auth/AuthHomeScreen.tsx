@@ -4,6 +4,7 @@ import Ionicons from '@react-native-vector-icons/ionicons';
 import React, {useCallback, useEffect, useRef} from 'react';
 import {
   Animated,
+  Image,
   Platform,
   Pressable,
   SafeAreaView,
@@ -27,7 +28,7 @@ import queryClient from '@/api/queryClient';
 import {queryKeys} from '@/constants/keys';
 import useAuth from '@/hooks/queries/useAuth';
 import Toast from 'react-native-toast-message';
-import LoginBg from '@/assets/yumyum-login-bg.svg';
+import LoginBg from '@/assets/yumyum-login-bg.png';
 
 GoogleSignin.configure({
   iosClientId: Config.GOOGLE_IOS_CLIENT_ID,
@@ -91,7 +92,9 @@ function AuthHomeScreen() {
   const {appleLoginMutation} = useAuth();
   const {width: screenWidth} = useWindowDimensions();
 
-  const tilePixelHeight = Math.round(screenWidth * (SVG_TILE_H / SVG_VIEWBOX_W));
+  const tilePixelHeight = Math.round(
+    screenWidth * (SVG_TILE_H / SVG_VIEWBOX_W),
+  );
   const translateY = useSharedValue(0);
 
   useEffect(() => {
@@ -100,7 +103,7 @@ function AuthHomeScreen() {
         duration: BG_SCROLL_DURATION,
         easing: REasing.linear,
       }),
-      -1,    // 무한 반복
+      -1, // 무한 반복
       false, // autoreverses: false
     );
   }, [tilePixelHeight]);
@@ -197,10 +200,10 @@ function AuthHomeScreen() {
             {width: screenWidth, height: tilePixelHeight * 2},
             bgAnimatedStyle,
           ]}>
-          <LoginBg
-            width={screenWidth}
-            height={tilePixelHeight * 2}
-            preserveAspectRatio="none"
+          <Image
+            source={LoginBg}
+            style={{width: screenWidth, height: tilePixelHeight * 2}}
+            resizeMode="stretch"
           />
         </ReAnimated.View>
       </View>
