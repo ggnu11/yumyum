@@ -14,6 +14,7 @@ import ScoreInput from '@/components/post/ScoreInput';
 import {colors} from '@/constants/colors';
 import useMutateCreatePost from '@/hooks/queries/useMutateCreatePost';
 import useForm from '@/hooks/useForm';
+import useInterstitialAd from '@/hooks/useInterstitialAd';
 import useGetAddress from '@/hooks/useGetAddress';
 import useImagePicker from '@/hooks/useImagePicker';
 import usePermission from '@/hooks/usePermission';
@@ -44,6 +45,7 @@ function AddLocationScreen({route}: Props) {
   });
   const [openDate, setOpenDate] = useState(false);
   const createPost = useMutateCreatePost();
+  const {showAd} = useInterstitialAd();
   usePermission('PHOTO');
 
   const handleSubmit = () => {
@@ -55,7 +57,10 @@ function AddLocationScreen({route}: Props) {
         imageUris: imagePicker.imageUris,
       },
       {
-        onSuccess: () => navigation.goBack(),
+        onSuccess: () => {
+          showAd();
+          navigation.goBack();
+        },
       },
     );
   };

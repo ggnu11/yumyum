@@ -80,7 +80,25 @@ function SettingHomeScreen() {
         <SettingItem
           title="로그아웃"
           color={colors[theme].RED_500}
-          onPress={() => logoutMutation.mutate(null)}
+          onPress={() =>
+            Alert.alert('로그아웃', '로그아웃 하시겠습니까?', [
+              {text: '취소', style: 'cancel'},
+              {
+                text: '로그아웃',
+                style: 'destructive',
+                onPress: () =>
+                  logoutMutation.mutate(null, {
+                    onSuccess: () => {
+                      Toast.show({
+                        type: 'success',
+                        text1: '로그아웃 되었습니다.',
+                        position: 'bottom',
+                      });
+                    },
+                  }),
+              },
+            ])
+          }
         />
 
         <View style={styles.bottomSpace} />

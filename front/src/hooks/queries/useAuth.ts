@@ -87,7 +87,7 @@ function useLogout(mutationOptions?: UseMutationCustomOptions) {
     mutationFn: logout,
     onSuccess: async () => {
       await removeEncryptStorage(storageKeys.REFRESH_TOKEN);
-      queryClient.removeQueries({queryKey: [queryKeys.AUTH]});
+      queryClient.resetQueries({queryKey: [queryKeys.AUTH]});
     },
     ...mutationOptions,
   });

@@ -4,6 +4,7 @@ import MapView, {LatLng, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 
+import BannerAdView from '@/components/common/BannerAdView';
 import CustomMarker from '@/components/common/CustomMarker';
 import DrawerButton from '@/components/common/DrawerButton';
 import MapIconButton from '@/components/map/MapIconButton';
@@ -126,6 +127,10 @@ function MapHomeScreen() {
         />
       </View>
 
+      <View style={styles.bannerContainer}>
+        <BannerAdView />
+      </View>
+
       <MarkerModal
         isVisible={markerModal.isVisible}
         markerId={Number(markerId)}
@@ -158,8 +163,15 @@ const styling = (theme: Theme) =>
     },
     buttonList: {
       position: 'absolute',
-      bottom: 30,
+      bottom: 80,
       right: 20,
+      zIndex: 1,
+    },
+    bannerContainer: {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      right: 0,
       zIndex: 1,
     },
   });

@@ -15,6 +15,7 @@ import ScoreInput from '@/components/post/ScoreInput';
 import useGetPost from '@/hooks/queries/useGetPost';
 import useMutateUpdatePost from '@/hooks/queries/useMutateUpdatePost';
 import useForm from '@/hooks/useForm';
+import useInterstitialAd from '@/hooks/useInterstitialAd';
 import useGetAddress from '@/hooks/useGetAddress';
 import useImagePicker from '@/hooks/useImagePicker';
 import {FeedStackParamList} from '@/types/navigation';
@@ -45,6 +46,7 @@ function EditLocationScreen({route}: Props) {
   });
   const imagePicker = useImagePicker({initialImages: post?.imageUris ?? []});
   const updatePost = useMutateUpdatePost();
+  const {showAd} = useInterstitialAd();
 
   const handleSubmit = () => {
     updatePost.mutate(
@@ -56,7 +58,10 @@ function EditLocationScreen({route}: Props) {
         },
       },
       {
-        onSuccess: () => navigation.goBack(),
+        onSuccess: () => {
+          showAd();
+          navigation.goBack();
+        },
       },
     );
   };

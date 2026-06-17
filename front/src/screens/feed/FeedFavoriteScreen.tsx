@@ -1,6 +1,7 @@
 import React, {Suspense} from 'react';
 import {SafeAreaView, StyleSheet} from 'react-native';
 
+import BannerAdView from '@/components/common/BannerAdView';
 import Indicator from '@/components/common/Indicator';
 import FeedFavoriteList from '@/components/feed/FeedFavoriteList';
 
@@ -10,6 +11,7 @@ function FeedFavoriteScreen() {
       <Suspense fallback={<Indicator size={'large'} />}>
         <FeedFavoriteList />
       </Suspense>
+      <BannerAdView />
     </SafeAreaView>
   );
 }
