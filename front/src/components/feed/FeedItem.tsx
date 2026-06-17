@@ -86,7 +86,7 @@ const styling = (theme: Theme) =>
       gap: 2,
     },
     dateText: {
-      color: colors[theme].PINK_700,
+      color: colors[theme].PRIMARY,
       fontWeight: '600',
       fontSize: 12,
     },

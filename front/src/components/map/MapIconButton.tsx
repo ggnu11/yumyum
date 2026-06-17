@@ -34,7 +34,7 @@ function MapIconButton({name, onPress}: MapIconButtonProps) {
 const styling = (theme: Theme) =>
   StyleSheet.create({
     mapButton: {
-      backgroundColor: colors[theme].PINK_700,
+      backgroundColor: colors[theme].PRIMARY,
       marginVertical: 5,
       height: 45,
       width: 45,

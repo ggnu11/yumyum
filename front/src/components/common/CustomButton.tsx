@@ -58,22 +58,22 @@ const styling = (theme: Theme) =>
       alignItems: 'center',
     },
     filled: {
-      backgroundColor: colors[theme].PINK_700,
+      backgroundColor: colors[theme].PRIMARY,
     },
     outlined: {
-      backgroundColor: colors[theme].WHITE,
+      backgroundColor: colors[theme].BG_LIGHT,
       borderWidth: 1,
-      borderColor: colors[theme].PINK_700,
+      borderColor: colors[theme].PRIMARY,
     },
     filledText: {
       fontSize: 14,
       fontWeight: 'bold',
-      color: colors[theme].WHITE,
+      color: colors[theme].UNCHANGE_WHITE,
     },
     outlinedText: {
       fontSize: 14,
       fontWeight: 'bold',
-      color: colors[theme].PINK_700,
+      color: colors[theme].PRIMARY_DARK,
     },
     large: {
       width: '100%',

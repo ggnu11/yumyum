@@ -234,7 +234,7 @@ const styling = (theme: Theme) =>
       color: colors[theme].BLACK,
     },
     infoColumnValueText: {
-      color: colors[theme].PINK_700,
+      color: colors[theme].PRIMARY,
     },
     markerColor: {
       width: 10,

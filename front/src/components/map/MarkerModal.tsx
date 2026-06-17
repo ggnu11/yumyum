@@ -75,6 +75,7 @@ function MarkerModal({markerId, isVisible, hide}: MarkerModalProps) {
       <SafeAreaView style={styles.background} onTouchEnd={hide}>
         <Animated.View style={{transform: [{translateY: slideAnim}]}}>
           <Pressable style={styles.cardContainer} onPress={handlePressModal}>
+            <View style={styles.handleBar} />
             <View style={styles.cardInner}>
               <View style={styles.cardAlign}>
                 {post.imageUris.length > 0 && (
@@ -99,7 +100,7 @@ function MarkerModal({markerId, isVisible, hide}: MarkerModalProps) {
                     <Ionicons
                       name="location-outline"
                       size={10}
-                      color={colors[theme].GRAY_500}
+                      color={colors[theme].PRIMARY}
                     />
                     <Text
                       style={styles.addressText}
@@ -143,11 +144,21 @@ const styling = (theme: Theme) =>
     },
     cardContainer: {
       backgroundColor: colors[theme].WHITE,
-      margin: 10,
-      borderWidth: 1,
-      borderColor: colors[theme].GRAY_500,
-      borderRadius: 15,
-      boxShadow: '1px 1px 3px rgba(0, 0, 0, 0.3)',
+      marginHorizontal: 10,
+      marginBottom: 10,
+      borderTopLeftRadius: 18,
+      borderTopRightRadius: 18,
+      borderBottomLeftRadius: 18,
+      borderBottomRightRadius: 18,
+      boxShadow: '0px -2px 10px rgba(0, 0, 0, 0.1)',
+      alignItems: 'center',
+    },
+    handleBar: {
+      width: 40,
+      height: 4,
+      borderRadius: 2,
+      backgroundColor: colors[theme].GRAY_300,
+      marginTop: 10,
     },
     cardInner: {
       padding: 20,
@@ -170,18 +181,19 @@ const styling = (theme: Theme) =>
       justifyContent: 'center',
       alignItems: 'center',
       borderWidth: 1,
-      borderColor: colors[theme].GRAY_200,
+      borderColor: colors[theme].BORDER,
+      backgroundColor: colors[theme].BG_LIGHT,
     },
     emptyText: {
       fontSize: 12,
-      color: colors[theme].GRAY_500,
+      color: colors[theme].TEXT_PLACEHOLDER,
     },
     infoContainer: {
       marginLeft: 15,
       gap: 5,
     },
     addressText: {
-      color: colors[theme].GRAY_500,
+      color: colors[theme].TEXT_SECONDARY,
       fontSize: 10,
     },
     cardAlign: {
@@ -202,7 +214,7 @@ const styling = (theme: Theme) =>
     dateText: {
       fontSize: 12,
       fontWeight: 'bold',
-      color: colors[theme].PINK_700,
+      color: colors[theme].PRIMARY,
     },
     nextButton: {
       width: 40,

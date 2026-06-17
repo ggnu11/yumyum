@@ -11,7 +11,6 @@ import PreviewImageList from '@/components/common/PreviewImageList';
 import ImageInput from '@/components/post/ImageInput';
 import MarkerColorInput from '@/components/post/MarkerColorInput';
 import ScoreInput from '@/components/post/ScoreInput';
-import {colors} from '@/constants/colors';
 import useMutateCreatePost from '@/hooks/queries/useMutateCreatePost';
 import useForm from '@/hooks/useForm';
 import useInterstitialAd from '@/hooks/useInterstitialAd';
@@ -38,7 +37,7 @@ function AddLocationScreen({route}: Props) {
       title: '',
       description: '',
       date: new Date(),
-      color: colors[theme].PINK_400,
+      color: 'ramen',
       score: 3,
     },
     validate: validateAddPost,

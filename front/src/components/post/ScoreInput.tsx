@@ -26,9 +26,9 @@ function ScoreInput({score, onChangeScore}: ScoreInputProps) {
         step={1}
         minimumValue={1}
         maximumValue={5}
-        minimumTrackTintColor={colors[theme].PINK_700}
+        minimumTrackTintColor={colors[theme].PRIMARY}
         maximumTrackTintColor={colors[theme].GRAY_300}
-        thumbTintColor={colors[theme].GRAY_100}
+        thumbTintColor={colors[theme].PRIMARY_DARK}
       />
     </View>
   );
@@ -41,7 +41,7 @@ const styling = (theme: Theme) =>
       gap: 5,
       padding: 15,
       borderWidth: 1,
-      borderColor: colors[theme].GRAY_200,
+      borderColor: colors[theme].BORDER,
     },
     labelContainer: {
       flexDirection: 'row',

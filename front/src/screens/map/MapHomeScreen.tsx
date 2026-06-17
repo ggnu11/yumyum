@@ -89,8 +89,9 @@ function MapHomeScreen() {
         color={colors[theme].WHITE}
       />
       <MapView
+        key={theme}
         userInterfaceStyle={theme}
-        googleMapId="f727da01391db33238e04009"
+        googleMapId="4ddb13ebf03d7ebc76229497"
         style={styles.container}
         ref={mapRef}
         region={{
@@ -156,7 +157,7 @@ const styling = (theme: Theme) =>
       zIndex: 1,
       paddingVertical: 10,
       paddingHorizontal: 15,
-      backgroundColor: colors[theme].PINK_700,
+      backgroundColor: colors[theme].PRIMARY,
       borderTopRightRadius: 50,
       borderBottomRightRadius: 50,
       boxShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',

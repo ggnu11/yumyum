@@ -46,7 +46,7 @@ function CalendarScreen() {
     navigation.setOptions({
       headerRight: () => (
         <Pressable onPress={moveToToday} style={{paddingHorizontal: 10}}>
-          <Text style={{color: colors[theme].PINK_700, fontWeight: 'bold'}}>
+          <Text style={{color: colors[theme].PRIMARY, fontWeight: 'bold'}}>
             오늘
           </Text>
         </Pressable>

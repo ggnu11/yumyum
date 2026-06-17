@@ -24,7 +24,7 @@ function InputField({
     <View>
       <TextInput
         ref={ref}
-        placeholderTextColor={colors[theme].GRAY_500}
+        placeholderTextColor={colors[theme].TEXT_PLACEHOLDER}
         autoCapitalize="none"
         spellCheck={false}
         autoCorrect={false}
@@ -46,12 +46,13 @@ const styling = (theme: Theme) =>
   StyleSheet.create({
     input: {
       borderWidth: 1,
-      borderColor: colors[theme].GRAY_200,
+      borderColor: colors[theme].BORDER,
       justifyContent: 'center',
       height: 50,
       paddingHorizontal: 10,
       fontSize: 16,
       color: colors[theme].BLACK,
+      backgroundColor: colors[theme].WHITE,
     },
     multiLine: {
       height: 150,
@@ -68,8 +69,8 @@ const styling = (theme: Theme) =>
       paddingTop: 5,
     },
     disabled: {
-      backgroundColor: colors[theme].GRAY_200,
-      color: colors[theme].GRAY_700,
+      backgroundColor: colors[theme].BG_LIGHT,
+      color: colors[theme].TEXT_SECONDARY,
     },
   });
 
