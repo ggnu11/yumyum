@@ -45,7 +45,7 @@ export function FeedStack() {
             <Pressable
               style={{paddingHorizontal: 12}}
               onPress={() => navigation.navigate('FeedFavorite')}>
-              <Ionicons name="star" size={25} color={colors[theme].PRIMARY} />
+              <Ionicons name="star" size={25} color={colors[theme].TEAL} />
             </Pressable>
           ),
         })}

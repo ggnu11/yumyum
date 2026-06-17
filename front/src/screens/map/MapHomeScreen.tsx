@@ -121,7 +121,7 @@ function MapHomeScreen() {
           onPress={() => navigation.navigate('SearchLocation')}
         />
         <MapIconButton name="filter" onPress={filterAction.show} />
-        <MapIconButton name="plus" onPress={handlePressAddPost} />
+        <MapIconButton name="plus" variant="primary" onPress={handlePressAddPost} />
         <MapIconButton
           name="location-crosshairs"
           onPress={handlePressUserLocation}
@@ -157,7 +157,7 @@ const styling = (theme: Theme) =>
       zIndex: 1,
       paddingVertical: 10,
       paddingHorizontal: 15,
-      backgroundColor: colors[theme].PRIMARY,
+      backgroundColor: colors[theme].TEAL,
       borderTopRightRadius: 50,
       borderBottomRightRadius: 50,
       boxShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',

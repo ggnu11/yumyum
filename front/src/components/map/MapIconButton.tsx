@@ -13,14 +13,20 @@ type SolidIconName = Extract<
 interface MapIconButtonProps {
   name: SolidIconName;
   onPress: () => void;
+  variant?: 'primary' | 'teal';
 }
 
-function MapIconButton({name, onPress}: MapIconButtonProps) {
+function MapIconButton({name, onPress, variant = 'teal'}: MapIconButtonProps) {
   const {theme} = useThemeStore();
   const styles = styling(theme);
 
   return (
-    <Pressable style={styles.mapButton} onPress={onPress}>
+    <Pressable
+      style={[
+        styles.mapButton,
+        variant === 'primary' && styles.primaryButton,
+      ]}
+      onPress={onPress}>
       <FontAwesome6
         name={name}
         iconStyle="solid"
@@ -34,7 +40,7 @@ function MapIconButton({name, onPress}: MapIconButtonProps) {
 const styling = (theme: Theme) =>
   StyleSheet.create({
     mapButton: {
-      backgroundColor: colors[theme].PRIMARY,
+      backgroundColor: colors[theme].TEAL,
       marginVertical: 5,
       height: 45,
       width: 45,
@@ -42,6 +48,9 @@ const styling = (theme: Theme) =>
       alignItems: 'center',
       justifyContent: 'center',
       boxShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
+    },
+    primaryButton: {
+      backgroundColor: colors[theme].PRIMARY,
     },
   });
 

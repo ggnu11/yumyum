@@ -110,8 +110,8 @@ const styling = (theme: Theme) =>
       justifyContent: 'center',
     },
     currentYearButton: {
-      backgroundColor: colors[theme].PRIMARY,
-      borderColor: colors[theme].PRIMARY,
+      backgroundColor: colors[theme].TEAL,
+      borderColor: colors[theme].TEAL,
     },
     yearText: {
       fontSize: 16,

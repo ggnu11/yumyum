@@ -15,6 +15,7 @@
 		ADC5B72F110141DCB08441FE /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B7FFCC45E8884DD595EDA0F3 /* BootSplash.storyboard */; };
 		D2340D53921AB39C900D4921 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
 		F32D2758FE5E4EEDBFC7E44F /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 7DE0022F5A4B48CA9D47513C /* Config.xcconfig */; };
+		A4ADA69C27E04A229DD0C12F /* Baloo2.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 94B59DF0B0174E8BBF6B663D /* Baloo2.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +34,7 @@
 		B9A7F5699EE17A910D5F319A /* libPods-matzip.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-matzip.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D2BB33B52E5FF4E80014ACB9 /* matzip.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = matzip.entitlements; path = matzip/matzip.entitlements; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		94B59DF0B0174E8BBF6B663D /* Baloo2.ttf */ = {isa = PBXFileReference; name = "Baloo2.ttf"; path = "../src/assets/fonts/Baloo2.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,6 +90,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				59E00AA9AEFE4D6AB0ABD075 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -110,6 +113,15 @@
 			);
 			path = Pods;
 			sourceTree = "<group>";
+		};
+		59E00AA9AEFE4D6AB0ABD075 /* Resources */ = {
+			isa = "PBXGroup";
+			children = (
+				94B59DF0B0174E8BBF6B663D /* Baloo2.ttf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+			path = "";
 		};
 /* End PBXGroup section */
 
@@ -178,6 +190,7 @@
 				D2340D53921AB39C900D4921 /* PrivacyInfo.xcprivacy in Resources */,
 				ADC5B72F110141DCB08441FE /* BootSplash.storyboard in Resources */,
 				376ADB99DF4741A7B3E9E3A3 /* Colors.xcassets in Resources */,
+				A4ADA69C27E04A229DD0C12F /* Baloo2.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

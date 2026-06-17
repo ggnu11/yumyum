@@ -1,7 +1,7 @@
 import appleAuth from '@invertase/react-native-apple-authentication';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import Ionicons from '@react-native-vector-icons/ionicons';
-import React, {useCallback, useEffect, useRef} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   Animated,
   Image,
@@ -17,9 +17,15 @@ import ReAnimated, {
   Easing as REasing,
   useSharedValue,
   useAnimatedStyle,
+  useAnimatedProps,
   withTiming,
   withRepeat,
+  withSequence,
+  withDelay,
+  withSpring,
+  runOnJS,
 } from 'react-native-reanimated';
+import Svg, {Path, Circle, Ellipse} from 'react-native-svg';
 
 import Config from 'react-native-config';
 import {supabase} from '@/api/supabase';
@@ -83,6 +89,113 @@ function AnimatedButton({
   );
 }
 
+const ReAnimatedSvgPath = ReAnimated.createAnimatedComponent(Path);
+const ReAnimatedEllipse = ReAnimated.createAnimatedComponent(Ellipse);
+
+function IntroOverlay({onFinish}: {onFinish: () => void}) {
+  // Road stroke
+  const roadProgress = useSharedValue(0);
+  // Pin
+  const pinTranslateY = useSharedValue(-60);
+  const pinOpacity = useSharedValue(0);
+  // Shadow
+  const shadowScale = useSharedValue(0);
+  const shadowOpacity = useSharedValue(0);
+  // Logo
+  const logoOpacity = useSharedValue(0);
+  const logoTranslateY = useSharedValue(15);
+  // Overlay fade out
+  const overlayOpacity = useSharedValue(1);
+
+  useEffect(() => {
+    // 1. Road stroke: 0-600ms
+    roadProgress.value = withTiming(1, {duration: 600, easing: REasing.out(REasing.cubic)});
+
+    // 2. Pin bounce: starts at 500ms
+    pinOpacity.value = withDelay(500, withTiming(1, {duration: 80}));
+    pinTranslateY.value = withDelay(500, withSpring(0, {damping: 8, stiffness: 200}));
+
+    // 3. Shadow: starts at 700ms
+    shadowOpacity.value = withDelay(700, withTiming(0.3, {duration: 250}));
+    shadowScale.value = withDelay(700, withSpring(1, {damping: 12, stiffness: 150}));
+
+    // 4. Logo fade in: starts at 1000ms
+    logoOpacity.value = withDelay(1000, withTiming(1, {duration: 400}));
+    logoTranslateY.value = withDelay(1000, withTiming(0, {duration: 400, easing: REasing.out(REasing.cubic)}));
+
+    // 5. Fade out overlay: starts at 1700ms
+    overlayOpacity.value = withDelay(1700, withTiming(0, {duration: 400}, () => {
+      runOnJS(onFinish)();
+    }));
+  }, []);
+
+  const roadProps = useAnimatedProps(() => ({
+    strokeDashoffset: 120 * (1 - roadProgress.value),
+  }));
+
+  const pinStyle = useAnimatedStyle(() => ({
+    opacity: pinOpacity.value,
+    transform: [{translateY: pinTranslateY.value}],
+  }));
+
+  const shadowProps = useAnimatedProps(() => ({
+    opacity: shadowOpacity.value,
+    rx: 8 * shadowScale.value,
+    ry: 3 * shadowScale.value,
+  }));
+
+  const introLogoStyle = useAnimatedStyle(() => ({
+    opacity: logoOpacity.value,
+    transform: [{translateY: logoTranslateY.value}],
+  }));
+
+  const containerStyle = useAnimatedStyle(() => ({
+    opacity: overlayOpacity.value,
+  }));
+
+  return (
+    <ReAnimated.View style={[styles.introOverlay, containerStyle]}>
+      <View style={styles.introContent}>
+        {/* Road */}
+        <Svg width={100} height={80} viewBox="0 0 100 80">
+          <ReAnimatedSvgPath
+            d="M10 70 Q30 40 50 45 Q70 50 90 20"
+            stroke="#2A9D8F"
+            strokeWidth={4}
+            strokeLinecap="round"
+            fill="none"
+            strokeDasharray={120}
+            animatedProps={roadProps}
+          />
+          {/* Pin shadow */}
+          <ReAnimatedEllipse
+            cx={50}
+            cy={48}
+            rx={0}
+            ry={0}
+            fill="#00000040"
+            animatedProps={shadowProps}
+          />
+        </Svg>
+        {/* Pin */}
+        <ReAnimated.View style={[styles.introPinContainer, pinStyle]}>
+          <Svg width={28} height={36} viewBox="0 0 28 36">
+            <Path
+              d="M14 0C6.268 0 0 6.268 0 14c0 10.5 14 22 14 22s14-11.5 14-22C28 6.268 21.732 0 14 0z"
+              fill="#E8872A"
+            />
+            <Circle cx={14} cy={14} r={6} fill="#FDF4E0" />
+          </Svg>
+        </ReAnimated.View>
+        {/* Logo text */}
+        <ReAnimated.Text style={[styles.introLogoText, introLogoStyle]}>
+          YUMYUM
+        </ReAnimated.Text>
+      </View>
+    </ReAnimated.View>
+  );
+}
+
 // SVG viewBox: 260 x 1080, 상반부(540)와 하반부(540) 동일 패턴
 const SVG_VIEWBOX_W = 260;
 const SVG_TILE_H = 540;
@@ -91,6 +204,7 @@ const BG_SCROLL_DURATION = 20000;
 function AuthHomeScreen() {
   const {appleLoginMutation} = useAuth();
   const {width: screenWidth} = useWindowDimensions();
+  const [showIntro, setShowIntro] = useState(true);
 
   const tilePixelHeight = Math.round(
     screenWidth * (SVG_TILE_H / SVG_VIEWBOX_W),
@@ -231,6 +345,7 @@ function AuthHomeScreen() {
           <Text style={styles.googleButtonText}>Google로 로그인</Text>
         </AnimatedButton>
       </View>
+      {showIntro && <IntroOverlay onFinish={() => setShowIntro(false)} />}
     </SafeAreaView>
   );
 }
@@ -259,6 +374,7 @@ const styles = StyleSheet.create({
   },
   logoText: {
     fontSize: 40,
+    fontFamily: 'Baloo2',
     fontWeight: '800',
     color: '#E8872A',
     letterSpacing: 4,
@@ -303,6 +419,27 @@ const styles = StyleSheet.create({
   },
   disabledButton: {
     opacity: 0.6,
+  },
+  introOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 10,
+    backgroundColor: '#FDF4E0',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  introContent: {
+    alignItems: 'center',
+  },
+  introPinContainer: {
+    marginTop: -20,
+  },
+  introLogoText: {
+    marginTop: 12,
+    fontSize: 32,
+    fontFamily: 'Baloo2',
+    fontWeight: '800',
+    color: '#E8872A',
+    letterSpacing: 3,
   },
 });
 

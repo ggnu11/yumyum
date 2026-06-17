@@ -120,7 +120,7 @@ const styling = (theme: Theme) =>
       borderRadius: 8,
     },
     currentPageDot: {
-      backgroundColor: colors[theme].PRIMARY,
+      backgroundColor: colors[theme].TEAL,
     },
   });
 

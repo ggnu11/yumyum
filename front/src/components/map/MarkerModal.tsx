@@ -100,7 +100,7 @@ function MarkerModal({markerId, isVisible, hide}: MarkerModalProps) {
                     <Ionicons
                       name="location-outline"
                       size={10}
-                      color={colors[theme].PRIMARY}
+                      color={colors[theme].TEAL}
                     />
                     <Text
                       style={styles.addressText}
@@ -214,7 +214,7 @@ const styling = (theme: Theme) =>
     dateText: {
       fontSize: 12,
       fontWeight: 'bold',
-      color: colors[theme].PRIMARY,
+      color: colors[theme].TEAL,
     },
     nextButton: {
       width: 40,

@@ -76,7 +76,7 @@ const styling = (theme: Theme) =>
       fontWeight: 'bold',
     },
     todayText: {
-      color: colors[theme].PRIMARY,
+      color: colors[theme].TEAL,
       fontWeight: 'bold',
     },
     scheduleIndicator: {
@@ -84,7 +84,7 @@ const styling = (theme: Theme) =>
       width: 6,
       height: 6,
       borderRadius: 6,
-      backgroundColor: colors[theme].GRAY_500,
+      backgroundColor: colors[theme].TEAL,
     },
   });
 

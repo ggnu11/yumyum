@@ -36,7 +36,7 @@ const styling = (theme: Theme) =>
       flexDirection: 'row',
     },
     line: {
-      backgroundColor: colors[theme].PRIMARY,
+      backgroundColor: colors[theme].TEAL,
       width: 6,
       height: 50,
       marginRight: 8,

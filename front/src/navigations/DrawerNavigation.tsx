@@ -65,7 +65,7 @@ export default function DrawerNavigation() {
         drawerType: 'front',
         drawerActiveTintColor: colors[theme].WHITE,
         drawerInactiveTintColor: colors[theme].GRAY_500,
-        drawerActiveBackgroundColor: colors[theme].PRIMARY,
+        drawerActiveBackgroundColor: colors[theme].TEAL,
         drawerInactiveBackgroundColor: colors[theme].GRAY_100,
         drawerIcon: ({focused}) =>
           DrawerIcons(route.name as keyof MainDrawerParamList, focused, theme),
