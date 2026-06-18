@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {Alert, StyleSheet, View} from 'react-native';
+import React, {useRef, useState} from 'react';
+import {Alert, Animated, Easing, StyleSheet, View} from 'react-native';
 import MapView, {LatLng, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
@@ -48,6 +48,80 @@ function MapHomeScreen() {
   const filterAction = useModal();
   usePermission('LOCATION');
 
+  const drawerAnim = useRef(new Animated.Value(1)).current;
+  const fabAnim = useRef(new Animated.Value(1)).current;
+  const isHidden = useRef(false);
+  const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const hideControls = () => {
+    if (isHidden.current) {
+      if (debounceTimer.current) {
+        clearTimeout(debounceTimer.current);
+        debounceTimer.current = null;
+      }
+      return;
+    }
+    isHidden.current = true;
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+      debounceTimer.current = null;
+    }
+    Animated.parallel([
+      Animated.timing(drawerAnim, {
+        toValue: 0,
+        duration: 150,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
+      Animated.timing(fabAnim, {
+        toValue: 0,
+        duration: 150,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  const showControls = () => {
+    if (!isHidden.current) return;
+    debounceTimer.current = setTimeout(() => {
+      isHidden.current = false;
+      Animated.parallel([
+        Animated.timing(drawerAnim, {
+          toValue: 1,
+          duration: 300,
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: true,
+        }),
+        Animated.timing(fabAnim, {
+          toValue: 1,
+          duration: 300,
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: true,
+        }),
+      ]).start();
+    }, 120);
+  };
+
+  const handlePanDrag = () => {
+    hideControls();
+  };
+
+  const handleRegionChangeComplete = (region: any) => {
+    handleChangeDelta(region);
+    showControls();
+  };
+
+  const drawerTranslateX = drawerAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-60, 0],
+  });
+
+  const fabTranslateX = fabAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [60, 0],
+  });
+
   const handlePressUserLocation = () => {
     if (isUserLocationError) {
       Toast.show({
@@ -84,10 +158,14 @@ function MapHomeScreen() {
 
   return (
     <>
-      <DrawerButton
-        style={[styles.drawerButton, {top: inset.top + 10}]}
-        color={colors[theme].WHITE}
-      />
+      <Animated.View
+        style={[
+          styles.drawerButton,
+          {top: inset.top + 10},
+          {transform: [{translateX: drawerTranslateX}], opacity: drawerAnim},
+        ]}>
+        <DrawerButton color={colors[theme].WHITE} />
+      </Animated.View>
       <MapView
         key={theme}
         userInterfaceStyle={theme}
@@ -99,7 +177,8 @@ function MapHomeScreen() {
           ...numbers.INITIAL_DELTA,
         }}
         provider={PROVIDER_GOOGLE}
-        onRegionChangeComplete={handleChangeDelta}
+        onPanDrag={handlePanDrag}
+        onRegionChangeComplete={handleRegionChangeComplete}
         onLongPress={({nativeEvent}) =>
           setSelectLocation(nativeEvent.coordinate)
         }>
@@ -115,7 +194,11 @@ function MapHomeScreen() {
 
         {selectLocation && <Marker coordinate={selectLocation} />}
       </MapView>
-      <View style={styles.buttonList}>
+      <Animated.View
+        style={[
+          styles.buttonList,
+          {transform: [{translateX: fabTranslateX}], opacity: fabAnim},
+        ]}>
         <MapIconButton
           name="magnifying-glass"
           onPress={() => navigation.navigate('SearchLocation')}
@@ -126,7 +209,7 @@ function MapHomeScreen() {
           name="location-crosshairs"
           onPress={handlePressUserLocation}
         />
-      </View>
+      </Animated.View>
 
       <View style={styles.bannerContainer}>
         <BannerAdView />
@@ -156,7 +239,7 @@ const styling = (theme: Theme) =>
       top: 0,
       zIndex: 1,
       paddingVertical: 10,
-      paddingHorizontal: 15,
+      paddingHorizontal: 3,
       backgroundColor: colors[theme].TEAL,
       borderTopRightRadius: 50,
       borderBottomRightRadius: 50,
