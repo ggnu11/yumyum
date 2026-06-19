@@ -1,5 +1,6 @@
 import Ionicons from '@react-native-vector-icons/ionicons';
 import React from 'react';
+import {useTranslation} from 'react-i18next';
 import {Pressable, StyleSheet, Text} from 'react-native';
 
 import {colors} from '@/constants/colors';
@@ -10,6 +11,7 @@ interface ImageInputProps {
 }
 
 function ImageInput({onChange}: ImageInputProps) {
+  const {t} = useTranslation();
   const {theme} = useThemeStore();
   const styles = styling(theme);
 
@@ -25,7 +27,7 @@ function ImageInput({onChange}: ImageInputProps) {
         size={20}
         color={colors[theme].GRAY_500}
       />
-      <Text style={styles.inputText}>사진 추가</Text>
+      <Text style={styles.inputText}>{t('post.addPhoto')}</Text>
     </Pressable>
   );
 }

@@ -1,5 +1,6 @@
 import Slider from '@react-native-community/slider';
 import React from 'react';
+import {useTranslation} from 'react-i18next';
 import {StyleSheet, Text, View} from 'react-native';
 
 import {colors} from '@/constants/colors';
@@ -11,14 +12,15 @@ interface ScoreInputProps {
 }
 
 function ScoreInput({score, onChangeScore}: ScoreInputProps) {
+  const {t} = useTranslation();
   const {theme} = useThemeStore();
   const styles = styling(theme);
 
   return (
     <View style={styles.container}>
       <View style={styles.labelContainer}>
-        <Text style={styles.labelText}>평점</Text>
-        <Text style={styles.labelText}>{score}점</Text>
+        <Text style={styles.labelText}>{t('post.score')}</Text>
+        <Text style={styles.labelText}>{t('post.scoreUnit', {score})}</Text>
       </View>
       <Slider
         value={score}

@@ -1,5 +1,6 @@
 import Ionicons from '@react-native-vector-icons/ionicons';
 import React from 'react';
+import {useTranslation} from 'react-i18next';
 import {
   Dimensions,
   Pressable,
@@ -21,6 +22,7 @@ interface SearchRegionResultProps {
 }
 
 function SearchRegionResult({regionInfo}: SearchRegionResultProps) {
+  const {t} = useTranslation();
   const {theme} = useThemeStore();
   const styles = styling(theme);
   const navigation = useNavigation();
@@ -78,7 +80,7 @@ function SearchRegionResult({regionInfo}: SearchRegionResultProps) {
 
         {regionInfo.length === 0 && (
           <View style={styles.noResultContainer}>
-            <Text style={styles.noResultText}>검색 결과가 없습니다.</Text>
+            <Text style={styles.noResultText}>{t('map.noResults')}</Text>
           </View>
         )}
       </ScrollView>

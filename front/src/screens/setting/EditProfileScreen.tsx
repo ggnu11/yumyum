@@ -1,5 +1,6 @@
 import Ionicons from '@react-native-vector-icons/ionicons';
 import React from 'react';
+import {useTranslation} from 'react-i18next';
 import {
   Image,
   Keyboard,
@@ -22,6 +23,7 @@ import {validateEditProfile} from '@/utils/validation';
 import Toast from 'react-native-toast-message';
 
 function EditProfileScreen() {
+  const {t} = useTranslation();
   const {theme} = useThemeStore();
   const styles = styling(theme);
   const {auth, profileMutation} = useAuth();
@@ -51,7 +53,7 @@ function EditProfileScreen() {
         onSuccess: () =>
           Toast.show({
             type: 'success',
-            text1: '프로필이 변경되었습니다.',
+            text1: t('setting.profileChanged'),
             position: 'bottom',
           }),
       },
@@ -87,10 +89,10 @@ function EditProfileScreen() {
           {...editProfile.getTextInputProps('nickname')}
           error={editProfile.errors.nickname}
           touched={editProfile.touched.nickname}
-          placeholder="닉네임을 입력해주세요."
+          placeholder={t('setting.nicknamePlaceholder')}
         />
       </View>
-      <FixedBottomCTA label="저장" onPress={handleSubmit} />
+      <FixedBottomCTA label={t('post.save')} onPress={handleSubmit} />
 
       <EditProfileActionSheet
         isVisible={imageAction.isVisible}

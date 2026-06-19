@@ -1,5 +1,6 @@
 import {createStackNavigator} from '@react-navigation/stack';
 import React from 'react';
+import {useTranslation} from 'react-i18next';
 
 import {colors} from '@/constants/colors';
 import AddLocationScreen from '@/screens/map/AddLocationScreen';
@@ -11,6 +12,7 @@ import {MapStackParamList} from '@/types/navigation';
 const Stack = createStackNavigator<MapStackParamList>();
 
 export function MapStack() {
+  const {t} = useTranslation();
   const {theme} = useThemeStore();
 
   return (
@@ -38,7 +40,7 @@ export function MapStack() {
         name="AddLocation"
         component={AddLocationScreen}
         options={{
-          title: '장소 추가',
+          title: t('navigation.addLocation'),
           cardStyle: {
             backgroundColor: colors[theme].WHITE,
           },
@@ -48,7 +50,7 @@ export function MapStack() {
         name="SearchLocation"
         component={SearchLocationScreen}
         options={{
-          title: '장소 검색',
+          title: t('navigation.searchLocation'),
           presentation: 'modal',
           cardStyle: {
             backgroundColor: colors[theme].WHITE,

@@ -12,7 +12,9 @@ import {
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 
+import {useTranslation} from 'react-i18next';
 import DarkModeActionSheet from '@/components/setting/DarkModeActionSheet';
+import LanguageActionSheet from '@/components/setting/LanguageActionSheet';
 import {colors} from '@/constants/colors';
 import useAuth from '@/hooks/queries/useAuth';
 import useModal from '@/hooks/useModal';
@@ -22,30 +24,32 @@ import {SettingStackParamList} from '@/types/navigation';
 type Navigation = NavigationProp<SettingStackParamList>;
 
 function SettingHomeScreen() {
+  const {t} = useTranslation();
   const {theme} = useThemeStore();
   const styles = styling(theme);
   const navigation = useNavigation<Navigation>();
   const {auth, logoutMutation, withdrawMutation} = useAuth();
   const darkModeAction = useModal();
+  const languageAction = useModal();
 
   const handleWithdrawUser = () => {
     Alert.alert(
-      '회원 탈퇴',
-      '정말로 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.',
+      t('setting.withdraw'),
+      t('setting.withdrawConfirm'),
       [
         {
-          text: '취소',
+          text: t('common.cancel'),
           style: 'cancel',
         },
         {
-          text: '탈퇴',
+          text: t('setting.withdrawButton'),
           style: 'destructive',
           onPress: async () => {
             withdrawMutation.mutate(null, {
               onSuccess: () => {
                 Toast.show({
                   type: 'success',
-                  text1: '회원탈퇴가 완료되었습니다.',
+                  text1: t('setting.withdrawSuccess'),
                   position: 'bottom',
                 });
               },
@@ -53,7 +57,7 @@ function SettingHomeScreen() {
                 console.log('[회원탈퇴 에러]', JSON.stringify(error, null, 2));
                 Toast.show({
                   type: 'error',
-                  text1: '회원탈퇴 중 오류가 발생했습니다.',
+                  text1: t('setting.withdrawError'),
                   text2: error?.message || '',
                   position: 'bottom',
                 });
@@ -72,26 +76,27 @@ function SettingHomeScreen() {
         showsVerticalScrollIndicator={false}>
         <View style={styles.space} />
         <SettingItem
-          title="프로필 수정"
+          title={t('setting.editProfile')}
           onPress={() => navigation.navigate('EditProfile')}
         />
-        <SettingItem title="다크 모드" onPress={darkModeAction.show} />
+        <SettingItem title={t('setting.darkMode')} onPress={darkModeAction.show} />
+        <SettingItem title={t('setting.language')} onPress={languageAction.show} />
         <View style={styles.space} />
         <SettingItem
-          title="로그아웃"
+          title={t('setting.logout')}
           color={colors[theme].RED_500}
           onPress={() =>
-            Alert.alert('로그아웃', '로그아웃 하시겠습니까?', [
-              {text: '취소', style: 'cancel'},
+            Alert.alert(t('setting.logout'), t('setting.logoutConfirm'), [
+              {text: t('common.cancel'), style: 'cancel'},
               {
-                text: '로그아웃',
+                text: t('setting.logout'),
                 style: 'destructive',
                 onPress: () =>
                   logoutMutation.mutate(null, {
                     onSuccess: () => {
                       Toast.show({
                         type: 'success',
-                        text1: '로그아웃 되었습니다.',
+                        text1: t('setting.logoutSuccess'),
                         position: 'bottom',
                       });
                     },
@@ -107,11 +112,15 @@ function SettingHomeScreen() {
           isVisible={darkModeAction.isVisible}
           hideAction={darkModeAction.hide}
         />
+        <LanguageActionSheet
+          isVisible={languageAction.isVisible}
+          hideAction={languageAction.hide}
+        />
       </ScrollView>
 
       <View style={styles.withdrawContainer}>
         <Pressable onPress={handleWithdrawUser} style={styles.withdrawButton}>
-          <Text style={styles.withdrawText}>회원 탈퇴</Text>
+          <Text style={styles.withdrawText}>{t('setting.withdraw')}</Text>
         </Pressable>
       </View>
     </SafeAreaView>

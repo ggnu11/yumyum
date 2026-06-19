@@ -1,5 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import React from 'react';
+import {useTranslation} from 'react-i18next';
 import {Alert} from 'react-native';
 
 import useMutateDeletePost from '@/hooks/queries/useMutateDeletePost';
@@ -20,13 +21,14 @@ function FeedDetailActionSheet({
   isVisible,
   hideAction,
 }: FeedDetailActionSheetProps) {
+  const {t} = useTranslation();
   const navigation = useNavigation<Navigation>();
   const deletePost = useMutateDeletePost();
 
   const handleDeletePost = () => {
-    Alert.alert('삭제하시겠습니까?', '피드와 지도에서 모두 삭제됩니다.', [
+    Alert.alert(t('feed.confirmDelete'), t('feed.deleteDescription'), [
       {
-        text: '삭제',
+        text: t('common.delete'),
         onPress: () =>
           deletePost.mutate(id, {
             onSuccess: () => {
@@ -37,7 +39,7 @@ function FeedDetailActionSheet({
         style: 'destructive',
       },
       {
-        text: '취소',
+        text: t('common.cancel'),
         style: 'cancel',
       },
     ]);
@@ -53,15 +55,15 @@ function FeedDetailActionSheet({
       <ActionSheet.Background>
         <ActionSheet.Container>
           <ActionSheet.Button isDanger onPress={handleDeletePost}>
-            삭제하기
+            {t('feed.delete')}
           </ActionSheet.Button>
           <ActionSheet.Divider />
           <ActionSheet.Button onPress={handleEditPost}>
-            수정하기
+            {t('feed.edit')}
           </ActionSheet.Button>
         </ActionSheet.Container>
         <ActionSheet.Container>
-          <ActionSheet.Button onPress={hideAction}>취소</ActionSheet.Button>
+          <ActionSheet.Button onPress={hideAction}>{t('common.cancel')}</ActionSheet.Button>
         </ActionSheet.Container>
       </ActionSheet.Background>
     </ActionSheet>

@@ -1,5 +1,6 @@
 import React, {useRef, useState} from 'react';
 import {Alert, Animated, Easing, StyleSheet, View} from 'react-native';
+import {useTranslation} from 'react-i18next';
 import MapView, {LatLng, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
@@ -27,6 +28,7 @@ import {StackNavigationProp} from '@react-navigation/stack';
 type Navigation = StackNavigationProp<MapStackParamList>;
 
 function MapHomeScreen() {
+  const {t} = useTranslation();
   const {theme} = useThemeStore();
   const styles = styling(theme);
   const navigation = useNavigation<Navigation>();
@@ -126,7 +128,7 @@ function MapHomeScreen() {
     if (isUserLocationError) {
       Toast.show({
         type: 'error',
-        text1: '위치 권한을 허용해주세요.',
+        text1: t('map.locationPermission'),
         position: 'bottom',
       });
       return;
@@ -144,8 +146,8 @@ function MapHomeScreen() {
   const handlePressAddPost = () => {
     if (!selectLocation) {
       Alert.alert(
-        '추가할 위치를 선택해주세요',
-        '지도를 길게 누르면 위치가 선택됩니다.',
+        t('map.selectLocation'),
+        t('map.longPressToSelect'),
       );
       return;
     }

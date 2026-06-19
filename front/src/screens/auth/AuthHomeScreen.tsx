@@ -27,6 +27,7 @@ import ReAnimated, {
 } from 'react-native-reanimated';
 import Svg, {Path, Circle, Ellipse} from 'react-native-svg';
 
+import {useTranslation} from 'react-i18next';
 import Config from 'react-native-config';
 import {supabase} from '@/api/supabase';
 
@@ -202,6 +203,7 @@ const SVG_TILE_H = 540;
 const BG_SCROLL_DURATION = 20000;
 
 function AuthHomeScreen() {
+  const {t} = useTranslation();
   const {appleLoginMutation} = useAuth();
   const {width: screenWidth} = useWindowDimensions();
   const [showIntro, setShowIntro] = useState(true);
@@ -244,15 +246,15 @@ function AuthHomeScreen() {
             onSuccess: () => {
               Toast.show({
                 type: 'success',
-                text1: '애플 로그인 성공',
-                text2: '환영합니다!',
+                text1: t('auth.appleLoginSuccess'),
+                text2: t('auth.welcome'),
               });
             },
             onError: (error: any) => {
               Toast.show({
                 type: 'error',
-                text1: '애플 로그인이 실패했습니다.',
-                text2: error?.message || '나중에 다시 시도해주세요',
+                text1: t('auth.appleLoginFailed'),
+                text2: error?.message || t('auth.retryLater'),
               });
             },
           },
@@ -262,8 +264,8 @@ function AuthHomeScreen() {
       if (error.code !== appleAuth.Error.CANCELED) {
         Toast.show({
           type: 'error',
-          text1: '애플 로그인이 실패했습니다.',
-          text2: '나중에 다시 시도해주세요',
+          text1: t('auth.appleLoginFailed'),
+          text2: t('auth.retryLater'),
         });
       }
     }
@@ -283,15 +285,15 @@ function AuthHomeScreen() {
         if (error) {
           Toast.show({
             type: 'error',
-            text1: '구글 로그인이 실패했습니다.',
-            text2: error.message || '나중에 다시 시도해주세요',
+            text1: t('auth.googleLoginFailed'),
+            text2: error.message || t('auth.retryLater'),
           });
         } else {
           await queryClient.invalidateQueries({queryKey: [queryKeys.AUTH]});
           Toast.show({
             type: 'success',
-            text1: '구글 로그인 성공',
-            text2: '환영합니다!',
+            text1: t('auth.googleLoginSuccess'),
+            text2: t('auth.welcome'),
           });
         }
       }
@@ -299,8 +301,8 @@ function AuthHomeScreen() {
       if (error.code !== 'SIGN_IN_CANCELLED') {
         Toast.show({
           type: 'error',
-          text1: '구글 로그인이 실패했습니다.',
-          text2: error?.message || '나중에 다시 시도해주세요',
+          text1: t('auth.googleLoginFailed'),
+          text2: error?.message || t('auth.retryLater'),
         });
       }
     }
@@ -335,14 +337,14 @@ function AuthHomeScreen() {
             disabled={appleLoginMutation.isPending}
             style={[styles.socialButton, styles.appleButton]}>
             <Ionicons name="logo-apple" size={20} color="#FFFFFF" />
-            <Text style={styles.appleButtonText}>Apple로 로그인</Text>
+            <Text style={styles.appleButtonText}>{t('auth.appleLogin')}</Text>
           </AnimatedButton>
         )}
         <AnimatedButton
           onPress={handleGoogleLogin}
           style={[styles.socialButton, styles.googleButton]}>
           <Ionicons name="logo-google" size={18} color="#E8872A" />
-          <Text style={styles.googleButtonText}>Google로 로그인</Text>
+          <Text style={styles.googleButtonText}>{t('auth.googleLogin')}</Text>
         </AnimatedButton>
       </View>
       {showIntro && <IntroOverlay onFinish={() => setShowIntro(false)} />}

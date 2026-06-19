@@ -1,5 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
+import {useTranslation} from 'react-i18next';
 import {
   Pressable,
   SafeAreaView,
@@ -16,6 +17,7 @@ import useThemeStore, {Theme} from '@/store/theme';
 import {getMonthYearDetails, getNewMonthYear} from '@/utils/date';
 
 function CalendarScreen() {
+  const {t} = useTranslation();
   const {theme} = useThemeStore();
   const styles = styling(theme);
   const navigation = useNavigation();
@@ -47,7 +49,7 @@ function CalendarScreen() {
       headerRight: () => (
         <Pressable onPress={moveToToday} style={{paddingHorizontal: 10}}>
           <Text style={{color: colors[theme].TEAL, fontWeight: 'bold'}}>
-            오늘
+            {t('calendar.today')}
           </Text>
         </Pressable>
       ),

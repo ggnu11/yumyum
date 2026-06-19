@@ -1,6 +1,7 @@
 import {colors} from '@/constants/colors';
 import useThemeStore, {Theme} from '@/store/theme';
 import React from 'react';
+import {useTranslation} from 'react-i18next';
 import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import CustomMarker from '../common/CustomMarker';
 
@@ -15,12 +16,13 @@ function MarkerColorInput({
   score,
   onChangeColor,
 }: MarkerColorInputProps) {
+  const {t} = useTranslation();
   const {theme} = useThemeStore();
   const styles = styling(theme);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.markerLabel}>마커선택</Text>
+      <Text style={styles.markerLabel}>{t('post.markerSelect')}</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         <View style={styles.markerInputScroll}>
           {[

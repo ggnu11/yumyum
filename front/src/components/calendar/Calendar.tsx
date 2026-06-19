@@ -1,4 +1,5 @@
 import React from 'react';
+import {useTranslation} from 'react-i18next';
 import {FlatList, Pressable, StyleSheet, Text, View} from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import {colors} from '@/constants/colors';
@@ -25,6 +26,7 @@ function Calendar({
   onPressDate,
   schedules,
 }: CalendarProps) {
+  const {t} = useTranslation();
   const {theme} = useThemeStore();
   const styles = styling(theme);
   const {month, year, firstDOW, lastDate} = monthYear;
@@ -46,7 +48,7 @@ function Calendar({
           style={styles.monthYearContainer}
           onPress={yearSelector.show}>
           <Text style={styles.monthYearText}>
-            {year}년 {month}월
+            {t('calendar.yearMonth', {year, month})}
           </Text>
           <Ionicons name="chevron-down" size={20} color={colors[theme].GRAY_500} />
         </Pressable>

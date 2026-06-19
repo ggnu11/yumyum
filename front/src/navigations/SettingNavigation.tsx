@@ -1,3 +1,4 @@
+import {useTranslation} from 'react-i18next';
 import DrawerButton from '@/components/common/DrawerButton';
 import {colors} from '@/constants/colors';
 import EditProfileScreen from '@/screens/setting/EditProfileScreen';
@@ -8,6 +9,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 const Stack = createStackNavigator();
 
 export function SettingStack() {
+  const {t} = useTranslation();
   const {theme} = useThemeStore();
 
   return (
@@ -28,7 +30,7 @@ export function SettingStack() {
         name="SettingHome"
         component={SettingHomeScreen}
         options={{
-          title: '설정',
+          title: t('navigation.setting'),
           headerLeft: () => <DrawerButton />,
           cardStyle: {
             backgroundColor: colors[theme].GRAY_100,
@@ -39,7 +41,7 @@ export function SettingStack() {
         name="EditProfile"
         component={EditProfileScreen}
         options={{
-          title: '프로필 수정',
+          title: t('navigation.editProfile'),
           cardStyle: {
             backgroundColor: colors[theme].WHITE,
           },

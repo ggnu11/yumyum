@@ -1,6 +1,7 @@
 import Ionicons from '@react-native-vector-icons/ionicons';
 import {createStackNavigator} from '@react-navigation/stack';
 import React from 'react';
+import {useTranslation} from 'react-i18next';
 import {Pressable} from 'react-native';
 
 import DrawerButton from '@/components/common/DrawerButton';
@@ -16,6 +17,7 @@ import {FeedStackParamList} from '@/types/navigation';
 const Stack = createStackNavigator<FeedStackParamList>();
 
 export function FeedStack() {
+  const {t} = useTranslation();
   const {theme} = useThemeStore();
 
   return (
@@ -39,7 +41,7 @@ export function FeedStack() {
         name="FeedList"
         component={FeedListScreen}
         options={({navigation}) => ({
-          title: '피드',
+          title: t('navigation.feed'),
           headerLeft: () => <DrawerButton />,
           headerRight: () => (
             <Pressable
@@ -59,7 +61,7 @@ export function FeedStack() {
         name="FeedFavorite"
         component={FeedFavoriteScreen}
         options={({navigation}) => ({
-          title: '즐겨찾기',
+          title: t('navigation.favorites'),
           headerLeft: () => (
             <Ionicons
               name="chevron-back"
@@ -73,7 +75,7 @@ export function FeedStack() {
       <Stack.Screen
         name="EditLocation"
         component={EditLocationScreen}
-        options={{title: '장소 수정'}}
+        options={{title: t('navigation.editLocation')}}
       />
       <Stack.Screen
         name="ImageZoom"

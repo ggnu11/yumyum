@@ -1,0 +1,126 @@
+{
+  "navigation": {
+    "home": "ホーム",
+    "feed": "フィード",
+    "calendar": "カレンダー",
+    "setting": "設定",
+    "favorites": "お気に入り",
+    "editLocation": "場所を編集",
+    "addLocation": "場所を追加",
+    "searchLocation": "場所を検索",
+    "editProfile": "プロフィール編集"
+  },
+  "auth": {
+    "appleLogin": "Appleでサインイン",
+    "googleLogin": "Googleでサインイン",
+    "appleLoginSuccess": "Appleログイン成功",
+    "googleLoginSuccess": "Googleログイン成功",
+    "welcome": "ようこそ！",
+    "appleLoginFailed": "Appleログインに失敗しました。",
+    "googleLoginFailed": "Googleログインに失敗しました。",
+    "retryLater": "後でもう一度お試しください",
+    "sessionNotCreated": "セッションが作成されませんでした。",
+    "userNotFound": "ユーザーが見つかりません。"
+  },
+  "map": {
+    "locationPermission": "位置情報の許可をしてください。",
+    "selectLocation": "追加する場所を選択してください",
+    "longPressToSelect": "地図を長押しすると場所が選択されます。",
+    "searchPlaceholder": "場所を検索",
+    "noResults": "検索結果がありません。",
+    "prevPage": "前へ",
+    "nextPage": "次へ"
+  },
+  "feed": {
+    "visitDate": "訪問日",
+    "score": "評価",
+    "markerColor": "マーカー色",
+    "viewLocation": "場所を見る",
+    "delete": "削除する",
+    "edit": "編集する",
+    "confirmDelete": "削除しますか？",
+    "deleteDescription": "フィードと地図の両方から削除されます。"
+  },
+  "post": {
+    "titlePlaceholder": "タイトルを入力してください",
+    "descriptionPlaceholder": "記録したい内容を入力してください（任意）",
+    "save": "保存",
+    "score": "評価",
+    "scoreUnit": "{{score}}点",
+    "markerSelect": "マーカー選択",
+    "addPhoto": "写真を追加"
+  },
+  "calendar": {
+    "today": "今日",
+    "yearMonth": "{{year}}年 {{month}}月",
+    "close": "閉じる",
+    "sun": "日",
+    "mon": "月",
+    "tue": "火",
+    "wed": "水",
+    "thu": "木",
+    "fri": "金",
+    "sat": "土"
+  },
+  "setting": {
+    "editProfile": "プロフィール編集",
+    "darkMode": "ダークモード",
+    "language": "言語",
+    "logout": "ログアウト",
+    "logoutConfirm": "ログアウトしますか？",
+    "logoutSuccess": "ログアウトしました。",
+    "withdraw": "アカウント削除",
+    "withdrawConfirm": "本当に退会しますか？この操作は取り消せません。",
+    "withdrawButton": "退会",
+    "withdrawSuccess": "退会が完了しました。",
+    "withdrawError": "退会中にエラーが発生しました。",
+    "withdrawComplete": "アカウント削除が完了しました。",
+    "nicknamePlaceholder": "ニックネームを入力してください",
+    "profileChanged": "プロフィールが変更されました。",
+    "selectFromAlbum": "アルバムから選択",
+    "lightMode": "ライトモード",
+    "darkModeOption": "ダークモード",
+    "systemDefault": "システムデフォルト"
+  },
+  "filter": {
+    "markerFilter": "マーカーフィルター",
+    "color": "色",
+    "score": "評価",
+    "done": "完了"
+  },
+  "common": {
+    "cancel": "キャンセル",
+    "delete": "削除",
+    "confirm": "完了",
+    "retry": "再試行",
+    "retryMessage": "しばらくしてからもう一度お試しください。",
+    "requestFailed": "リクエストの処理に失敗しました。",
+    "settings": "設定",
+    "goToSettings": "設定へ",
+    "unknownError": "不明なエラーが発生しました。"
+  },
+  "permission": {
+    "locationTitle": "位置情報の許可が必要です。",
+    "locationDescription": "設定画面で位置情報の許可をしてください。",
+    "photoTitle": "写真アクセスの許可が必要です。",
+    "photoDescription": "設定画面で写真の許可をしてください。"
+  },
+  "validation": {
+    "invalidEmail": "メールアドレスの形式が正しくありません。",
+    "passwordLength": "パスワードは8〜20文字で入力してください。",
+    "passwordMismatch": "パスワードが一致しません。",
+    "titleRequired": "タイトルは1〜30文字で入力してください。",
+    "nicknameRequired": "ニックネームを入力してください。"
+  },
+  "image": {
+    "maxExceeded": "画像数超過",
+    "maxOneImage": "追加できる画像は最大1枚です。",
+    "checkPermission": "権限が許可されているか確認してください。"
+  },
+  "language": {
+    "korean": "한국어",
+    "english": "English",
+    "japanese": "日本語",
+    "systemDefault": "デバイスのデフォルト"
+  }
+}

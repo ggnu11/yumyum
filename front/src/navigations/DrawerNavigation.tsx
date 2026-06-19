@@ -1,6 +1,7 @@
 import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import React from 'react';
+import {useTranslation} from 'react-i18next';
 
 import CustomDrawerContent from '@/components/common/CustomDrawerContent';
 import DrawerButton from '@/components/common/DrawerButton';
@@ -46,6 +47,7 @@ function DrawerIcons(
 }
 
 export default function DrawerNavigation() {
+  const {t} = useTranslation();
   const {theme} = useThemeStore();
 
   return (
@@ -84,7 +86,7 @@ export default function DrawerNavigation() {
         name="Map"
         component={MapStack}
         options={{
-          title: '홈',
+          title: t('navigation.home'),
           headerShown: false,
         }}
       />
@@ -92,7 +94,7 @@ export default function DrawerNavigation() {
         name="Feed"
         component={FeedStack}
         options={{
-          title: '피드',
+          title: t('navigation.feed'),
           headerShown: false,
         }}
       />
@@ -100,7 +102,7 @@ export default function DrawerNavigation() {
         name="Calendar"
         component={CalendarScreen}
         options={{
-          title: '캘린더',
+          title: t('navigation.calendar'),
           headerLeft: () => <DrawerButton />,
         }}
       />
@@ -108,7 +110,7 @@ export default function DrawerNavigation() {
         name="Setting"
         component={SettingStack}
         options={{
-          title: '설정',
+          title: t('navigation.setting'),
           headerShown: false,
           drawerItemStyle: {height: 0},
         }}

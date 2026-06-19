@@ -4,6 +4,7 @@ import React, {useState} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {useTranslation} from 'react-i18next';
 
 import CustomButton from '@/components/common/CustomButton';
 import FixedBottomCTA from '@/components/common/FixedBottomCTA';
@@ -25,6 +26,7 @@ import {validateAddPost} from '@/utils/validation';
 type Props = StackScreenProps<FeedStackParamList, 'EditLocation'>;
 
 function EditLocationScreen({route}: Props) {
+  const {t} = useTranslation();
   const {id} = route.params;
   const {data: post} = useGetPost(id);
   const navigation = useNavigation();
@@ -80,14 +82,14 @@ function EditLocationScreen({route}: Props) {
           onPress={() => setOpenDate(true)}
         />
         <InputField
-          placeholder="제목을 입력하세요."
+          placeholder={t('post.titlePlaceholder')}
           error={postForm.errors.title}
           touched={postForm.touched.title}
           {...postForm.getTextInputProps('title')}
         />
         <InputField
           multiline
-          placeholder="기록하고 싶은 내용을 입력하세요. (선택)"
+          placeholder={t('post.descriptionPlaceholder')}
           error={postForm.errors.description}
           touched={postForm.touched.description}
           {...postForm.getTextInputProps('description')}
@@ -106,8 +108,8 @@ function EditLocationScreen({route}: Props) {
           locale="ko"
           mode="date"
           title={null}
-          cancelText="취소"
-          confirmText="완료"
+          cancelText={t('common.cancel')}
+          confirmText={t('common.confirm')}
           date={postForm.values.date}
           open={openDate}
           onConfirm={date => {
@@ -125,7 +127,7 @@ function EditLocationScreen({route}: Props) {
           />
         </View>
       </ScrollView>
-      <FixedBottomCTA label="저장" onPress={handleSubmit} />
+      <FixedBottomCTA label={t('post.save')} onPress={handleSubmit} />
     </>
   );
 }

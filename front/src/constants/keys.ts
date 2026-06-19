@@ -15,6 +15,8 @@ const storageKeys = {
   REFRESH_TOKEN: 'refreshToken',
   THEME_MODE: 'themeMode',
   THEME_SYSTEM: 'themeSystem',
+  LANGUAGE: 'language',
+  LANGUAGE_SYSTEM: 'languageSystem',
 };
 
 export {queryKeys, storageKeys};

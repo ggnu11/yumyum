@@ -1,3 +1,4 @@
+import i18n from '@/i18n';
 import {Profile} from '@/types/domain';
 import {supabase} from './supabase';
 
@@ -21,7 +22,7 @@ async function appleLogin(body: RequestAppleIdentity): Promise<ResponseToken> {
     throw error;
   }
   if (!data.session) {
-    throw new Error('세션이 생성되지 않았습니다.');
+    throw new Error(i18n.t('auth.sessionNotCreated'));
   }
   return {
     accessToken: data.session.access_token,
@@ -46,7 +47,7 @@ async function getProfile(): Promise<Profile> {
   } = await supabase.auth.getUser();
 
   if (authError || !user) {
-    throw authError || new Error('사용자를 찾을 수 없습니다.');
+    throw authError || new Error(i18n.t('auth.userNotFound'));
   }
 
   let result = await supabase
@@ -106,7 +107,7 @@ async function editProfile(body: RequestProfile): Promise<Profile> {
   } = await supabase.auth.getUser();
 
   if (authError || !user) {
-    throw authError || new Error('사용자를 찾을 수 없습니다.');
+    throw authError || new Error(i18n.t('auth.userNotFound'));
   }
 
   const {data: profile, error: profileError} = await supabase
@@ -140,7 +141,7 @@ async function withdrawUser(): Promise<{message: string}> {
   }
 
   await supabase.auth.signOut();
-  return {message: '회원 탈퇴가 완료되었습니다.'};
+  return {message: i18n.t('setting.withdrawComplete')};
 }
 
 export {

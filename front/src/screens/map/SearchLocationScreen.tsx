@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {Keyboard, StyleSheet, View} from 'react-native';
+import {useTranslation} from 'react-i18next';
 
 import Pagination from '@/components/map/Pagination';
 import SearchInput from '@/components/map/SearchInput';
@@ -8,6 +9,7 @@ import useSearchLocation from '@/hooks/useSearchLocation';
 import useUserLocation from '@/hooks/useUserLocation';
 
 function SearchLocationScreen() {
+  const {t} = useTranslation();
   const [keyword, setKeyword] = useState('');
   const [searchKeyword, setSearchKeyword] = useState('');
   const {userLocation} = useUserLocation();
@@ -26,7 +28,7 @@ function SearchLocationScreen() {
         value={keyword}
         onChangeText={setKeyword}
         onSubmit={handleSubmitKeyword}
-        placeholder="검색할 장소를 입력해주세요."
+        placeholder={t('map.searchPlaceholder')}
       />
       <SearchRegionResult regionInfo={regionInfo} />
       <Pagination

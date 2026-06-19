@@ -1,0 +1,126 @@
+{
+  "navigation": {
+    "home": "Home",
+    "feed": "Feed",
+    "calendar": "Calendar",
+    "setting": "Settings",
+    "favorites": "Favorites",
+    "editLocation": "Edit Location",
+    "addLocation": "Add Location",
+    "searchLocation": "Search Location",
+    "editProfile": "Edit Profile"
+  },
+  "auth": {
+    "appleLogin": "Sign in with Apple",
+    "googleLogin": "Sign in with Google",
+    "appleLoginSuccess": "Apple login successful",
+    "googleLoginSuccess": "Google login successful",
+    "welcome": "Welcome!",
+    "appleLoginFailed": "Apple login failed.",
+    "googleLoginFailed": "Google login failed.",
+    "retryLater": "Please try again later",
+    "sessionNotCreated": "Session was not created.",
+    "userNotFound": "User not found."
+  },
+  "map": {
+    "locationPermission": "Please allow location permission.",
+    "selectLocation": "Please select a location to add",
+    "longPressToSelect": "Long press the map to select a location.",
+    "searchPlaceholder": "Search for a place",
+    "noResults": "No results found.",
+    "prevPage": "Previous",
+    "nextPage": "Next"
+  },
+  "feed": {
+    "visitDate": "Visit Date",
+    "score": "Rating",
+    "markerColor": "Marker Color",
+    "viewLocation": "View Location",
+    "delete": "Delete",
+    "edit": "Edit",
+    "confirmDelete": "Delete this post?",
+    "deleteDescription": "It will be removed from both feed and map."
+  },
+  "post": {
+    "titlePlaceholder": "Enter a title",
+    "descriptionPlaceholder": "Write a note (optional)",
+    "save": "Save",
+    "score": "Rating",
+    "scoreUnit": "{{score}}",
+    "markerSelect": "Select Marker",
+    "addPhoto": "Add Photo"
+  },
+  "calendar": {
+    "today": "Today",
+    "yearMonth": "{{month}}/{{year}}",
+    "close": "Close",
+    "sun": "Sun",
+    "mon": "Mon",
+    "tue": "Tue",
+    "wed": "Wed",
+    "thu": "Thu",
+    "fri": "Fri",
+    "sat": "Sat"
+  },
+  "setting": {
+    "editProfile": "Edit Profile",
+    "darkMode": "Dark Mode",
+    "language": "Language",
+    "logout": "Log Out",
+    "logoutConfirm": "Are you sure you want to log out?",
+    "logoutSuccess": "Logged out successfully.",
+    "withdraw": "Delete Account",
+    "withdrawConfirm": "Are you sure? This action cannot be undone.",
+    "withdrawButton": "Delete",
+    "withdrawSuccess": "Account deleted successfully.",
+    "withdrawError": "An error occurred while deleting account.",
+    "withdrawComplete": "Account deletion completed.",
+    "nicknamePlaceholder": "Enter your nickname",
+    "profileChanged": "Profile updated successfully.",
+    "selectFromAlbum": "Choose from Album",
+    "lightMode": "Light Mode",
+    "darkModeOption": "Dark Mode",
+    "systemDefault": "System Default"
+  },
+  "filter": {
+    "markerFilter": "Marker Filter",
+    "color": "Color",
+    "score": "Rating",
+    "done": "Done"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "confirm": "Done",
+    "retry": "Retry",
+    "retryMessage": "Please try again later.",
+    "requestFailed": "Failed to process the request.",
+    "settings": "Settings",
+    "goToSettings": "Go to Settings",
+    "unknownError": "An unknown error occurred."
+  },
+  "permission": {
+    "locationTitle": "Location permission is required.",
+    "locationDescription": "Please allow location permission in settings.",
+    "photoTitle": "Photo access permission is required.",
+    "photoDescription": "Please allow photo permission in settings."
+  },
+  "validation": {
+    "invalidEmail": "Invalid email format.",
+    "passwordLength": "Password must be 8-20 characters.",
+    "passwordMismatch": "Passwords do not match.",
+    "titleRequired": "Title must be 1-30 characters.",
+    "nicknameRequired": "Please enter a nickname."
+  },
+  "image": {
+    "maxExceeded": "Image limit exceeded",
+    "maxOneImage": "You can add up to 1 image.",
+    "checkPermission": "Please check if permission is allowed."
+  },
+  "language": {
+    "korean": "한국어",
+    "english": "English",
+    "japanese": "日本語",
+    "systemDefault": "Device Default"
+  }
+}

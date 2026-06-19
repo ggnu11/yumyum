@@ -12,6 +12,7 @@ import {
   View,
 } from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {useTranslation} from 'react-i18next';
 
 import CustomButton from '@/components/common/CustomButton';
 import PreviewImageList from '@/components/common/PreviewImageList';
@@ -28,6 +29,7 @@ import {getDateWithSeparator} from '@/utils/date';
 type Props = StackScreenProps<FeedStackParamList, 'FeedDetail'>;
 
 function FeedDetailScreen({route}: Props) {
+  const {t} = useTranslation();
   const {theme} = useThemeStore();
   const styles = styling(theme);
   const {id} = route.params;
@@ -103,19 +105,19 @@ function FeedDetailScreen({route}: Props) {
           <View style={styles.infoContainer}>
             <View style={styles.infoRow}>
               <View style={styles.infoColumn}>
-                <Text style={styles.infoColumnKeyText}>방문날짜</Text>
+                <Text style={styles.infoColumnKeyText}>{t('feed.visitDate')}</Text>
                 <Text style={styles.infoColumnValueText}>
                   {getDateWithSeparator(post.date, '.')}
                 </Text>
               </View>
               <View style={styles.infoColumn}>
-                <Text style={styles.infoColumnKeyText}>평점</Text>
+                <Text style={styles.infoColumnKeyText}>{t('feed.score')}</Text>
                 <Text style={styles.infoColumnValueText}>{post.score}</Text>
               </View>
             </View>
             <View style={styles.infoRow}>
               <View style={styles.infoColumn}>
-                <Text style={styles.infoColumnKeyText}>마커색상</Text>
+                <Text style={styles.infoColumnKeyText}>{t('feed.markerColor')}</Text>
                 <View
                   style={[styles.markerColor, {backgroundColor: post.color}]}
                 />
@@ -149,7 +151,7 @@ function FeedDetailScreen({route}: Props) {
         />
         <CustomButton
           size="small"
-          label="위치보기"
+          label={t('feed.viewLocation')}
           style={{width: '50%'}}
           onPress={handlePressLocation}
         />

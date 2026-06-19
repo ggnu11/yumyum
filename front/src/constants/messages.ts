@@ -1,16 +1,18 @@
+import i18n from '@/i18n';
+
 const alerts = {
   LOCATION_PERMISSION: {
-    TITLE: '위치 권한 허용이 필요합니다.',
-    DESCRIPTION: '설정 화면에서 위치 권한을 허용해주세요.',
+    get TITLE() { return i18n.t('permission.locationTitle'); },
+    get DESCRIPTION() { return i18n.t('permission.locationDescription'); },
   },
   PHOTO_PERMISSION: {
-    TITLE: '사진 접근 권한이 필요합니다.',
-    DESCRIPTION: '설정 화면에서 사진 권한을 허용해주세요.',
+    get TITLE() { return i18n.t('permission.photoTitle'); },
+    get DESCRIPTION() { return i18n.t('permission.photoDescription'); },
   },
 };
 
 const errorMessages = {
-  UNEXPECT_ERROR: '알 수 없는 에러가 발생했습니다.',
+  get UNEXPECT_ERROR() { return i18n.t('common.unknownError'); },
 };
 
 export {alerts, errorMessages};

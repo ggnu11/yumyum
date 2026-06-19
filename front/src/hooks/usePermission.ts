@@ -2,6 +2,7 @@ import {useEffect} from 'react';
 import {Alert, Linking, Platform} from 'react-native';
 import {check, PERMISSIONS, request, RESULTS} from 'react-native-permissions';
 
+import i18n from '@/i18n';
 import {alerts} from '@/constants/messages';
 
 type PermissionType = 'LOCATION' | 'PHOTO';
@@ -28,8 +29,8 @@ function usePermission(type: PermissionType) {
           alerts[`${type}_PERMISSION`].TITLE,
           alerts[`${type}_PERMISSION`].DESCRIPTION,
           [
-            {text: '설정하기', onPress: () => Linking.openSettings()},
-            {text: '취소', style: 'cancel'},
+            {text: i18n.t('common.goToSettings'), onPress: () => Linking.openSettings()},
+            {text: i18n.t('common.cancel'), style: 'cancel'},
           ],
         );
       };

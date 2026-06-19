@@ -11,6 +11,8 @@ import Toast, {
 import queryClient from '@/api/queryClient';
 import {colors} from '@/constants/colors';
 import useThemeStorage from '@/hooks/useThemeStorage';
+import useLanguageStorage from '@/hooks/useLanguageStorage';
+import '@/i18n';
 import RootNavigation from './src/navigations/RootNavigation';
 
 const toastConfig = {
@@ -34,6 +36,7 @@ const toastConfig = {
 
 function App() {
   const {theme} = useThemeStorage();
+  useLanguageStorage();
 
   useEffect(() => {
     const prepare = async () => {

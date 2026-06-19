@@ -1,4 +1,5 @@
 import React from 'react';
+import {useTranslation} from 'react-i18next';
 import {useColorScheme} from 'react-native';
 import {ActionSheet} from '../common/ActionSheet';
 import useThemeStorage from '@/hooks/useThemeStorage';
@@ -12,6 +13,7 @@ function DarkModeActionSheet({
   isVisible,
   hideAction,
 }: DarkModeActionSheetProps) {
+  const {t} = useTranslation();
   const {theme, isSystem, setMode, setSystem} = useThemeStorage();
   const systemDefault = useColorScheme();
 
@@ -40,23 +42,23 @@ function DarkModeActionSheet({
           <ActionSheet.Button
             onPress={handlePressLight}
             isChecked={isSystem === false && theme === 'light'}>
-            라이트 모드
+            {t('setting.lightMode')}
           </ActionSheet.Button>
           <ActionSheet.Divider />
           <ActionSheet.Button
             onPress={handlePressDark}
             isChecked={isSystem === false && theme === 'dark'}>
-            다크 모드
+            {t('setting.darkModeOption')}
           </ActionSheet.Button>
           <ActionSheet.Divider />
           <ActionSheet.Button
             onPress={handlePressSystem}
             isChecked={isSystem === true}>
-            시스템 기본값
+            {t('setting.systemDefault')}
           </ActionSheet.Button>
         </ActionSheet.Container>
         <ActionSheet.Container>
-          <ActionSheet.Button onPress={hideAction}>취소</ActionSheet.Button>
+          <ActionSheet.Button onPress={hideAction}>{t('common.cancel')}</ActionSheet.Button>
         </ActionSheet.Container>
       </ActionSheet.Background>
     </ActionSheet>

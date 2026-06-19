@@ -1,0 +1,126 @@
+{
+  "navigation": {
+    "home": "홈",
+    "feed": "피드",
+    "calendar": "캘린더",
+    "setting": "설정",
+    "favorites": "즐겨찾기",
+    "editLocation": "장소 수정",
+    "addLocation": "장소 추가",
+    "searchLocation": "장소 검색",
+    "editProfile": "프로필 수정"
+  },
+  "auth": {
+    "appleLogin": "Apple로 로그인",
+    "googleLogin": "Google로 로그인",
+    "appleLoginSuccess": "애플 로그인 성공",
+    "googleLoginSuccess": "구글 로그인 성공",
+    "welcome": "환영합니다!",
+    "appleLoginFailed": "애플 로그인이 실패했습니다.",
+    "googleLoginFailed": "구글 로그인이 실패했습니다.",
+    "retryLater": "나중에 다시 시도해주세요",
+    "sessionNotCreated": "세션이 생성되지 않았습니다.",
+    "userNotFound": "사용자를 찾을 수 없습니다."
+  },
+  "map": {
+    "locationPermission": "위치 권한을 허용해주세요.",
+    "selectLocation": "추가할 위치를 선택해주세요",
+    "longPressToSelect": "지도를 길게 누르면 위치가 선택됩니다.",
+    "searchPlaceholder": "검색할 장소를 입력해주세요.",
+    "noResults": "검색 결과가 없습니다.",
+    "prevPage": "이전페이지",
+    "nextPage": "다음페이지"
+  },
+  "feed": {
+    "visitDate": "방문날짜",
+    "score": "평점",
+    "markerColor": "마커색상",
+    "viewLocation": "위치보기",
+    "delete": "삭제하기",
+    "edit": "수정하기",
+    "confirmDelete": "삭제하시겠습니까?",
+    "deleteDescription": "피드와 지도에서 모두 삭제됩니다."
+  },
+  "post": {
+    "titlePlaceholder": "제목을 입력하세요.",
+    "descriptionPlaceholder": "기록하고 싶은 내용을 입력하세요. (선택)",
+    "save": "저장",
+    "score": "평점",
+    "scoreUnit": "{{score}}점",
+    "markerSelect": "마커선택",
+    "addPhoto": "사진 추가"
+  },
+  "calendar": {
+    "today": "오늘",
+    "yearMonth": "{{year}}년 {{month}}월",
+    "close": "닫기",
+    "sun": "일",
+    "mon": "월",
+    "tue": "화",
+    "wed": "수",
+    "thu": "목",
+    "fri": "금",
+    "sat": "토"
+  },
+  "setting": {
+    "editProfile": "프로필 수정",
+    "darkMode": "다크 모드",
+    "language": "언어",
+    "logout": "로그아웃",
+    "logoutConfirm": "로그아웃 하시겠습니까?",
+    "logoutSuccess": "로그아웃 되었습니다.",
+    "withdraw": "회원 탈퇴",
+    "withdrawConfirm": "정말로 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+    "withdrawButton": "탈퇴",
+    "withdrawSuccess": "회원탈퇴가 완료되었습니다.",
+    "withdrawError": "회원탈퇴 중 오류가 발생했습니다.",
+    "withdrawComplete": "회원 탈퇴가 완료되었습니다.",
+    "nicknamePlaceholder": "닉네임을 입력해주세요.",
+    "profileChanged": "프로필이 변경되었습니다.",
+    "selectFromAlbum": "앨범에서 사진선택",
+    "lightMode": "라이트 모드",
+    "darkModeOption": "다크 모드",
+    "systemDefault": "시스템 기본값"
+  },
+  "filter": {
+    "markerFilter": "마커 필터링",
+    "color": "색상",
+    "score": "평점",
+    "done": "완료"
+  },
+  "common": {
+    "cancel": "취소",
+    "delete": "삭제",
+    "confirm": "완료",
+    "retry": "다시 시도",
+    "retryMessage": "잠시 후 다시 시도해주세요.",
+    "requestFailed": "요청 사항을 처리하는데 실패했습니다.",
+    "settings": "설정",
+    "goToSettings": "설정하기",
+    "unknownError": "알 수 없는 에러가 발생했습니다."
+  },
+  "permission": {
+    "locationTitle": "위치 권한 허용이 필요합니다.",
+    "locationDescription": "설정 화면에서 위치 권한을 허용해주세요.",
+    "photoTitle": "사진 접근 권한이 필요합니다.",
+    "photoDescription": "설정 화면에서 사진 권한을 허용해주세요."
+  },
+  "validation": {
+    "invalidEmail": "올바른 이메일 형식이 아닙니다.",
+    "passwordLength": "비밀번호는 8~20자 사이로 입력해주세요.",
+    "passwordMismatch": "비밀번호가 일치하지않습니다.",
+    "titleRequired": "제목은 1~30자 이내로 입력해주세요.",
+    "nicknameRequired": "닉네임을 입력해주세요."
+  },
+  "image": {
+    "maxExceeded": "이미지 개수 초과",
+    "maxOneImage": "추가 가능한 이미지는 최대 1개입니다.",
+    "checkPermission": "권한을 허용했는지 확인해주세요."
+  },
+  "language": {
+    "korean": "한국어",
+    "english": "English",
+    "japanese": "日本語",
+    "systemDefault": "기기 기본값"
+  }
+}

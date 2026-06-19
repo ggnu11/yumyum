@@ -1,3 +1,5 @@
+import i18n from '@/i18n';
+
 type UserInfomation = {
   email: string;
   password: string;
@@ -10,13 +12,13 @@ function validateUser(values: UserInfomation) {
   };
 
   if (values.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
-    errors.email = '올바른 이메일 형식이 아닙니다.';
+    errors.email = i18n.t('validation.invalidEmail');
   }
   if (
     values.password.trim() &&
     (values.password.length < 8 || values.password.length > 20)
   ) {
-    errors.password = '비밀번호는 8~20자 사이로 입력해주세요.';
+    errors.password = i18n.t('validation.passwordLength');
   }
 
   return errors;
@@ -31,7 +33,7 @@ function validateSignup(values: UserInfomation & {passwordConfirm: string}) {
   const signupErrors = {...errors, passwordConfirm: ''};
 
   if (values.password !== values.passwordConfirm) {
-    signupErrors.passwordConfirm = '비밀번호가 일치하지않습니다.';
+    signupErrors.passwordConfirm = i18n.t('validation.passwordMismatch');
   }
 
   return signupErrors;
@@ -47,7 +49,7 @@ function validateAddPost(values: {title: string}) {
   };
 
   if (values.title.trim() === '') {
-    errors.title = '제목은 1~30자 이내로 입력해주세요.';
+    errors.title = i18n.t('validation.titleRequired');
   }
 
   return errors;
@@ -58,7 +60,7 @@ function validateEditProfile(values: {nickname: string}) {
     nickname: '',
   };
   if (values.nickname.trim() === '') {
-    errors.nickname = '닉네임을 입력해주세요.';
+    errors.nickname = i18n.t('validation.nicknameRequired');
   }
 
   return errors;

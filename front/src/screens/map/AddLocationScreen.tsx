@@ -3,6 +3,7 @@ import React, {useState} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {useTranslation} from 'react-i18next';
 
 import {colors} from '@/constants/colors';
 import CustomButton from '@/components/common/CustomButton';
@@ -27,6 +28,7 @@ import {useNavigation} from '@react-navigation/native';
 type Props = StackScreenProps<MapStackParamList, 'AddLocation'>;
 
 function AddLocationScreen({route}: Props) {
+  const {t} = useTranslation();
   const {theme} = useThemeStore();
   const {location} = route.params;
   const navigation = useNavigation();
@@ -79,14 +81,14 @@ function AddLocationScreen({route}: Props) {
           onPress={() => setOpenDate(true)}
         />
         <InputField
-          placeholder="제목을 입력하세요."
+          placeholder={t('post.titlePlaceholder')}
           error={postForm.errors.title}
           touched={postForm.touched.title}
           {...postForm.getTextInputProps('title')}
         />
         <InputField
           multiline
-          placeholder="기록하고 싶은 내용을 입력하세요. (선택)"
+          placeholder={t('post.descriptionPlaceholder')}
           error={postForm.errors.description}
           touched={postForm.touched.description}
           {...postForm.getTextInputProps('description')}
@@ -105,8 +107,8 @@ function AddLocationScreen({route}: Props) {
           locale="ko"
           mode="date"
           title={null}
-          cancelText="취소"
-          confirmText="완료"
+          cancelText={t('common.cancel')}
+          confirmText={t('common.confirm')}
           date={postForm.values.date}
           open={openDate}
           onConfirm={date => {
@@ -124,7 +126,7 @@ function AddLocationScreen({route}: Props) {
           />
         </View>
       </ScrollView>
-      <FixedBottomCTA label="저장" onPress={handleSubmit} />
+      <FixedBottomCTA label={t('post.save')} onPress={handleSubmit} />
     </>
   );
 }

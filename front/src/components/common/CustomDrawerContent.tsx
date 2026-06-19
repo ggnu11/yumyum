@@ -6,6 +6,7 @@ import {
 } from '@react-navigation/drawer';
 import {useNavigation} from '@react-navigation/native';
 import React from 'react';
+import {useTranslation} from 'react-i18next';
 import {
   Image,
   Platform,
@@ -21,6 +22,7 @@ import useAuth from '@/hooks/queries/useAuth';
 import useThemeStore, {Theme} from '@/store/theme';
 
 function CustomDrawerContent(props: DrawerContentComponentProps) {
+  const {t} = useTranslation();
   const {theme} = useThemeStore();
   const styles = styling(theme);
   const {auth} = useAuth();
@@ -58,7 +60,7 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
             size={20}
             color={colors[theme].BLACK}
           />
-          <Text style={styles.menuText}>설정</Text>
+          <Text style={styles.menuText}>{t('common.settings')}</Text>
         </Pressable>
       </View>
     </SafeAreaView>

@@ -2,6 +2,7 @@ import {useState} from 'react';
 import ImagePicker from 'react-native-image-crop-picker';
 import Toast from 'react-native-toast-message';
 
+import i18n from '@/i18n';
 import useMutateImages from '@/hooks/queries/useMutateImages';
 import {ImageUri} from '@/types/domain';
 import {Alert} from 'react-native';
@@ -31,7 +32,7 @@ function useImagePicker({
 
   const replaceImageUri = (uris: string[]) => {
     if (uris.length > 1) {
-      Alert.alert('이미지 개수 초과', '추가 가능한 이미지는 최대 1개입니다.');
+      Alert.alert(i18n.t('image.maxExceeded'), i18n.t('image.maxOneImage'));
       return;
     }
 
@@ -58,7 +59,7 @@ function useImagePicker({
           console.log('[error]', error);
           Toast.show({
             type: 'error',
-            text1: '권한을 허용했는지 확인해주세요.',
+            text1: i18n.t('image.checkPermission'),
             position: 'bottom',
           });
         }

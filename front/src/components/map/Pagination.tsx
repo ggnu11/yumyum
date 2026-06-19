@@ -2,6 +2,7 @@ import {colors} from '@/constants/colors';
 import useThemeStore, {Theme} from '@/store/theme';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import React from 'react';
+import {useTranslation} from 'react-i18next';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 
 interface PaginationProps {
@@ -19,6 +20,7 @@ function Pagination({
   hasNextPage,
   totalLength,
 }: PaginationProps) {
+  const {t} = useTranslation();
   const {theme} = useThemeStore();
   const styles = styling(theme);
 
@@ -34,7 +36,7 @@ function Pagination({
           color={pageParam > 1 ? colors[theme].BLACK : colors[theme].GRAY_300}
         />
         <Text style={pageParam > 1 ? styles.pageText : styles.disabledText}>
-          이전페이지
+          {t('map.prevPage')}
         </Text>
       </Pressable>
       <Pressable
@@ -56,7 +58,7 @@ function Pagination({
               ? styles.pageText
               : styles.disabledText
           }>
-          다음페이지
+          {t('map.nextPage')}
         </Text>
       </Pressable>
     </View>

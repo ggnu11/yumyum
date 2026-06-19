@@ -1,5 +1,6 @@
 import Ionicons from '@react-native-vector-icons/ionicons';
 import React, {useEffect, useState} from 'react';
+import {useTranslation} from 'react-i18next';
 import {FlatList, Pressable, StyleSheet, Text, View} from 'react-native';
 
 import {colors} from '@/constants/colors';
@@ -19,6 +20,7 @@ function YearSelector({
   onChangeYear,
   hide,
 }: YearSelectorProps) {
+  const {t} = useTranslation();
   const {theme} = useThemeStore();
   const styles = styling(theme);
   const [scrollY, setScrollY] = useState(0);
@@ -75,7 +77,7 @@ function YearSelector({
             />
           </View>
           <Pressable style={styles.closeButton} onPress={hide}>
-            <Text style={styles.closeText}>닫기</Text>
+            <Text style={styles.closeText}>{t('calendar.close')}</Text>
             <Ionicons name="chevron-up" size={20} color={colors[theme].BLACK} />
           </Pressable>
         </View>
